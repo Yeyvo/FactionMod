@@ -41,8 +41,6 @@ public class FactionMod {
 		proxy.preInit(event);
 		BlockRegistry.preInit(event);
 		ItemRegistry.preInit(event);
-		//ceci est un test test test
-		//Huston ça marche ?
 
 	}
 	
