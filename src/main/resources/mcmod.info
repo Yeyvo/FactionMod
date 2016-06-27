@@ -1,0 +1,16 @@
+[
+{
+  "modid": "faction",
+  "name": "Faction Mod",
+  "description": "A faction mod",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["BrokenSwing", "moscaphone421", "Tristepin"],
+  "credits": "The Forge and FML guys, and Minecraft Forge France",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]
