@@ -73,6 +73,80 @@ public class FactionMod {
 		network = NetworkRegistry.INSTANCE.newSimpleChannel(FactionMod.MODID);
 		PacketRegistry.init(event);
 	}
+
+	@EventHandler
+	public void serverStarting(FMLServerStartingEvent event) {
+		/**
+		 * For tests
+		 */
+		event.registerServerCommand(new ICommand() {
+
+			@Override
+			public int compareTo(ICommand arg0) {
+				return 0;
+			}
+
+			@Override
+			public void processCommand(ICommandSender sender, String[] args) throws CommandException {
+				if(sender instanceof EntityPlayer) {
+					EntityPlayer player = (EntityPlayer)sender;
+					if(args.length >= 1) {
+						if(args[0].equalsIgnoreCase("create") && args.length >= 2) {
+							String desc = "";
+							if(args.length >= 3) {
+								desc = args[2];
+							}
+							String facName = args[1];
+							FactionHelper.createFaction(player, facName, desc);
+						}
+
+						if(args[0].equalsIgnoreCase("leave")) {
+							Faction faction = FactionHelper.getPlayerFaction(player);
+							if(faction != null) {
+								faction.removePlayer(player);
+							}
+							if(args.length >= 2) {
+								if(args[1].equalsIgnoreCase("force")) {
+									ExtendedPropertieFaction prop = ExtendedPropertieFaction.get(player);
+									prop.setNoFaction();
+								}
+							}
+						}
+					}
+				}
+			}
+
+			@Override
+			public boolean isUsernameIndex(String[] args, int index) {
+				return false;
+			}
+
+			@Override
+			public String getCommandUsage(ICommandSender sender) {
+				return "";
+			}
+
+			@Override
+			public String getCommandName() {
+				return "f";
+			}
+
+			@Override
+			public List<String> getCommandAliases() {
+				return new ArrayList<String>();
+			}
+
+			@Override
+			public boolean canCommandSenderUseCommand(ICommandSender sender) {
+				return true;
+			}
+
+			@Override
+			public List<String> addTabCompletionOptions(ICommandSender sender,
+					String[] args, BlockPos pos) {
+				return new ArrayList<String>();
+			}
+		});
 	}
 
 }
