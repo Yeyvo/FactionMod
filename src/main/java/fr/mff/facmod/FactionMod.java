@@ -22,7 +22,6 @@ import org.apache.logging.log4j.Logger;
 
 import fr.mff.facmod.blocks.BlockRegistry;
 import fr.mff.facmod.core.FactionHelper;
-import fr.mff.facmod.core.SystemHandler;
 import fr.mff.facmod.core.extendedProperties.ExtendedPropertieFaction;
 import fr.mff.facmod.core.features.Faction;
 import fr.mff.facmod.handlers.GuiHandler;
