@@ -1,21 +1,36 @@
 package fr.mff.facmod;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import net.minecraft.command.CommandException;
+import net.minecraft.command.ICommand;
+import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.BlockPos;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 
 import org.apache.logging.log4j.Logger;
 
 import fr.mff.facmod.blocks.BlockRegistry;
+import fr.mff.facmod.core.FactionHelper;
+import fr.mff.facmod.core.SystemHandler;
+import fr.mff.facmod.core.extendedProperties.ExtendedPropertieFaction;
+import fr.mff.facmod.core.features.Faction;
 import fr.mff.facmod.handlers.GuiHandler;
 import fr.mff.facmod.items.ItemRegistry;
 import fr.mff.facmod.proxy.CommonProxy;
 import fr.mff.facmod.recipes.RecipeRegistry;
 import fr.mff.facmod.tileentities.TileEntityRegistry;
+import fr.mff.facmod.tileentities.network.PacketRegistry;
 
 /**
  * @author BrokenSwing
@@ -23,17 +38,19 @@ import fr.mff.facmod.tileentities.TileEntityRegistry;
  */
 @Mod(modid = FactionMod.MODID, version="0.0.1")
 public class FactionMod {
-	
+
 	public static final String MODID = "faction";
-	
+
 	@Instance
 	public static FactionMod INSTANCE;
-	
+
 	@SidedProxy(clientSide = "fr.mff.facmod.proxy.ClientProxy", serverSide = "fr.mff.facmod.proxy.ServerProxy")
 	public static CommonProxy proxy;
-	
+
 	public static Logger logger;
-	
+
+	public static SimpleNetworkWrapper network;
+
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event)
 	{
@@ -43,16 +60,19 @@ public class FactionMod {
 		ItemRegistry.preInit(event);
 
 	}
-	
+
 	@EventHandler
 	public void init(FMLInitializationEvent event)
 	{
 		proxy.init(event);
-		
+
 		RecipeRegistry.init(event);
 		TileEntityRegistry.init(event);
-		
+
 		NetworkRegistry.INSTANCE.registerGuiHandler(FactionMod.INSTANCE, new GuiHandler());
+		network = NetworkRegistry.INSTANCE.newSimpleChannel(FactionMod.MODID);
+		PacketRegistry.init(event);
+	}
 	}
 
 }
