@@ -13,6 +13,8 @@ import fr.mff.facmod.handlers.ClientEventHandler;
 
 public class ClientProxy extends CommonProxy {
 	
+	public String factionName = "";
+	
 	@Override
 	public void preInit(FMLPreInitializationEvent event) {
 		super.preInit(event);

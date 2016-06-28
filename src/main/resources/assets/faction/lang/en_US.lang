@@ -1,0 +1,2 @@
+command.faction.create.success=§aYou created the faction %s
+command.faction.create.fail=§cYou can't create the faction %s

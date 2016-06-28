@@ -40,6 +40,10 @@ public class Faction {
 	public List<Member> getMembers() {
 		return members;
 	}
+	
+	public List<UUID> getBannedPlayers() {
+		return bannedPlayers;
+	}
 
 	/**
 	 * Removes a player from the faction

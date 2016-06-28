@@ -1,9 +1,10 @@
 package fr.mff.facmod.handlers;
 
-import fr.mff.facmod.core.extendedProperties.ExtendedPropertieFaction;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import fr.mff.facmod.FactionMod;
+import fr.mff.facmod.proxy.ClientProxy;
 
 public class ClientEventHandler {
 	
@@ -13,8 +14,8 @@ public class ClientEventHandler {
 	 */
 	@SubscribeEvent
 	public void onRenderGameOverlay(RenderGameOverlayEvent.Text e) {
-		ExtendedPropertieFaction prop = ExtendedPropertieFaction.get(Minecraft.getMinecraft().thePlayer);
-		String str = "Faction : " + (prop.factionName.equals("") ? "aucune" : prop.factionName);
+		String factionName = ((ClientProxy)FactionMod.proxy).factionName;
+		String str = "Faction : " + (factionName.equals("") ? "aucune" : factionName);
 		Minecraft.getMinecraft().fontRendererObj.drawString(str, 10, 10, 0xFFFFFF);
 	}
 
