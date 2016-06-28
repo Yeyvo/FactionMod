@@ -4,22 +4,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayer;
-import fr.mff.facmod.core.extendedProperties.ExtendedPropertieFaction;
 import fr.mff.facmod.core.features.EnumRank;
 import fr.mff.facmod.core.features.Faction;
 import fr.mff.facmod.core.features.Member;
 
 public class FactionHelper {
-	
+
 	/**
 	 * Return player's faction
 	 * @param player
 	 * @return {@code null} if the player doesn't have a faction <br /> 
 	 */
 	public static Faction getPlayerFaction(EntityPlayer player) {
-		return FactionHelper.getFactionFromName(ExtendedPropertieFaction.get(player).factionName);
+		return FactionHelper.getFactionFromName(SystemHandler.getPlayers().get(player.getUniqueID()));
 	}
-	
+
 	/**
 	 * Check if the player is able to join a faction
 	 * @param player
@@ -28,7 +27,7 @@ public class FactionHelper {
 	public static boolean canPlayerJoinFaction(EntityPlayer player) {
 		return FactionHelper.getPlayerFaction(player) == null;
 	}
-	
+
 	/**
 	 * Creates a faction
 	 * @param player Faction's owner
@@ -36,14 +35,16 @@ public class FactionHelper {
 	 * @param factionDescription
 	 * @return {@code true} if the faction has been created
 	 */
-	public static boolean createFaction(EntityPlayer player, String factionName, String factionDescription) {
+	public static boolean tryCreateFaction(EntityPlayer player, String factionName, String factionDescription) {
 		if(FactionHelper.canPlayerJoinFaction(player)) {
-			Faction faction = new Faction(factionName, factionDescription, player);
-			return SystemHandler.addFaction(faction);
+			if(FactionHelper.getFactionFromName(factionName) == null) {
+				Faction faction = new Faction(factionName, factionDescription, player);
+				return SystemHandler.addFaction(faction);
+			}
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Sets player's faction
 	 * @param player
@@ -51,13 +52,12 @@ public class FactionHelper {
 	 * @return {@code false} if player's faction has not changed
 	 */
 	public static boolean setPlayerFaction(EntityPlayer player, Faction faction) {
-		ExtendedPropertieFaction prop = ExtendedPropertieFaction.get(player);
-		if(prop.factionName.equals("")) {
-			prop.setFaction(faction);
+		if(FactionHelper.canPlayerJoinFaction(player)) {
+			SystemHandler.setPlayer(player, faction.getName());
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Returns the faction with the given name
 	 * @param name
@@ -65,13 +65,13 @@ public class FactionHelper {
 	 */
 	public static Faction getFactionFromName(String name) {
 		for(Faction faction : SystemHandler.getAllFactions()) {
-			if(faction.getName().toUpperCase().equals(name.toUpperCase())) {
+			if(faction.getName().equalsIgnoreCase(name)) {
 				return faction;
 			}
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Updates ExtendedEntityProperties when a player leave a faction
 	 * @param player
@@ -80,13 +80,12 @@ public class FactionHelper {
 	public static boolean setNoFaction(EntityPlayer player) {
 		Faction faction = FactionHelper.getPlayerFaction(player);
 		if(faction != null) {
-			ExtendedPropertieFaction prop = ExtendedPropertieFaction.get(player);
-			prop.setNoFaction();
+			SystemHandler.setPlayer(player, "");
 			return true;
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Updates faction's situation
 	 * @param faction
@@ -98,7 +97,7 @@ public class FactionHelper {
 		}
 		return true;
 	}
-	
+
 	/**
 	 * Chooses a new owner for the faction, choose highest and oldest member
 	 * @param faction
@@ -118,7 +117,7 @@ public class FactionHelper {
 		}
 		promotableMembers.get(0).setRank(EnumRank.OWNER);
 	}
-	
+
 	/**
 	 * Removes all faction's members
 	 * @param faction
