@@ -2,15 +2,13 @@ package fr.mff.facmod.core.features;
 
 import java.util.UUID;
 
-import net.minecraft.entity.player.EntityPlayer;
-
 public class Member {
 	
-	private EntityPlayer player;
+	private UUID uuid;
 	private EnumRank rank;
 	
-	public Member(EntityPlayer player, EnumRank rank) {
-		this.player = player;
+	public Member(UUID player, EnumRank rank) {
+		this.uuid = player;
 		this.rank = rank;
 	}
 
@@ -23,11 +21,7 @@ public class Member {
 	}
 
 	public UUID getUUID() {
-		return player.getUniqueID();
-	}
-	
-	public EntityPlayer getPlayer() {
-		return player;
+		return uuid;
 	}
 
 }

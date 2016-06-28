@@ -1,0 +1,5 @@
+command.faction.create.success=§aVous avez créé la faction %s
+command.faction.create.fail=§cVous ne pouvez pas créer la faction %s
+
+command.faction.leave.success=§aVous avez quitté la faction %s
+command.faction.leave.fail=§cVous n'avez quitté aucune faction

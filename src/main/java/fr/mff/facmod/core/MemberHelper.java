@@ -1,8 +1,9 @@
 package fr.mff.facmod.core;
 
+import java.util.UUID;
+
 import fr.mff.facmod.core.features.Faction;
 import fr.mff.facmod.core.features.Member;
-import net.minecraft.entity.player.EntityPlayer;
 
 public class MemberHelper {
 	
@@ -12,9 +13,9 @@ public class MemberHelper {
 	 * @param faction
 	 * @return {@code null} if the player has not been found in members' list
 	 */
-	public static Member getMember(EntityPlayer player, Faction faction) {
+	public static Member getMember(UUID uuid, Faction faction) {
 		for(Member m : faction.getMembers()) {
-			if(m.getUUID().equals(player.getUniqueID())) {
+			if(m.getUUID().equals(uuid)) {
 				return m;
 			}
 		}

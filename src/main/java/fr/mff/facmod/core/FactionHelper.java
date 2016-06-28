@@ -2,8 +2,8 @@ package fr.mff.facmod.core;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
-import net.minecraft.entity.player.EntityPlayer;
 import fr.mff.facmod.core.features.EnumRank;
 import fr.mff.facmod.core.features.Faction;
 import fr.mff.facmod.core.features.Member;
@@ -15,8 +15,8 @@ public class FactionHelper {
 	 * @param player
 	 * @return {@code null} if the player doesn't have a faction <br /> 
 	 */
-	public static Faction getPlayerFaction(EntityPlayer player) {
-		return FactionHelper.getFactionFromName(SystemHandler.getPlayers().get(player.getUniqueID()));
+	public static Faction getPlayerFaction(UUID uuid) {
+		return FactionHelper.getFactionFromName(SystemHandler.getPlayers().get(uuid));
 	}
 
 	/**
@@ -24,8 +24,8 @@ public class FactionHelper {
 	 * @param player
 	 * @return {@code true} if the player comme join a faction
 	 */
-	public static boolean canPlayerJoinFaction(EntityPlayer player) {
-		return FactionHelper.getPlayerFaction(player) == null;
+	public static boolean canPlayerJoinFaction(UUID uuid) {
+		return FactionHelper.getPlayerFaction(uuid) == null;
 	}
 
 	/**
@@ -35,10 +35,10 @@ public class FactionHelper {
 	 * @param factionDescription
 	 * @return {@code true} if the faction has been created
 	 */
-	public static boolean tryCreateFaction(EntityPlayer player, String factionName, String factionDescription) {
-		if(FactionHelper.canPlayerJoinFaction(player)) {
+	public static boolean tryCreateFaction(UUID uuid, String factionName, String factionDescription) {
+		if(FactionHelper.canPlayerJoinFaction(uuid)) {
 			if(FactionHelper.getFactionFromName(factionName) == null) {
-				Faction faction = new Faction(factionName, factionDescription, player);
+				Faction faction = new Faction(factionName, factionDescription, uuid);
 				return SystemHandler.addFaction(faction);
 			}
 		}
@@ -51,9 +51,9 @@ public class FactionHelper {
 	 * @param faction
 	 * @return {@code false} if player's faction has not changed
 	 */
-	public static boolean setPlayerFaction(EntityPlayer player, Faction faction) {
-		if(FactionHelper.canPlayerJoinFaction(player)) {
-			SystemHandler.setPlayer(player, faction.getName());
+	public static boolean setPlayerFaction(UUID uuid, Faction faction) {
+		if(FactionHelper.canPlayerJoinFaction(uuid)) {
+			SystemHandler.setPlayer(uuid, faction.getName());
 		}
 		return false;
 	}
@@ -77,10 +77,10 @@ public class FactionHelper {
 	 * @param player
 	 * @return {@code false} if the player wasn't in a faction
 	 */
-	public static boolean setNoFaction(EntityPlayer player) {
-		Faction faction = FactionHelper.getPlayerFaction(player);
+	public static boolean setNoFaction(UUID uuid) {
+		Faction faction = FactionHelper.getPlayerFaction(uuid);
 		if(faction != null) {
-			SystemHandler.setPlayer(player, "");
+			SystemHandler.setPlayer(uuid, "");
 			return true;
 		}
 		return false;
@@ -125,7 +125,7 @@ public class FactionHelper {
 	 */
 	public static boolean clearFaction(Faction faction) {
 		for(Member member : faction.getMembers()) {
-			FactionHelper.setNoFaction(member.getPlayer());
+			FactionHelper.setNoFaction(member.getUUID());
 		}
 		return FactionHelper.updateFaction(faction);
 	}

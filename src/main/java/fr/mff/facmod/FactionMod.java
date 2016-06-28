@@ -1,5 +1,7 @@
 package fr.mff.facmod;
 
+import net.minecraft.world.storage.MapStorage;
+import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
@@ -14,6 +16,7 @@ import org.apache.logging.log4j.Logger;
 
 import fr.mff.facmod.blocks.BlockRegistry;
 import fr.mff.facmod.commands.CommandRegistry;
+import fr.mff.facmod.core.SystemHandler;
 import fr.mff.facmod.handlers.GuiHandler;
 import fr.mff.facmod.items.ItemRegistry;
 import fr.mff.facmod.network.PacketRegistry;
@@ -65,6 +68,13 @@ public class FactionMod {
 
 	@EventHandler
 	public void serverStarting(FMLServerStartingEvent event) {
+		MapStorage storage = DimensionManager.getWorlds()[0].getMapStorage();
+		SystemHandler data = (SystemHandler)storage.loadData(SystemHandler.class, "factionmod");
+		if(data == null) {
+			System.err.println("Created");
+			data = new SystemHandler("factionmod");
+			storage.setData("factionmod", data);
+		}
 		CommandRegistry.onServerStarting(event);
 	}
 

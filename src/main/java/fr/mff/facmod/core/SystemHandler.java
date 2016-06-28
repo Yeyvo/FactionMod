@@ -7,18 +7,18 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.UUID;
 
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.world.WorldSavedData;
+import fr.mff.facmod.core.features.EnumRank;
 import fr.mff.facmod.core.features.Faction;
 import fr.mff.facmod.core.features.Member;
 import fr.mff.facmod.network.PacketHelper;
 
 public class SystemHandler extends WorldSavedData {
 
-	private static SystemHandler INSTANCE = new SystemHandler("factionmodsave");
+	private static SystemHandler INSTANCE;
 	private final List<Faction> factions = new ArrayList<Faction>();
 	private final HashMap<UUID, String> players = new HashMap<UUID, String>();
 
@@ -30,32 +30,68 @@ public class SystemHandler extends WorldSavedData {
 		return INSTANCE.players;
 	}
 	
-	public static void setPlayer(EntityPlayer player, String factionName) {
-		INSTANCE.players.put(player.getUniqueID(), factionName);
-		PacketHelper.updateClient(player);
+	public static void setPlayer(UUID uuid, String factionName) {
+		INSTANCE.players.put(uuid, factionName);
+		PacketHelper.updateClient(uuid);
+		INSTANCE.markDirty();
 	}
 	
-	public static void removePlayer(EntityPlayer player) {
-		INSTANCE.players.remove(player.getUniqueID());
+	public static void removePlayer(UUID uuid) {
+		INSTANCE.players.remove(uuid);
+		INSTANCE.markDirty();
 	}
 
 	public static boolean removeFaction(Faction faction) {
+		INSTANCE.markDirty();
 		return INSTANCE.factions.remove(faction);
 	}
 
 	public static boolean addFaction(Faction faction) {
+		INSTANCE.markDirty();
 		return INSTANCE.factions.add(faction);
 	}
 	
-	//--------------------Instance---------------------------------------------------//
+	//--------------------Instance-------------------------//
 	
-	private SystemHandler(String name) {
+	public SystemHandler(String name) {
 		super(name);
+		INSTANCE = this;
 	}
 
 	@Override
 	public void readFromNBT(NBTTagCompound nbt) {
-		
+		NBTTagCompound compound = (NBTTagCompound)nbt.getTag("factionmod");
+		NBTTagList playersList = (NBTTagList)compound.getTag("players");
+		for(int i = 0; i < playersList.tagCount(); i++) {
+			NBTTagCompound playerTag = playersList.getCompoundTagAt(i);
+			SystemHandler.setPlayer(UUID.fromString(playerTag.getString("uuid")), playerTag.getString("faction"));
+		}
+		NBTTagList factionsList = (NBTTagList)compound.getTag("factions");
+		for(int i = 0; i < factionsList.tagCount(); i++) {
+			NBTTagCompound factionTag = factionsList.getCompoundTagAt(i);
+			
+			NBTTagList membersList = (NBTTagList)factionTag.getTag("members");
+			List<Member> members = new ArrayList<Member>();
+			for(int k = 0; k < membersList.tagCount(); k++) {
+				NBTTagCompound memberTag = membersList.getCompoundTagAt(k);
+				EnumRank rank = EnumRank.valueOf(memberTag.getString("rank"));
+				UUID uuid = UUID.fromString(memberTag.getString("uuid"));
+				Member member = new Member(uuid, rank);
+				members.add(member);
+			}
+			
+			NBTTagList bannedList = (NBTTagList)factionTag.getTag("bannedPlayers");
+			List<UUID> bannedPlayers = new ArrayList<UUID>();
+			for(int k = 0; k < bannedList.tagCount(); k++) {
+				String uuid = bannedList.getStringTagAt(k);
+				bannedPlayers.add(UUID.fromString(uuid));
+			}
+			
+			String facName = factionTag.getString("factionName");
+			String desc = factionTag.getString("factionDesc");
+			Faction faction = new Faction(facName, desc, members, bannedPlayers);
+			this.factions.add(faction);
+		}
 	}
 
 	@Override
@@ -72,7 +108,7 @@ public class SystemHandler extends WorldSavedData {
 			for(Member member : faction.getMembers()) {
 				
 				NBTTagCompound memberTag = new NBTTagCompound();
-				member.getPlayer().writeEntityToNBT(memberTag);
+				memberTag.setString("uuid", member.getUUID().toString());
 				memberTag.setString("rank", member.getRank().name());
 				
 				membersList.appendTag(memberTag);
@@ -99,7 +135,7 @@ public class SystemHandler extends WorldSavedData {
 			Entry<UUID, String> entry = iterator.next();
 			playerTag.setString("uuid", entry.getKey().toString());
 			playerTag.setString("faction", entry.getValue());
-			
+
 			playersList.appendTag(playerTag);
 		}
 		

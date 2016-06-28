@@ -63,6 +63,7 @@ public class CommandFaction extends CommandBase {
 
 	@Override
 	public void processCommand(ICommandSender sender, String[] args) throws CommandException {
+		//TODO End the handling
 		if(args.length < 1) {
 			throw new WrongUsageException(this.getCommandUsage(sender), new Object[0]);
 		} else {
@@ -80,7 +81,7 @@ public class CommandFaction extends CommandBase {
 							desc += args[i];
 						}
 					}
-					if(FactionHelper.tryCreateFaction(player, facName, desc)) {
+					if(FactionHelper.tryCreateFaction(player.getUniqueID(), facName, desc)) {
 						player.addChatComponentMessage(new ChatComponentTranslation("command.faction.create.success", EnumChatFormatting.YELLOW + facName));
 					} else {
 						player.addChatComponentMessage(new ChatComponentTranslation("command.faction.create.fail", EnumChatFormatting.YELLOW + facName));
@@ -95,9 +96,12 @@ public class CommandFaction extends CommandBase {
 
 			// Leave
 			else if(args[0].equalsIgnoreCase("leave")) {
-				Faction faction = FactionHelper.getPlayerFaction(player);
+				Faction faction = FactionHelper.getPlayerFaction(player.getUniqueID());
 				if(faction != null) {
-					faction.removePlayer(player);
+					faction.removePlayer(player.getUniqueID());
+					player.addChatMessage(new ChatComponentTranslation("command.faction.leave.success", new Object[]{EnumChatFormatting.YELLOW + faction.getName()}));
+				} else {
+					player.addChatComponentMessage(new ChatComponentTranslation("command.faction.leave.fail", new Object[0]));
 				}
 			}
 
