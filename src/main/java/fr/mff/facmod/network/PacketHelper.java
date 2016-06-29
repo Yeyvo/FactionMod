@@ -10,11 +10,15 @@ import fr.mff.facmod.core.SystemHandler;
 
 public class PacketHelper {
 
+	/**
+	 * Try to update the client with the given {@link UUID}
+	 * @param uuid
+	 */
 	public static void updateClient(UUID uuid) {
 		Entity player = MinecraftServer.getServer().getEntityFromUuid(uuid);
 		if(player instanceof EntityPlayerMP) {
 			String factionName = SystemHandler.getPlayers().get(player.getUniqueID());
-			PacketSetFaction packet = new PacketSetFaction(factionName);
+			PacketFaction packet = new PacketFaction(factionName);
 			FactionMod.network.sendTo(packet, (EntityPlayerMP)player);
 		}
 	}

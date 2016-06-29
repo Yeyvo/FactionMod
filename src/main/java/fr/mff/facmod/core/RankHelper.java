@@ -8,10 +8,24 @@ import fr.mff.facmod.core.features.Member;
 
 public class RankHelper {
 	
+	/**
+	 * Checks if the {@code executor} can influence the {@code slave}
+	 * <ul>
+	 * 		<li>Check if executor's autoriy is superior to slave's one</li>
+	 * </ul>
+	 * @param executor
+	 * @param slave
+	 * @return
+	 */
 	public static boolean canAffect(UUID executor, UUID slave) {
-		return RankHelper.getRank(executor).getDegree() < RankHelper.getRank(slave).getDegree();
+		return RankHelper.getRank(executor).getAutority() > RankHelper.getRank(slave).getAutority();
 	}
 	
+	/**
+	 * Returns player's rank
+	 * @param uuid
+	 * @return {@link EnumRank#WITHOUT_FACTION} if the player is not in a faction
+	 */
 	public static EnumRank getRank(UUID uuid) {
 		Faction faction = FactionHelper.getPlayerFaction(uuid);
 		if(faction == null) return EnumRank.WITHOUT_FACTION;

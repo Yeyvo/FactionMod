@@ -7,7 +7,7 @@ import fr.mff.facmod.FactionMod;
 public class PacketRegistry {
 	
 	public static void init(FMLInitializationEvent event) {
-		FactionMod.network.registerMessage(PacketSetFaction.Handler.class, PacketSetFaction.class, 0, Side.CLIENT);
+		FactionMod.network.registerMessage(PacketFaction.Handler.class, PacketFaction.class, 0, Side.CLIENT);
 	}
 
 }

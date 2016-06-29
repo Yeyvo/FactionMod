@@ -17,6 +17,15 @@ public class Faction {
 	protected List<Member> members = new ArrayList<Member>();
 	protected List<UUID> bannedPlayers = new ArrayList<UUID>();
 
+	/**
+	 * Creates a faction
+	 * <ul>
+	 * 		<li>Uses {@link FactionHelper#setPlayerFaction(UUID, Faction)} on the owner</li>
+	 * </ul>
+	 * @param facName
+	 * @param desc
+	 * @param uuid
+	 */
 	public Faction(String facName, String desc, UUID uuid) {
 		this.factionName = facName;
 		this.factionDesc = desc;
@@ -53,6 +62,14 @@ public class Faction {
 
 	/**
 	 * Removes a player from the faction
+	 * <ul>
+	 * 		<li>Checks is the player's faction is this</li>
+	 * 		<li>Removes member from the faction</li>
+	 * 		<li>Sets player no faction using {@link FactionHelper#setNoFaction(UUID)}
+	 * 		<li>Checks if the faction has member</li>
+	 * 		<li>Checks if the removed member was the owner</li>
+	 * 		<li>Chooses an other owner using {@link FactionHelper#chooseNewOwner(Faction)}</li>
+	 * </ul>
 	 * @param UUID
 	 * @return {@code true} if the player has been removed
 	 */
@@ -62,7 +79,7 @@ public class Faction {
 			if(member != null) {
 				members.remove(member);
 				FactionHelper.setNoFaction(uuid);
-				if(FactionHelper.updateFaction(this)) {
+				if(FactionHelper.hasMember(this)) {
 					if(member.getRank().equals(EnumRank.OWNER)) {
 						FactionHelper.chooseNewOwner(this);
 					}
@@ -76,6 +93,11 @@ public class Faction {
 
 	/**
 	 * Bans a player
+	 * <ul>
+	 * 		<li>Checks if the player is not banned</li>
+	 * 		<li>Add the player to the banned players list</li>
+	 * 		<li>Remove the player from the faction using {@link Faction#removePlayer(UUID)}</li>
+	 * </ul>
 	 * @param uuid
 	 * @return {@code false} if the player can't be banned
 	 */
@@ -88,15 +110,16 @@ public class Faction {
 
 	/**
 	 * Adds a player
+	 * <ul>
+	 * 		<li>Checks if the player is not banned</li>
+	 * 		<li>Sets player's faction to this using {@link FactionHelper#setPlayerFaction(UUID, Faction)}
+	 * </ul>
 	 * @param player
 	 * @return {@code false} if the player can't be added
 	 */
 	public boolean addPlayer(UUID uuid) {
 		if(bannedPlayers.contains(uuid)) return false;
-		if(FactionHelper.canPlayerJoinFaction(uuid)) {
-			return FactionHelper.setPlayerFaction(uuid, this);
-		}
-		return false;
+		return FactionHelper.setPlayerFaction(uuid, this);
 	}
 
 }

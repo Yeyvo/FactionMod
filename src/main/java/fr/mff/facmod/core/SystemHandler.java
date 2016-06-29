@@ -30,22 +30,36 @@ public class SystemHandler extends WorldSavedData {
 		return INSTANCE.players;
 	}
 	
+	/**
+	 * Associate player to a faction's name
+	 * <ul>
+	 * 		<li>Put UUID and faction's name to the map</li>
+	 * 		<li>Update the client</li>
+	 * </ul<
+	 * @param uuid
+	 * @param factionName
+	 */
 	public static void setPlayer(UUID uuid, String factionName) {
 		INSTANCE.players.put(uuid, factionName);
 		PacketHelper.updateClient(uuid);
 		INSTANCE.markDirty();
 	}
-	
-	public static void removePlayer(UUID uuid) {
-		INSTANCE.players.remove(uuid);
-		INSTANCE.markDirty();
-	}
 
+	/**
+	 * Remove a faction from the list
+	 * @param faction
+	 * @return
+	 */
 	public static boolean removeFaction(Faction faction) {
 		INSTANCE.markDirty();
 		return INSTANCE.factions.remove(faction);
 	}
 
+	/**
+	 * Add a faction to the list
+	 * @param faction
+	 * @return
+	 */
 	public static boolean addFaction(Faction faction) {
 		INSTANCE.markDirty();
 		return INSTANCE.factions.add(faction);

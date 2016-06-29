@@ -8,13 +8,13 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
-public class PacketSetFaction implements IMessage {
+public class PacketFaction implements IMessage {
 	
 	public String facName;
 	
-	public PacketSetFaction() { }
+	public PacketFaction() { }
 	
-	public PacketSetFaction(String facName) {
+	public PacketFaction(String facName) {
 		this.facName = facName;
 	}
 
@@ -28,10 +28,10 @@ public class PacketSetFaction implements IMessage {
 		ByteBufUtils.writeUTF8String(buf, facName);
 	}
 	
-	public static class Handler implements IMessageHandler<PacketSetFaction, IMessage> {
+	public static class Handler implements IMessageHandler<PacketFaction, IMessage> {
 		
 		@Override
-		public IMessage onMessage(PacketSetFaction message, MessageContext ctx) {
+		public IMessage onMessage(PacketFaction message, MessageContext ctx) {
 			if(FactionMod.proxy instanceof ClientProxy) {
 				((ClientProxy)FactionMod.proxy).factionName = message.facName;
 			}

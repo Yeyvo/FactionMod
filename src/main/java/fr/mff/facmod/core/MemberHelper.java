@@ -8,7 +8,7 @@ import fr.mff.facmod.core.features.Member;
 public class MemberHelper {
 	
 	/**
-	 * Return player's {@link Member} object in the members' list
+	 * Return player's {@link Member} object in the members list
 	 * @param player
 	 * @param faction
 	 * @return {@code null} if the player has not been found in members' list
