@@ -74,7 +74,7 @@ public class Faction {
 	 * @return {@code true} if the player has been removed
 	 */
 	public boolean removePlayer(UUID uuid) {
-		if(FactionHelper.getPlayerFaction(uuid).equals(this)) {
+		if(FactionHelper.getPlayerFaction(uuid) != null && FactionHelper.getPlayerFaction(uuid).equals(this)) {
 			Member member = MemberHelper.getMember(uuid, this);
 			if(member != null) {
 				members.remove(member);

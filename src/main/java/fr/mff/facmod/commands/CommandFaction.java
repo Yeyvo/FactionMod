@@ -2,6 +2,9 @@ package fr.mff.facmod.commands;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
+
+import com.mojang.authlib.GameProfile;
 
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -9,10 +12,13 @@ import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.EnumChatFormatting;
 import fr.mff.facmod.core.FactionHelper;
+import fr.mff.facmod.core.RankHelper;
 import fr.mff.facmod.core.features.Faction;
 
 public class CommandFaction extends CommandBase {
@@ -81,7 +87,7 @@ public class CommandFaction extends CommandBase {
 							desc += args[i];
 						}
 					}
-					if(FactionHelper.tryCreateFaction(player.getUniqueID(), facName, desc)) {
+					if(CommandFaction.create(facName, desc, player.getUniqueID())) {
 						player.addChatComponentMessage(new ChatComponentTranslation("command.faction.create.success", EnumChatFormatting.YELLOW + facName));
 					} else {
 						player.addChatComponentMessage(new ChatComponentTranslation("command.faction.create.fail", EnumChatFormatting.YELLOW + facName));
@@ -96,12 +102,31 @@ public class CommandFaction extends CommandBase {
 
 			// Leave
 			else if(args[0].equalsIgnoreCase("leave")) {
-				Faction faction = FactionHelper.getPlayerFaction(player.getUniqueID());
-				if(faction != null) {
-					faction.removePlayer(player.getUniqueID());
-					player.addChatMessage(new ChatComponentTranslation("command.faction.leave.success", new Object[]{EnumChatFormatting.YELLOW + faction.getName()}));
+				String name;
+				if((name = CommandFaction.leave(player.getUniqueID())) != null) {
+					player.addChatMessage(new ChatComponentTranslation("command.faction.leave.success", new Object[]{EnumChatFormatting.YELLOW + name}));
 				} else {
 					player.addChatComponentMessage(new ChatComponentTranslation("command.faction.leave.fail", new Object[0]));
+				}
+			}
+			
+			else if(args[0].equalsIgnoreCase("kick")) {
+				if(args.length >= 2) {
+					if(CommandFaction.kick(player.getUniqueID(), args[1])) {
+						player.addChatComponentMessage(new ChatComponentTranslation("command.faction.kick.success", new Object[]{args[1]}));
+					} else {
+						player.addChatComponentMessage(new ChatComponentTranslation("command.faction.kick.fail", new Object[]{args[1]}));
+					}
+				}
+			}
+			
+			else if(args[0].equalsIgnoreCase("ban")) {
+				if(args.length >= 2) {
+					if(CommandFaction.ban(player.getUniqueID(), args[1])) {
+						player.addChatComponentMessage(new ChatComponentTranslation("command.faction.ban.success", new Object[]{args[1]}));
+					} else {
+						player.addChatComponentMessage(new ChatComponentTranslation("command.faction.ban.fail", new Object[]{args[1]}));
+					}
 				}
 			}
 
@@ -133,6 +158,50 @@ public class CommandFaction extends CommandBase {
 			}
 			if(args[0].equalsIgnoreCase("ban")) {
 				return true;
+			}
+		}
+		return false;
+	}
+
+	//---------------- Macros -----------------//
+
+	public static boolean create(String factionName, String description, UUID owner) {
+		return FactionHelper.tryCreateFaction(owner, factionName, description);
+	}
+
+	public static String leave(UUID uuid) {
+		Faction faction = FactionHelper.getPlayerFaction(uuid);
+		if(faction != null) {
+			boolean flag = faction.removePlayer(uuid);
+			return flag ? faction.getName() : null;
+		}
+		return null;
+	}
+
+	public static boolean ban(UUID banner, String name) {
+		Faction faction = FactionHelper.getPlayerFaction(banner);
+		if(faction != null) {
+			EntityPlayerMP player = MinecraftServer.getServer().getConfigurationManager().getPlayerByUsername(name);
+			if(player != null) {
+				Faction bannedFaction = FactionHelper.getPlayerFaction(player.getUniqueID());
+				if(bannedFaction.equals(faction)) {
+					if(RankHelper.canAffect(banner, player.getUniqueID())) {
+						return faction.banPlayer(player.getUniqueID());
+					}
+				}
+			}
+		}
+		return false;
+	}
+
+	public static boolean kick(UUID banner, String name) {
+		Faction faction = FactionHelper.getPlayerFaction(banner);
+		if(faction != null) {
+			GameProfile profile = MinecraftServer.getServer().getPlayerProfileCache().getGameProfileForUsername(name);
+			if(profile != null) {
+				if(RankHelper.canAffect(banner, profile.getId())) {
+					return faction.removePlayer(profile.getId());
+				}
 			}
 		}
 		return false;
