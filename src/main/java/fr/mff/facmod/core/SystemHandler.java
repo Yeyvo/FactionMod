@@ -10,6 +10,7 @@ import java.util.UUID;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
+import net.minecraft.world.ChunkCoordIntPair;
 import net.minecraft.world.WorldSavedData;
 import fr.mff.facmod.core.features.EnumRank;
 import fr.mff.facmod.core.features.Faction;
@@ -21,6 +22,8 @@ public class SystemHandler extends WorldSavedData {
 	private static SystemHandler INSTANCE;
 	private final List<Faction> factions = new ArrayList<Faction>();
 	private final HashMap<UUID, String> players = new HashMap<UUID, String>();
+	private final HashMap<ChunkCoordIntPair, String> lands = new HashMap<ChunkCoordIntPair, String>();
+	private final HashMap<UUID, String> playerLandCache = new HashMap<UUID, String>();
 
 	public static List<Faction> getAllFactions() {
 		return INSTANCE.factions;
@@ -28,6 +31,32 @@ public class SystemHandler extends WorldSavedData {
 	
 	public static HashMap<UUID, String> getPlayers() {
 		return INSTANCE.players;
+	}
+	
+	public static HashMap<ChunkCoordIntPair, String> getLands() {
+		return INSTANCE.lands;
+	}
+	
+	public static HashMap<UUID, String> getPlayerLandCache() {
+		return INSTANCE.playerLandCache;
+	}
+	
+	/**
+	 * Associate a land to a faction
+	 * @param coords
+	 * @param faction
+	 */
+	public static void setLandProprietary(ChunkCoordIntPair coords, Faction faction) {
+		INSTANCE.lands.put(coords, faction.getName());
+		INSTANCE.markDirty();
+	}
+	
+	/**
+	 * Dissociate a land from any faction
+	 * @param coords
+	 */
+	public static void removeLand(ChunkCoordIntPair coords) {
+		INSTANCE.lands.remove(coords);
 	}
 	
 	/**
@@ -52,6 +81,17 @@ public class SystemHandler extends WorldSavedData {
 	 */
 	public static boolean removeFaction(Faction faction) {
 		INSTANCE.markDirty();
+		List<ChunkCoordIntPair> toRemove = new ArrayList<ChunkCoordIntPair>();
+		Iterator<Entry<ChunkCoordIntPair, String>> iterator = INSTANCE.lands.entrySet().iterator();
+		while(iterator.hasNext()) {
+			Entry<ChunkCoordIntPair, String> entry = iterator.next();
+			if(entry.getValue().equalsIgnoreCase(faction.getName())) {
+				toRemove.add(entry.getKey());
+			}
+		}
+		for(ChunkCoordIntPair coord : toRemove) {
+			SystemHandler.removeLand(coord);
+		}
 		return INSTANCE.factions.remove(faction);
 	}
 
@@ -75,11 +115,22 @@ public class SystemHandler extends WorldSavedData {
 	@Override
 	public void readFromNBT(NBTTagCompound nbt) {
 		NBTTagCompound compound = (NBTTagCompound)nbt.getTag("factionmod");
+		
+		NBTTagList landsList = (NBTTagList)compound.getTag("lands");
+		for(int i = 0; i < landsList.tagCount(); i++) {
+			NBTTagCompound landTag = landsList.getCompoundTagAt(i);
+			ChunkCoordIntPair coords = new ChunkCoordIntPair(landTag.getInteger("x"), landTag.getInteger("z"));
+			this.lands.put(coords, landTag.getString("faction"));
+			
+		}
+		
 		NBTTagList playersList = (NBTTagList)compound.getTag("players");
 		for(int i = 0; i < playersList.tagCount(); i++) {
 			NBTTagCompound playerTag = playersList.getCompoundTagAt(i);
-			SystemHandler.setPlayer(UUID.fromString(playerTag.getString("uuid")), playerTag.getString("faction"));
+			//SystemHandler.setPlayer(UUID.fromString(playerTag.getString("uuid")), playerTag.getString("faction"));
+			this.players.put(UUID.fromString(playerTag.getString("uuid")), playerTag.getString("faction"));
 		}
+		
 		NBTTagList factionsList = (NBTTagList)compound.getTag("factions");
 		for(int i = 0; i < factionsList.tagCount(); i++) {
 			NBTTagCompound factionTag = factionsList.getCompoundTagAt(i);
@@ -153,8 +204,21 @@ public class SystemHandler extends WorldSavedData {
 			playersList.appendTag(playerTag);
 		}
 		
+		NBTTagList landsList = new NBTTagList();
+		Iterator<Entry<ChunkCoordIntPair, String>> iterator2 = this.lands.entrySet().iterator();
+		while(iterator2.hasNext()) {
+			NBTTagCompound landTag = new NBTTagCompound();
+			Entry<ChunkCoordIntPair, String> entry = iterator2.next();
+			landTag.setInteger("x", entry.getKey().chunkXPos);
+			landTag.setInteger("z", entry.getKey().chunkZPos);
+			landTag.setString("faction", entry.getValue());
+			
+			landsList.appendTag(landTag);
+		}
+		
 		compound.setTag("factions", factionsList);
 		compound.setTag("players", playersList);
+		compound.setTag("lands", landsList);
 		
 		nbt.setTag("factionmod", compound);
 	}

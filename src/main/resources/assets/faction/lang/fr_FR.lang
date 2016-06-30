@@ -3,3 +3,5 @@ command.faction.create.fail=§cVous ne pouvez pas créer la faction %s
 
 command.faction.leave.success=§aVous avez quitté la faction %s
 command.faction.leave.fail=§cVous n'avez quitté aucune faction
+
+faction.chunk.free=§dTerrain libre
