@@ -1,0 +1,8 @@
+*.nrm
+*.frq
+eclipse/.metadata/.plugins/org.eclipse.epp.logging.aeri.ide/org.eclipse.epp.logging.aeri.ide.server/local-history/_0.tii
+*.gen
+*.index
+*.dat
+run/saves/New World--/session.lock
+*.mca
