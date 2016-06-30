@@ -11,7 +11,6 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.init.Blocks;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentTranslation;
@@ -141,13 +140,9 @@ public class CommandFaction extends CommandBase {
 				Faction faction;
 				if((faction = FactionHelper.getPlayerFaction(player.getUniqueID())) != null) {
 					ChunkCoordIntPair coords = player.getEntityWorld().getChunkFromBlockCoords(player.getPosition()).getChunkCoordIntPair();
-					SystemHandler.setLandProprietary(coords, faction);
-					//DEBUGING PART
-					BlockPos pos = new BlockPos(coords.chunkXPos * 16, player.getPosition().getY(), coords.chunkZPos * 16);
-					player.getEntityWorld().setBlockState(pos, Blocks.cobblestone_wall.getDefaultState());
-					player.getEntityWorld().setBlockState(pos.add(15, 0, 0), Blocks.cobblestone_wall.getDefaultState());
-					player.getEntityWorld().setBlockState(pos.add(0, 0, 15), Blocks.cobblestone_wall.getDefaultState());
-					player.getEntityWorld().setBlockState(pos.add(15, 0, 15), Blocks.cobblestone_wall.getDefaultState());
+					if(SystemHandler.getLands().get(coords) == null) {
+						SystemHandler.setLandProprietary(coords, faction);
+					}
 				}
 			}
 
