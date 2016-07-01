@@ -15,7 +15,7 @@ public class PacketFaction implements IMessage {
 	public PacketFaction() { }
 	
 	public PacketFaction(String facName) {
-		this.facName = facName;
+		this.facName = facName == null ? "" : facName;
 	}
 
 	@Override

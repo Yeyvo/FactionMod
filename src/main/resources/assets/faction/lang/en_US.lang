@@ -1,7 +1,18 @@
-command.faction.create.success=§aYou created the faction %s
-command.faction.create.fail=§cYou can't create the faction %s
-
-command.faction.leave.success=§aYou left the faction %s
-command.faction.leave.fail=§cYou didn't leave any faction
+result.factionJoined=§aYou joined the faction %s
+result.factionCreated=§aYou created the faction %s
+result.factionLeft=§aYou left the faction %s
+result.bannedPlayer=§cThe player %s§c is banned
+result.alreadyBannedPlayer=§cThe player %s§c is already banned
+result.playerAdded=§aYou joined the faction %s
+result.landClaimed=§aYou claimed the land for the faction %s
+result.alreadyClaimedLand=§cThe land is already claimed by the faction %s
+result.notInAFaction=§cYou're not in a faction
+result.inAFaction=§cYou're already in the faction %s
+result.takenName=§cThe name %s§c is taken
+result.invalidNameLength=§cThe name has to have a length between %s§c and %s
+result.invalidDescriptionLength=§cThe description has to have a length between 0 and %s
+result.noPermission=§cYou don't have the permission to perform this command
+result.notExistingFaction=§cThe faction %s§c doesn't exist
+result.invitationNeeded=§cThe faction %s§c is not opened, you need an invitation
 
 faction.chunk.free=§dFree land

@@ -6,7 +6,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import fr.mff.facmod.FactionMod;
-import fr.mff.facmod.core.SystemHandler;
+import fr.mff.facmod.core.Faction;
 
 public class PacketHelper {
 
@@ -17,8 +17,8 @@ public class PacketHelper {
 	public static void updateClient(UUID uuid) {
 		Entity player = MinecraftServer.getServer().getEntityFromUuid(uuid);
 		if(player instanceof EntityPlayerMP) {
-			String factionName = SystemHandler.getPlayers().get(player.getUniqueID());
-			PacketFaction packet = new PacketFaction(factionName);
+			String factionName = Faction.Registry.playersFactions.get(player.getUniqueID());
+			PacketFaction packet = new PacketFaction(factionName == null ? "" : factionName);
 			FactionMod.network.sendTo(packet, (EntityPlayerMP)player);
 		}
 	}

@@ -2,7 +2,6 @@ package fr.mff.facmod.commands;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -10,19 +9,12 @@ import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentTranslation;
-import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.ChunkCoordIntPair;
-
-import com.mojang.authlib.GameProfile;
-
-import fr.mff.facmod.core.FactionHelper;
-import fr.mff.facmod.core.RankHelper;
-import fr.mff.facmod.core.SystemHandler;
-import fr.mff.facmod.core.features.Faction;
+import fr.mff.facmod.core.EnumResult;
+import fr.mff.facmod.core.Faction;
+import fr.mff.facmod.core.Lands;
 
 public class CommandFaction extends CommandBase {
 
@@ -90,60 +82,42 @@ public class CommandFaction extends CommandBase {
 							desc += args[i] + " ";
 						}
 					}
-					if(CommandFaction.create(facName, desc, player.getUniqueID())) {
-						player.addChatComponentMessage(new ChatComponentTranslation("command.faction.create.success", EnumChatFormatting.YELLOW + facName));
-					} else {
-						player.addChatComponentMessage(new ChatComponentTranslation("command.faction.create.fail", EnumChatFormatting.YELLOW + facName));
-					}
+					EnumResult result = Faction.Registry.createFaction(player.getUniqueID(), facName, desc);
+					player.addChatComponentMessage(new ChatComponentTranslation(result.getLanguageKey(), result.getInformations()));
 				}
 			}
 
 			// Join
 			else if(args[0].equalsIgnoreCase("join") && args.length >= 2) {
-
+				EnumResult result = Faction.Registry.joinFaction(player.getUniqueID(), args[1]);
+				player.addChatComponentMessage(new ChatComponentTranslation(result.getLanguageKey(), result.getInformations()));
 			}
 
 			// Leave
 			else if(args[0].equalsIgnoreCase("leave")) {
-				String name;
-				if((name = CommandFaction.leave(player.getUniqueID())) != null) {
-					player.addChatMessage(new ChatComponentTranslation("command.faction.leave.success", new Object[]{EnumChatFormatting.YELLOW + name}));
-				} else {
-					player.addChatComponentMessage(new ChatComponentTranslation("command.faction.leave.fail", new Object[0]));
-				}
+				EnumResult result = Faction.Registry.leaveFaction(player.getUniqueID());
+				player.addChatComponentMessage(new ChatComponentTranslation(result.getLanguageKey(), result.getInformations()));
 			}
 
 			// Kick
 			else if(args[0].equalsIgnoreCase("kick")) {
 				if(args.length >= 2) {
-					if(CommandFaction.kick(player.getUniqueID(), args[1])) {
-						player.addChatComponentMessage(new ChatComponentTranslation("command.faction.kick.success", new Object[]{args[1]}));
-					} else {
-						player.addChatComponentMessage(new ChatComponentTranslation("command.faction.kick.fail", new Object[]{args[1]}));
-					}
+					
 				}
 			}
 
 			// Ban
 			else if(args[0].equalsIgnoreCase("ban")) {
 				if(args.length >= 2) {
-					if(CommandFaction.ban(player.getUniqueID(), args[1])) {
-						player.addChatComponentMessage(new ChatComponentTranslation("command.faction.ban.success", new Object[]{args[1]}));
-					} else {
-						player.addChatComponentMessage(new ChatComponentTranslation("command.faction.ban.fail", new Object[]{args[1]}));
-					}
+					
 				}
 			}
 
 			// Claim
 			else if(args[0].equalsIgnoreCase("claim")) {
-				Faction faction;
-				if((faction = FactionHelper.getPlayerFaction(player.getUniqueID())) != null) {
-					ChunkCoordIntPair coords = player.getEntityWorld().getChunkFromBlockCoords(player.getPosition()).getChunkCoordIntPair();
-					if(SystemHandler.getLands().get(coords) == null) {
-						SystemHandler.setLandProprietary(coords, faction);
-					}
-				}
+				ChunkCoordIntPair pair = player.getEntityWorld().getChunkFromBlockCoords(player.getPosition()).getChunkCoordIntPair();
+				EnumResult result = Lands.claimChunk(player.getUniqueID(), pair);
+				player.addChatComponentMessage(new ChatComponentTranslation(result.getLanguageKey(), result.getInformations()));
 			}
 
 			else {
@@ -178,49 +152,4 @@ public class CommandFaction extends CommandBase {
 		}
 		return false;
 	}
-
-	//---------------- Macros -----------------//
-
-	public static boolean create(String factionName, String description, UUID owner) {
-		return FactionHelper.tryCreateFaction(owner, factionName, description);
-	}
-
-	public static String leave(UUID uuid) {
-		Faction faction = FactionHelper.getPlayerFaction(uuid);
-		if(faction != null) {
-			boolean flag = faction.removePlayer(uuid);
-			return flag ? faction.getName() : null;
-		}
-		return null;
-	}
-
-	public static boolean ban(UUID banner, String name) {
-		Faction faction = FactionHelper.getPlayerFaction(banner);
-		if(faction != null) {
-			EntityPlayerMP player = MinecraftServer.getServer().getConfigurationManager().getPlayerByUsername(name);
-			if(player != null) {
-				Faction bannedFaction = FactionHelper.getPlayerFaction(player.getUniqueID());
-				if(bannedFaction.equals(faction)) {
-					if(RankHelper.canAffect(banner, player.getUniqueID())) {
-						return faction.banPlayer(player.getUniqueID());
-					}
-				}
-			}
-		}
-		return false;
-	}
-
-	public static boolean kick(UUID banner, String name) {
-		Faction faction = FactionHelper.getPlayerFaction(banner);
-		if(faction != null) {
-			GameProfile profile = MinecraftServer.getServer().getPlayerProfileCache().getGameProfileForUsername(name);
-			if(profile != null) {
-				if(RankHelper.canAffect(banner, profile.getId())) {
-					return faction.removePlayer(profile.getId());
-				}
-			}
-		}
-		return false;
-	}
-
 }
