@@ -4,12 +4,10 @@ import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.ChunkCoordIntPair;
-import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import fr.mff.facmod.core.Faction;
-import fr.mff.facmod.core.FactionSaver;
 import fr.mff.facmod.core.Lands;
 import fr.mff.facmod.network.PacketHelper;
 
@@ -39,8 +37,10 @@ public class CommonEventHandler {
 	}
 	
 	@SubscribeEvent
-	public void onWorldLoad(WorldEvent.Load event) {
-		FactionSaver.onWorldLoad(event);
+	public void onPlayerLeave(PlayerEvent.PlayerLoggedOutEvent event) {
+		if(event.player.worldObj != null && !event.player.worldObj.isRemote) {
+			Lands.removePlayerCache(event.player.getUniqueID());
+		}
 	}
 
 }

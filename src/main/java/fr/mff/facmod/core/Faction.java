@@ -172,6 +172,11 @@ public class Faction {
 
 		public static final List<Faction> factions = new ArrayList<Faction>();
 		public static final HashMap<UUID, String> playersFactions = new HashMap<UUID, String>();
+		
+		public static void clear() {
+			factions.clear();
+			playersFactions.clear();
+		}
 
 		public static void writeToNBT(NBTTagCompound compound) {
 			NBTTagList factionsList = new NBTTagList();

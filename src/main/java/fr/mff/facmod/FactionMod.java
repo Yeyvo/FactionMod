@@ -14,6 +14,7 @@ import org.apache.logging.log4j.Logger;
 
 import fr.mff.facmod.blocks.BlockRegistry;
 import fr.mff.facmod.commands.CommandRegistry;
+import fr.mff.facmod.core.FactionSaver;
 import fr.mff.facmod.handlers.GuiHandler;
 import fr.mff.facmod.items.ItemRegistry;
 import fr.mff.facmod.network.PacketRegistry;
@@ -65,6 +66,7 @@ public class FactionMod {
 
 	@EventHandler
 	public void serverStarting(FMLServerStartingEvent event) {
+		FactionSaver.onServerStarting(event);
 		CommandRegistry.onServerStarting(event);
 	}
 

@@ -3,12 +3,11 @@ package fr.mff.facmod.core;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.WorldSavedData;
 import net.minecraft.world.storage.MapStorage;
-import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 
 public class FactionSaver extends WorldSavedData {
 
 	private static FactionSaver INSTANCE;
-	private static boolean loaded = false;
 
 	public static void save() {
 		if(INSTANCE != null) {
@@ -39,17 +38,17 @@ public class FactionSaver extends WorldSavedData {
 		nbt.setTag("factionMod", compound);
 	}
 
-	public static void onWorldLoad(WorldEvent.Load event) {
-		//TODO Fix the bug : all maps have same datas
-		if(!event.world.isRemote && !loaded) {
-			MapStorage storage = event.world.getMapStorage();
+	public static void onServerStarting(FMLServerStartingEvent event) {
+		if(!event.getServer().getEntityWorld().isRemote) {
+			Faction.Registry.clear();
+			Lands.clear();
+			MapStorage storage = event.getServer().getEntityWorld().getMapStorage();
 			FactionSaver data = (FactionSaver)storage.loadData(FactionSaver.class, "factionMod");
 			if(data == null) {
 				data = new FactionSaver("factionMod");
 				storage.setData("factionMod", data);
 			}
 			INSTANCE = data;
-			loaded = true;
 		}
 	}
 

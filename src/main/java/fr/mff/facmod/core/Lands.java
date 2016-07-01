@@ -17,6 +17,11 @@ public class Lands {
 	private static final HashMap<ChunkCoordIntPair, String> chunks = new HashMap<ChunkCoordIntPair, String>();
 	private static final HashMap<UUID, String> playerCache = new HashMap<UUID, String>();
 	
+	public static void clear() {
+		chunks.clear();
+		playerCache.clear();
+	}
+	
 	public static void writeToNBT(NBTTagCompound compound) {
 		Iterator<Entry<ChunkCoordIntPair, String>> iterator = Lands.chunks.entrySet().iterator();
 		NBTTagList chunkList = new NBTTagList();
@@ -50,6 +55,10 @@ public class Lands {
 	
 	public static void setPlayerCache(UUID uuid, String faction) {
 		playerCache.put(uuid, faction);
+	}
+	
+	public static void removePlayerCache(UUID uuid) {
+		playerCache.remove(uuid);
 	}
 	
 	public static void clearChunksFaction(String name) {
