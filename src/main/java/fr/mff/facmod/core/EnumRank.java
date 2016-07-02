@@ -12,9 +12,13 @@ import fr.mff.facmod.core.permissions.Permission;
 public enum EnumRank {
 
 	/** The owner of the faction, has all permissions */
-	OWNER(4, new Permission[]{Permission.ALTER_BLOCK, Permission.USE_BLOCK, Permission.COMMUNITY_HANDLING, Permission.FACTION_HANDLING}),
+	OWNER(5, new Permission[]{Permission.ALTER_BLOCK, Permission.USE_BLOCK, Permission.COMMUNITY_HANDLING, Permission.FACTION_HANDLING, Permission.LAND_HANDLING}),
+	/** A member managing members and lands */
+	MANAGER(4, new Permission[]{Permission.ALTER_BLOCK, Permission.USE_BLOCK, Permission.COMMUNITY_HANDLING, Permission.LAND_HANDLING}),
 	/** A member managing the community */
 	COMMUNITY_MANAGER(3, new Permission[]{Permission.ALTER_BLOCK, Permission.USE_BLOCK, Permission.COMMUNITY_HANDLING}),
+	/** A member managing lands */
+	LAND_MANAGER(3, new Permission[]{Permission.ALTER_BLOCK, Permission.USE_BLOCK, Permission.LAND_HANDLING}),
 	/** A basic member (default rank) */
 	NEWBIE(2, new Permission[]{Permission.ALTER_BLOCK, Permission.USE_BLOCK}),
 	/** A member who is able to move in the base */
@@ -51,15 +55,6 @@ public enum EnumRank {
 
 	public List<Permission> getPermissions() {
 		return this.permissions;
-	}
-
-	public static EnumRank fromDegree(int degree) {
-		for(EnumRank grade : EnumRank.values()) {
-			if(grade.getAutority() == degree) {
-				return grade;
-			}
-		}
-		return null;
 	}
 
 	/**

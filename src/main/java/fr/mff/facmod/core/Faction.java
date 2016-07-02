@@ -10,7 +10,12 @@ import java.util.UUID;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.EnumChatFormatting;
+
+import com.mojang.authlib.GameProfile;
+
+import fr.mff.facmod.core.permissions.Permission;
 import fr.mff.facmod.network.PacketHelper;
 
 public class Faction {
@@ -59,7 +64,7 @@ public class Faction {
 		return this.opened;
 	}
 
-	public void setBoolean(boolean opened) {
+	public void setOpened(boolean opened) {
 		this.opened = opened;
 	}
 
@@ -166,13 +171,22 @@ public class Faction {
 		return new Faction(name, description, bannedPlayers, members, opened);
 	}
 
+	public Member getMember(UUID uuid) {
+		for(Member member : this.members) {
+			if(member.getUUID().equals(uuid)) {
+				return member;
+			}
+		}
+		return null;
+	}
+
 	public static class Registry {
 
 		/* ----------------- Faction Registry -------------------------- */
 
 		public static final List<Faction> factions = new ArrayList<Faction>();
 		public static final HashMap<UUID, String> playersFactions = new HashMap<UUID, String>();
-		
+
 		public static void clear() {
 			factions.clear();
 			playersFactions.clear();
@@ -274,7 +288,7 @@ public class Faction {
 			}
 			return EnumResult.IN_A_FACTION.clear().addInformation(EnumChatFormatting.GOLD + faction.getName());
 		}
-		
+
 		public static EnumResult leaveFaction(UUID uuid) {
 			Faction faction = Faction.Registry.getPlayerFaction(uuid);
 			if(faction != null) {
@@ -290,5 +304,105 @@ public class Faction {
 			}
 			return EnumResult.NOT_IN_A_FACTION;
 		}
+
+		public static EnumResult kickPlayer(UUID executor, String slaveName) {
+			Faction faction = Faction.Registry.getPlayerFaction(executor);
+			if(faction != null) {
+				if(faction.getMember(executor).getRank().hasPermission(Permission.COMMUNITY_HANDLING)) {
+					GameProfile profile = MinecraftServer.getServer().getPlayerProfileCache().getGameProfileForUsername(slaveName);
+					if(profile != null) {
+						UUID slave = profile.getId();
+						if(Faction.Registry.getPlayerFaction(slave).getName().equalsIgnoreCase(faction.getName())) {
+							if(EnumRank.canAffect(executor, slave)) {
+								faction.removePlayer(slave);
+								return EnumResult.PLAYER_KICKED.clear().addInformation(EnumChatFormatting.WHITE + slaveName).addInformation(EnumChatFormatting.GOLD + faction.getName());
+							}
+							return EnumResult.NO_PERMISSION;
+						}
+						return EnumResult.PLAYER_NOT_IN_THE_FACTION.clear().addInformation(EnumChatFormatting.WHITE + profile.getName()).addInformation(EnumChatFormatting.GOLD + faction.getName());
+					}
+					return EnumResult.NOT_EXISTING_PLAYER.clear().addInformation(EnumChatFormatting.WHITE + slaveName);
+				}
+				return EnumResult.NO_PERMISSION;
+			}
+			return EnumResult.NOT_IN_A_FACTION;
+		}
+
+		public static EnumResult setFactionOpen(UUID executor, boolean opened) {
+			Faction faction = Faction.Registry.getPlayerFaction(executor);
+			if(faction != null) {
+				if(faction.getMember(executor).getRank().hasPermission(Permission.COMMUNITY_HANDLING)) {
+					faction.setOpened(opened);
+					return opened ? EnumResult.FACTION_OPENED.clear().addInformation(EnumChatFormatting.GOLD + faction.getName()) : EnumResult.FACTION_CLOSED.clear().addInformation(EnumChatFormatting.GOLD + faction.getName());
+				}
+				return EnumResult.NO_PERMISSION;
+			}
+			return EnumResult.NOT_IN_A_FACTION;
+		}
+
+		public static EnumResult banPlayer(UUID executor, String slaveName) {
+			Faction faction = Faction.Registry.getPlayerFaction(executor);
+			if(faction != null) {
+				if(faction.getMember(executor).getRank().hasPermission(Permission.COMMUNITY_HANDLING)) {
+					GameProfile profile = MinecraftServer.getServer().getPlayerProfileCache().getGameProfileForUsername(slaveName);
+					if(profile != null) {
+						UUID slave = profile.getId();
+						if(Faction.Registry.getPlayerFaction(slave).getName().equalsIgnoreCase(faction.getName())) {
+							if(EnumRank.canAffect(executor, slave)) {
+								for(UUID uuid : faction.getBannedPlayers()) {
+									if(uuid.equals(slave)) {
+										return EnumResult.ALREADY_BANNED_PLAYER.clear().addInformation(EnumChatFormatting.WHITE + slaveName);
+									}
+								}
+								faction.removePlayer(slave);
+								faction.getBannedPlayers().add(slave);
+								return EnumResult.PLAYER_BANNED.clear().addInformation(EnumChatFormatting.WHITE + slaveName).addInformation(EnumChatFormatting.GOLD + faction.getName());
+							}
+							return EnumResult.NO_PERMISSION;
+						}
+						return EnumResult.PLAYER_NOT_IN_THE_FACTION.clear().addInformation(EnumChatFormatting.WHITE + profile.getName()).addInformation(EnumChatFormatting.GOLD + faction.getName());
+					}
+					return EnumResult.NOT_EXISTING_PLAYER.clear().addInformation(EnumChatFormatting.WHITE + slaveName);
+				}
+				return EnumResult.NO_PERMISSION;
+			}
+			return EnumResult.NOT_IN_A_FACTION;
+		}
+		
+		public static EnumResult destroyFaction(UUID uuid) {
+			Faction faction = Faction.Registry.getPlayerFaction(uuid);
+			if(faction != null) {
+				Member member = faction.getMember(uuid);
+				if(member != null) {
+					if(member.getRank().hasPermission(Permission.FACTION_HANDLING)) {
+						faction.remove();
+						return EnumResult.FACTION_REMOVED.clear().addInformation(EnumChatFormatting.GOLD + faction.getName());
+					}
+					return EnumResult.NO_PERMISSION;
+				}
+				return EnumResult.ERROR;
+			}
+			return EnumResult.NOT_IN_A_FACTION;
+		}
+		
+		public static EnumResult changeDescription(UUID uuid, String desc) {
+			Faction faction = Faction.Registry.getPlayerFaction(uuid);
+			if(faction != null) {
+				Member member = faction.getMember(uuid);
+				if(member != null) {
+					if(member.getRank().hasPermission(Permission.FACTION_HANDLING)) {
+						if(desc.length() >= 0 && desc.length() <= MAXIMUM_DESCRIPTION_LENGTH) {
+							faction.setDescription(desc);
+							return EnumResult.DESCRIPTION_CHANGED.clear().addInformation(faction.getName());
+						}
+						return EnumResult.INVALID_DESCRIPTION_LENGTH.clear().addInformation(String.valueOf(MAXIMUM_DESCRIPTION_LENGTH));
+					}
+					return EnumResult.NO_PERMISSION;
+				}
+				return EnumResult.ERROR;
+			}
+			return EnumResult.NOT_IN_A_FACTION;
+		}
+
 	}
 }

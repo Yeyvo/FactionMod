@@ -14,5 +14,16 @@ result.invalidDescriptionLength=§La description doit avoir une longueur compris
 result.noPermission=§cVous n'avez pas la permission d'exécuter cette commande
 result.notExistingFaction=§cLa faction %s§c n'existe pas
 result.invitationNeeded=§cLa faction %s§c n'est pas ouverte, vous avez besoin d'une invitation
+result.error=§cUne erreur est survenue, veillez contacter l'auteur du mod
+result.notExistingPlayer=§cLe joueur %s§c n'existe pas
+result.playerNotInTheFaction=$cLe joueur %s§c n'est pas dans la faction %s
+result.playerKicked=§aLe joueur %s§a a été congédié de la faction %s
+result.factionOpened=§aLa faction %s§a est maintenant ouverte
+result.factionClosed=§aLa faction %s§a est maintenant fermée
+result.notClaimedLand=§cCe terrain n'est pas revendiqué
+result.landUnclaimed=§aVous avez abandonné le terrain de la faction %s
+result.playerBanned=§Le joueur %s§a a été bannit
+result.factionRemoved=§aLa faction %s§a a été supprimée
+result.descriptionChanged=§aLa description de la faction %s§a a été changée
 
 faction.chunk.free=§dTerrain libre

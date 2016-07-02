@@ -26,6 +26,9 @@ public class CommandFaction extends CommandBase {
 		fArgs.add("kick");
 		fArgs.add("ban");
 		fArgs.add("destroy");
+		fArgs.add("claim");
+		fArgs.add("open");
+		fArgs.add("close");
 	}
 
 	private static final List<String> commandAliases = new ArrayList<String>();
@@ -87,6 +90,11 @@ public class CommandFaction extends CommandBase {
 				}
 			}
 
+			// Destroy
+			else if(args[0].equalsIgnoreCase("destroy")) {
+				Faction.Registry.destroyFaction(player.getUniqueID());
+			}
+
 			// Join
 			else if(args[0].equalsIgnoreCase("join") && args.length >= 2) {
 				EnumResult result = Faction.Registry.joinFaction(player.getUniqueID(), args[1]);
@@ -102,21 +110,54 @@ public class CommandFaction extends CommandBase {
 			// Kick
 			else if(args[0].equalsIgnoreCase("kick")) {
 				if(args.length >= 2) {
-					
+					EnumResult result = Faction.Registry.kickPlayer(player.getUniqueID(), args[1]);
+					player.addChatComponentMessage(new ChatComponentTranslation(result.getLanguageKey(), result.getInformations()));
 				}
 			}
 
 			// Ban
 			else if(args[0].equalsIgnoreCase("ban")) {
 				if(args.length >= 2) {
-					
+					EnumResult result = Faction.Registry.banPlayer(player.getUniqueID(), args[1]);
+					player.addChatComponentMessage(new ChatComponentTranslation(result.getLanguageKey(), result.getInformations()));
 				}
+			}
+
+			// Open
+			else if(args[0].equalsIgnoreCase("open")) {
+				EnumResult result = Faction.Registry.setFactionOpen(player.getUniqueID(), true);
+				player.addChatComponentMessage(new ChatComponentTranslation(result.getLanguageKey(), result.getInformations()));
+			}
+
+			// Close
+			else if(args[0].equalsIgnoreCase("clo")) {
+				EnumResult result = Faction.Registry.setFactionOpen(player.getUniqueID(), false);
+				player.addChatComponentMessage(new ChatComponentTranslation(result.getLanguageKey(), result.getInformations()));
 			}
 
 			// Claim
 			else if(args[0].equalsIgnoreCase("claim")) {
 				ChunkCoordIntPair pair = player.getEntityWorld().getChunkFromBlockCoords(player.getPosition()).getChunkCoordIntPair();
 				EnumResult result = Lands.claimChunk(player.getUniqueID(), pair);
+				player.addChatComponentMessage(new ChatComponentTranslation(result.getLanguageKey(), result.getInformations()));
+			}
+
+			// Un-Claim
+			else if(args[0].equalsIgnoreCase("unclaim")) {
+				ChunkCoordIntPair pair = player.getEntityWorld().getChunkFromBlockCoords(player.getPosition()).getChunkCoordIntPair();
+				EnumResult result = Lands.unClaimChunk(player.getUniqueID(), pair);
+				player.addChatComponentMessage(new ChatComponentTranslation(result.getLanguageKey(), result.getInformations()));
+			}
+
+			// Description
+			else if(args[0].equalsIgnoreCase("description") || args[0].equalsIgnoreCase("desc")) {
+				String desc = "";
+				if(args.length > 1) {
+					for(int i = 1; i < args.length; i++) {
+						desc += args[i] + " ";
+					}
+				}
+				EnumResult result = Faction.Registry.changeDescription(player.getUniqueID(), desc);
 				player.addChatComponentMessage(new ChatComponentTranslation(result.getLanguageKey(), result.getInformations()));
 			}
 

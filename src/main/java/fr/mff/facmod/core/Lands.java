@@ -7,21 +7,22 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.UUID;
 
+import fr.mff.facmod.core.permissions.Permission;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.ChunkCoordIntPair;
 
 public class Lands {
-	
+
 	private static final HashMap<ChunkCoordIntPair, String> chunks = new HashMap<ChunkCoordIntPair, String>();
 	private static final HashMap<UUID, String> playerCache = new HashMap<UUID, String>();
-	
+
 	public static void clear() {
 		chunks.clear();
 		playerCache.clear();
 	}
-	
+
 	public static void writeToNBT(NBTTagCompound compound) {
 		Iterator<Entry<ChunkCoordIntPair, String>> iterator = Lands.chunks.entrySet().iterator();
 		NBTTagList chunkList = new NBTTagList();
@@ -35,7 +36,7 @@ public class Lands {
 		}
 		compound.setTag("chunks", chunkList);
 	}
-	
+
 	public static void readfromNBT(NBTTagCompound compound) {
 		NBTTagList chunkList = (NBTTagList)compound.getTag("chunks");
 		for(int i = 0; i < chunkList.tagCount(); i++) {
@@ -44,23 +45,23 @@ public class Lands {
 			chunks.put(coords, chunkTag.getString("faction"));
 		}
 	}
-	
+
 	public static HashMap<UUID, String> getPlayerCache() {
 		return playerCache;
 	}
-	
+
 	public static HashMap<ChunkCoordIntPair, String> getLandFaction() {
 		return chunks;
 	}
-	
+
 	public static void setPlayerCache(UUID uuid, String faction) {
 		playerCache.put(uuid, faction);
 	}
-	
+
 	public static void removePlayerCache(UUID uuid) {
 		playerCache.remove(uuid);
 	}
-	
+
 	public static void clearChunksFaction(String name) {
 		List<ChunkCoordIntPair> toRemove = new ArrayList<ChunkCoordIntPair>();
 		Iterator<Entry<ChunkCoordIntPair, String>> iterator = Lands.chunks.entrySet().iterator();
@@ -75,17 +76,40 @@ public class Lands {
 		}
 		FactionSaver.save();
 	}
-	
+
 	public static EnumResult claimChunk(UUID claimer, ChunkCoordIntPair pair) {
 		Faction faction = Faction.Registry.getPlayerFaction(claimer);
 		if(faction != null) {
-			String name = chunks.get(pair);
-			if(name == null) {
-				chunks.put(pair, faction.getName());
-				FactionSaver.save();
-				return EnumResult.LAND_CLAIMED.clear().addInformation(EnumChatFormatting.GOLD + faction.getName());
+			if(faction.getMember(claimer).getRank().hasPermission(Permission.LAND_HANDLING)) {
+				String name = chunks.get(pair);
+				if(name == null) {
+					chunks.put(pair, faction.getName());
+					FactionSaver.save();
+					return EnumResult.LAND_CLAIMED.clear().addInformation(EnumChatFormatting.GOLD + faction.getName());
+				}
+				return EnumResult.ALREADY_CLAIMED_LAND.clear().addInformation(EnumChatFormatting.GOLD + name);
 			}
-			return EnumResult.ALREADY_CLAIMED_LAND.clear().addInformation(EnumChatFormatting.GOLD + name);
+			return EnumResult.NO_PERMISSION;
+		}
+		return EnumResult.NOT_IN_A_FACTION;
+	}
+	
+	public static EnumResult unClaimChunk(UUID uuid, ChunkCoordIntPair pair) {
+		Faction faction = Faction.Registry.getPlayerFaction(uuid);
+		if(faction != null) {
+			if(faction.getMember(uuid).getRank().hasPermission(Permission.LAND_HANDLING)) {
+				String owner = chunks.get(pair);
+				if(owner != null) {
+					if(faction.getName().equalsIgnoreCase(owner)) {
+						chunks.remove(pair);
+						FactionSaver.save();
+						return EnumResult.LAND_UNCLAIMED.clear().addInformation(EnumChatFormatting.GOLD + faction.getName());
+					}
+					return EnumResult.CLAIMED_BY_FACTION.clear().addInformation(EnumChatFormatting.GOLD + owner);
+				}
+				return EnumResult.NOT_CLAIMED_LAND;
+			}
+			return EnumResult.NO_PERMISSION;
 		}
 		return EnumResult.NOT_IN_A_FACTION;
 	}
