@@ -1,4 +1,4 @@
-package fr.mff.facmod.core.permissions;
+package fr.mff.facmod.core;
 
 public enum Permission {
 	

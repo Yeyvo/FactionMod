@@ -106,6 +106,12 @@ public class CommandFaction extends CommandBase {
 				EnumResult result = Faction.Registry.leaveFaction(player.getUniqueID());
 				player.addChatComponentMessage(new ChatComponentTranslation(result.getLanguageKey(), result.getInformations()));
 			}
+			
+			// Invite
+			else if(args[0].equalsIgnoreCase("invite") && args.length >= 2) {
+				EnumResult result = Faction.Registry.invite(player.getUniqueID(), args[1]);
+				player.addChatComponentMessage(new ChatComponentTranslation(result.getLanguageKey(), result.getInformations()));
+			}
 
 			// Kick
 			else if(args[0].equalsIgnoreCase("kick")) {

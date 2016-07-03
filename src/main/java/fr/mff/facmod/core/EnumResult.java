@@ -12,9 +12,13 @@ public enum EnumResult {
 	BANNED_PLAYER("result.bannedPlayer", false),
 	PLAYER_BANNED("result.playerBanned", true),
 	ALREADY_BANNED_PLAYER("result.alreadyBannedPlayer", false),
+	PLAYER_INVITED("result.playerInvited", true),
+	ALREADY_INVITED_PLAYER("result.alreadyInvitedPlayer", false),
+	IN_THE_FACTION("result.inTheFaction", false),
 	
 	PLAYER_ADDED("result.playerAdded", true),
 	NOT_EXISTING_PLAYER("result.notExistingPlayer", false),
+	NOT_CONNECTED_PLAYER("result.notConnectedPlayer", false),
 	
 	LAND_CLAIMED("result.landClaimed", true),
 	ALREADY_CLAIMED_LAND("result.alreadyClaimedLand", false),

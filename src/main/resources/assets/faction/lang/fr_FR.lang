@@ -25,5 +25,10 @@ result.landUnclaimed=§aVous avez abandonné le terrain de la faction %s
 result.playerBanned=§Le joueur %s§a a été bannit
 result.factionRemoved=§aLa faction %s§a a été supprimée
 result.descriptionChanged=§aLa description de la faction %s§a a été changée
+result.notConnectedPlayer=§cLe joueur %s§c n'est pas connecté
+result.playerInvited=§aLe joueur %s§a a été invité
+result.alreadyInvitedPlayer=§cLe joueur %s§c est déjà invité
+result.inTheFaction=§aLe joueur %s§a est déjà dans la faction %s
 
 faction.chunk.free=§dTerrain libre
+msg.invitation.received=§1Vous avez reçu une invitation de la faction %s%1

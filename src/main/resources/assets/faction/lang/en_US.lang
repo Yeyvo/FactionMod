@@ -25,5 +25,10 @@ result.landUnclaimed=§aYou unclaimed the land of the faction %s
 result.playerBanned=§aThe player %s§a has been banned
 result.factionRemoved=§aThe faction %s§a has been removed
 result.descriptionChanged=§aThe description of the faction %s§a has been changed
+result.notConnectedPlayer=§cThe player %s§c isn't connected
+result.playerInvited=§aThe player %s§a has been invited
+result.alreadyInvitedPlayer=§cThe player %s§c is already invited
+result.inTheFaction=§aThe player %s§a is already in the faction %s
 
 faction.chunk.free=§dFree land
+msg.invitation.received=§1You received a invitation from the faction %s%1

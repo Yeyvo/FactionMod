@@ -7,11 +7,14 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.UUID;
 
-import fr.mff.facmod.core.permissions.Permission;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.ChunkCoordIntPair;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 public class Lands {
 
@@ -112,6 +115,29 @@ public class Lands {
 			return EnumResult.NO_PERMISSION;
 		}
 		return EnumResult.NOT_IN_A_FACTION;
+	}
+	
+	public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
+		if(!event.player.getEntityWorld().isRemote) {
+			ChunkCoordIntPair coords = event.player.getEntityWorld().getChunkFromBlockCoords(event.player.getPosition()).getChunkCoordIntPair();
+			String factionName = Lands.getLandFaction().get(coords);
+			String cacheFactionName = Lands.getPlayerCache().get(event.player.getUniqueID());
+			if(factionName != cacheFactionName) {
+				Lands.setPlayerCache(event.player.getUniqueID(), factionName);
+				if(factionName != null) {
+					Faction faction = Faction.Registry.getFactionFromName(factionName);
+					event.player.addChatComponentMessage(new ChatComponentText(EnumChatFormatting.LIGHT_PURPLE + "-- " + EnumChatFormatting.GOLD + factionName + (faction == null || faction.getDescription().equals("") ? "" : EnumChatFormatting.LIGHT_PURPLE + " - " + EnumChatFormatting.BLUE + faction.getDescription()) + EnumChatFormatting.LIGHT_PURPLE + "--"));
+				} else {
+					event.player.addChatComponentMessage(new ChatComponentTranslation("faction.chunk.free", new Object[0]));
+				}
+			}
+		}
+	}
+	
+	public static void onPlayerLeave(PlayerEvent.PlayerLoggedOutEvent event) {
+		if(event.player.worldObj != null && !event.player.worldObj.isRemote) {
+			Lands.removePlayerCache(event.player.getUniqueID());
+		}
 	}
 
 }

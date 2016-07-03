@@ -7,15 +7,17 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.UUID;
 
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.EnumChatFormatting;
 
 import com.mojang.authlib.GameProfile;
 
-import fr.mff.facmod.core.permissions.Permission;
 import fr.mff.facmod.network.PacketHelper;
 
 public class Faction {
@@ -26,16 +28,18 @@ public class Faction {
 
 	protected final List<UUID> bannedPlayers;
 	protected final List<Member> members;
+	protected final List<UUID> invitations;
 
 	public Faction(String name, String description) {
-		this(name, description, new ArrayList<UUID>(), new ArrayList<Member>(), false);
+		this(name, description, new ArrayList<UUID>(), new ArrayList<Member>(), new ArrayList<UUID>(), false);
 	}
 
-	public Faction(String name, String description, List<UUID> bannedPlayers, List<Member> members, boolean opened) {
+	public Faction(String name, String description, List<UUID> bannedPlayers, List<Member> members, List<UUID> invitations, boolean opened) {
 		this.name = name;
 		this.description = description;
 		this.bannedPlayers = bannedPlayers;
 		this.members = members;
+		this.invitations = invitations;
 		Faction.Registry.factions.add(this);
 		FactionSaver.save();
 	}
@@ -54,6 +58,10 @@ public class Faction {
 
 	public List<UUID> getBannedPlayers() {
 		return this.bannedPlayers;
+	}
+
+	public List<UUID> getInvitations() {
+		return this.invitations;
 	}
 
 	public void setDescription(String description) {
@@ -168,7 +176,7 @@ public class Faction {
 			members.add(Member.readFromNBT(membersList.getCompoundTagAt(i)));
 		}
 
-		return new Faction(name, description, bannedPlayers, members, opened);
+		return new Faction(name, description, bannedPlayers, members, new ArrayList<UUID>(), opened);
 	}
 
 	public Member getMember(UUID uuid) {
@@ -278,7 +286,8 @@ public class Faction {
 			if(faction == null) {
 				faction = Faction.Registry.getFactionFromName(name);
 				if(faction != null) {
-					if(faction.isOpened()) {
+					if(faction.isOpened() || faction.getInvitations().contains(uuid)) {
+						faction.getInvitations().remove(uuid);
 						faction.addPlayer(uuid, EnumRank.NEWBIE);
 						return EnumResult.FACTION_JOINED.clear().addInformation(EnumChatFormatting.GOLD + faction.getName());
 					}
@@ -368,7 +377,7 @@ public class Faction {
 			}
 			return EnumResult.NOT_IN_A_FACTION;
 		}
-		
+
 		public static EnumResult destroyFaction(UUID uuid) {
 			Faction faction = Faction.Registry.getPlayerFaction(uuid);
 			if(faction != null) {
@@ -384,7 +393,7 @@ public class Faction {
 			}
 			return EnumResult.NOT_IN_A_FACTION;
 		}
-		
+
 		public static EnumResult changeDescription(UUID uuid, String desc) {
 			Faction faction = Faction.Registry.getPlayerFaction(uuid);
 			if(faction != null) {
@@ -396,6 +405,37 @@ public class Faction {
 							return EnumResult.DESCRIPTION_CHANGED.clear().addInformation(faction.getName());
 						}
 						return EnumResult.INVALID_DESCRIPTION_LENGTH.clear().addInformation(String.valueOf(MAXIMUM_DESCRIPTION_LENGTH));
+					}
+					return EnumResult.NO_PERMISSION;
+				}
+				return EnumResult.ERROR;
+			}
+			return EnumResult.NOT_IN_A_FACTION;
+		}
+
+		public static EnumResult invite(UUID executor, String slaveName) {
+			Faction faction = Faction.Registry.getPlayerFaction(executor);
+			if(faction != null) {
+				Member member = faction.getMember(executor);
+				if(member != null) {
+					if(member.getRank().hasPermission(Permission.COMMUNITY_HANDLING)) {
+						GameProfile slave = MinecraftServer.getServer().getPlayerProfileCache().getGameProfileForUsername(slaveName);
+						if(slave != null) {
+							if(faction.getMember(slave.getId()) == null) {
+								if(!faction.getInvitations().contains(slave.getId())) {
+									Entity entity = MinecraftServer.getServer().getEntityFromUuid(slave.getId());
+									if(entity instanceof EntityPlayer) {
+										faction.getInvitations().add(slave.getId());
+										((EntityPlayer)entity).addChatComponentMessage(new ChatComponentTranslation("msg.invitation.received", faction.getName()));
+										return EnumResult.PLAYER_INVITED.clear().addInformation(slave.getName());
+									}
+									return EnumResult.NOT_CONNECTED_PLAYER.clear().addInformation(EnumChatFormatting.WHITE + slave.getName());
+								}
+								return EnumResult.ALREADY_INVITED_PLAYER.clear().addInformation(slave.getName());
+							}
+							return EnumResult.IN_THE_FACTION.clear().addInformation(EnumChatFormatting.WHITE + slave.getName()).addInformation(EnumChatFormatting.GOLD + faction.getName());
+						}
+						return EnumResult.NOT_EXISTING_PLAYER.clear().addInformation(EnumChatFormatting.WHITE + slaveName);
 					}
 					return EnumResult.NO_PERMISSION;
 				}
