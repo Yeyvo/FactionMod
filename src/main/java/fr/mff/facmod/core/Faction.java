@@ -222,6 +222,7 @@ public class Faction {
 		}
 
 		public static void readFromNBT(NBTTagCompound compound) {
+			Faction.Registry.clear();
 			NBTTagList factionsList = (NBTTagList)compound.getTag("factions");
 			for(int i = 0; i < factionsList.tagCount(); i++) {
 				Faction.readFromNBT(factionsList.getCompoundTagAt(i));

@@ -41,6 +41,7 @@ public class Lands {
 	}
 
 	public static void readfromNBT(NBTTagCompound compound) {
+		Lands.clear();
 		NBTTagList chunkList = (NBTTagList)compound.getTag("chunks");
 		for(int i = 0; i < chunkList.tagCount(); i++) {
 			NBTTagCompound chunkTag = chunkList.getCompoundTagAt(i);
@@ -87,6 +88,7 @@ public class Lands {
 				String name = chunks.get(pair);
 				if(name == null) {
 					chunks.put(pair, faction.getName());
+					Homes.onLandClaimed(pair, faction.getName());
 					FactionSaver.save();
 					return EnumResult.LAND_CLAIMED.clear().addInformation(EnumChatFormatting.GOLD + faction.getName());
 				}

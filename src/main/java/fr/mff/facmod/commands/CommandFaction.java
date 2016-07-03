@@ -14,6 +14,7 @@ import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.world.ChunkCoordIntPair;
 import fr.mff.facmod.core.EnumResult;
 import fr.mff.facmod.core.Faction;
+import fr.mff.facmod.core.Homes;
 import fr.mff.facmod.core.Lands;
 
 public class CommandFaction extends CommandBase {
@@ -110,6 +111,18 @@ public class CommandFaction extends CommandBase {
 			// Invite
 			else if(args[0].equalsIgnoreCase("invite") && args.length >= 2) {
 				EnumResult result = Faction.Registry.invite(player.getUniqueID(), args[1]);
+				player.addChatComponentMessage(new ChatComponentTranslation(result.getLanguageKey(), result.getInformations()));
+			}
+			
+			// SetHome
+			else if(args[0].equalsIgnoreCase("sethome")) {
+				EnumResult result = Homes.setHome(player.getUniqueID(), player.getPosition());
+				player.addChatComponentMessage(new ChatComponentTranslation(result.getLanguageKey(), result.getInformations()));
+			}
+			
+			// Home
+			else if(args[0].equalsIgnoreCase("home")) {
+				EnumResult result = Homes.goToHome(player);
 				player.addChatComponentMessage(new ChatComponentTranslation(result.getLanguageKey(), result.getInformations()));
 			}
 

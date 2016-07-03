@@ -29,6 +29,9 @@ result.notConnectedPlayer=§cLe joueur %s§c n'est pas connecté
 result.playerInvited=§aLe joueur %s§a a été invité
 result.alreadyInvitedPlayer=§cLe joueur %s§c est déjà invité
 result.inTheFaction=§aLe joueur %s§a est déjà dans la faction %s
+result.landOfTheFaction=§cLe terrain appartient à la faction %s
+result.homeSet=§aVotre maison est maintenant établie à %s§a, %s§a, %s
 
 faction.chunk.free=§dTerrain libre
 msg.invitation.received=§1Vous avez reçu une invitation de la faction %s%1
+msg.homeRemoved=§cVotre maison a été supprimée
