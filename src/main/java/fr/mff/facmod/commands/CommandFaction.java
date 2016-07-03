@@ -179,10 +179,19 @@ public class CommandFaction extends CommandBase {
 				EnumResult result = Faction.Registry.changeDescription(player.getUniqueID(), desc);
 				player.addChatComponentMessage(new ChatComponentTranslation(result.getLanguageKey(), result.getInformations()));
 			}
+			//Mosca421 === /sethome
+			
+			else if(args[0].equalsIgnoreCase("sethome")) {
+
+			}
+			else if(args[0].equalsIgnoreCase("home")) {
+
+			}
 
 			else {
 				throw new WrongUsageException(getCommandUsage(sender), new Object[0]);
 			}
+		
 		}
 	}
 
