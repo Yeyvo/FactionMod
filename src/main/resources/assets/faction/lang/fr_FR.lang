@@ -1,13 +1,13 @@
 result.factionJoined=§aVous avez rejoint la faction %s
 result.factionCreated=§aVous avez créé la faction %s
 result.factionLeft=§aVous avez quitté la faction %s
-result.bannedPlayer=§cLe joueur %s§c est bannit
-result.alreadyBannedPlayer=§cLe joueur %s§c est déjà bannit
+result.bannedPlayer=§cLe joueur %s§c est bannie
+result.alreadyBannedPlayer=§cLe joueur %s§c est déjà banni
 result.playerAdded=§aVous avez rejoint la faction %s
 result.landClaimed=§aVous avez revendiqué le terrain pour la faction %s
-result.alreadyClaimedLand=§cLe terrain est déjà revendiqué par la faction %s
+result.alreadyClaimedLand=§cLe terrain est déjà possédé par la faction %s
 result.notInAFaction=§cVous n'êtes pas dans une faction
-result.inAFaction=§cYou're already in the faction %s
+result.inAFaction=§cVous êtes déjà dans la faction %s
 result.takenName=§cLe nom %s§c est déjà pris
 result.invalidNameLength=§cLe nom doit avoir une longueur comprise entre %s§c et %s
 result.invalidDescriptionLength=§La description doit avoir une longueur comprise entre 0 et %s
