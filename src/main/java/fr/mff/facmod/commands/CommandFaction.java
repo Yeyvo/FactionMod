@@ -22,14 +22,20 @@ public class CommandFaction extends CommandBase {
 	private static final List<String> fArgs = new ArrayList<String>();
 	static {
 		fArgs.add("create");
+		fArgs.add("destroy");
 		fArgs.add("join");
 		fArgs.add("leave");
+		fArgs.add("invite");
+		fArgs.add("sethome");
+		fArgs.add("home");
 		fArgs.add("kick");
 		fArgs.add("ban");
-		fArgs.add("destroy");
-		fArgs.add("claim");
 		fArgs.add("open");
 		fArgs.add("close");
+		fArgs.add("claim");
+		fArgs.add("unclaim");
+		fArgs.add("description");
+		fArgs.add("info");
 	}
 
 	private static final List<String> commandAliases = new ArrayList<String>();
@@ -68,7 +74,6 @@ public class CommandFaction extends CommandBase {
 
 	@Override
 	public void processCommand(ICommandSender sender, String[] args) throws CommandException {
-		//TODO End the handling
 		if(args.length < 1) {
 			throw new WrongUsageException(this.getCommandUsage(sender), new Object[0]);
 		} else {
@@ -204,21 +209,19 @@ public class CommandFaction extends CommandBase {
 	@Override
 	public List<String> addTabCompletionOptions(ICommandSender sender, String[] args, BlockPos pos) {
 		if(args.length == 1) {
-			return fArgs;
+			List<String> completements = new ArrayList<String>();
+			for(String str : fArgs) {
+				if(str.startsWith(args[0])) {
+					completements.add(str);
+				}
+			}
+			return completements;
 		}
 		return null;
 	}
 
 	@Override
 	public boolean isUsernameIndex(String[] args, int index) {
-		if(args.length == 1 && index == 1) {
-			if(args[0].equalsIgnoreCase("invite")) {
-				return true;
-			}
-			if(args[0].equalsIgnoreCase("ban")) {
-				return true;
-			}
-		}
 		return false;
 	}
 }
