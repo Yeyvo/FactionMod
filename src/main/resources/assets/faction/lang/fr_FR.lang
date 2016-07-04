@@ -35,3 +35,6 @@ result.homeSet=§aVotre maison est maintenant établie à %s§a, %s§a, %s
 faction.chunk.free=§dTerrain libre
 msg.invitation.received=§1Vous avez reçu une invitation de la faction %s%1
 msg.homeRemoved=§cVotre maison a été supprimée
+msg.description=Description
+msg.members=Membre(s) : %s
+msg.lands=Terrain(s) : %s

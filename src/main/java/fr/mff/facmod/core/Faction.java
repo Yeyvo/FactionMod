@@ -455,11 +455,11 @@ public class Faction {
 			}
 			if(faction != null) {
 				player.addChatComponentMessage(new ChatComponentText(EnumChatFormatting.GOLD + "-- " + faction.getName() + " --"));
-				if(faction.getDescription().trim() != "") {
-					player.addChatComponentMessage(new ChatComponentText("Description : " + EnumChatFormatting.BLUE + faction.getDescription()));
+				if(!faction.getDescription().isEmpty()) {
+					player.addChatComponentMessage(new ChatComponentTranslation("msg.description", EnumChatFormatting.BLUE + faction.getDescription()));
 				}
-				player.addChatComponentMessage(new ChatComponentText("Members : " + EnumChatFormatting.GREEN + faction.getMembers().size()));
-				player.addChatComponentMessage(new ChatComponentText("Lands : " + EnumChatFormatting.YELLOW + Lands.getLandsForFaction(faction.getName()).size()));
+				player.addChatComponentMessage(new ChatComponentTranslation("msg.members", EnumChatFormatting.GREEN.toString() + faction.getMembers().size()));
+				player.addChatComponentMessage(new ChatComponentTranslation("msg.lands", EnumChatFormatting.YELLOW.toString() + Lands.getLandsForFaction(faction.getName()).size()));
 				return null;
 			}
 			if(args.length >= 2) {

@@ -37,3 +37,6 @@ result.goneToHome=§aYour now at your home
 faction.chunk.free=§dFree land
 msg.invitation.received=§1You received a invitation from the faction %s%1
 msg.homeRemoved=§cYour home has been removed
+msg.description=Description : %s
+msg.members=Member(s) : %s
+msg.lands=Land(s) : %s
