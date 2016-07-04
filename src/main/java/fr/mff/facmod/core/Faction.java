@@ -13,6 +13,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.EnumChatFormatting;
 
@@ -403,7 +404,7 @@ public class Faction {
 					if(member.getRank().hasPermission(Permission.FACTION_HANDLING)) {
 						if(desc.length() >= 0 && desc.length() <= MAXIMUM_DESCRIPTION_LENGTH) {
 							faction.setDescription(desc);
-							return EnumResult.DESCRIPTION_CHANGED.clear().addInformation(faction.getName());
+							return EnumResult.DESCRIPTION_CHANGED.clear().addInformation(EnumChatFormatting.GOLD + faction.getName());
 						}
 						return EnumResult.INVALID_DESCRIPTION_LENGTH.clear().addInformation(String.valueOf(MAXIMUM_DESCRIPTION_LENGTH));
 					}
@@ -443,6 +444,29 @@ public class Faction {
 				return EnumResult.ERROR;
 			}
 			return EnumResult.NOT_IN_A_FACTION;
+		}
+
+		public static EnumResult info(EntityPlayer player, String[] args) {
+			Faction faction;
+			if(args.length >= 2) {
+				faction = Faction.Registry.getFactionFromName(args[1]);
+			} else {
+				faction = Faction.Registry.getPlayerFaction(player.getUniqueID());
+			}
+			if(faction != null) {
+				player.addChatComponentMessage(new ChatComponentText(EnumChatFormatting.GOLD + "-- " + faction.getName() + " --"));
+				if(faction.getDescription().trim() != "") {
+					player.addChatComponentMessage(new ChatComponentText("Description : " + EnumChatFormatting.BLUE + faction.getDescription()));
+				}
+				player.addChatComponentMessage(new ChatComponentText("Members : " + EnumChatFormatting.GREEN + faction.getMembers().size()));
+				player.addChatComponentMessage(new ChatComponentText("Lands : " + EnumChatFormatting.YELLOW + Lands.getLandsForFaction(faction.getName()).size()));
+				return null;
+			}
+			if(args.length >= 2) {
+				return EnumResult.NOT_EXISTING_FACTION.clear().addInformation(EnumChatFormatting.GOLD + args[1]);
+			} else {
+				return  EnumResult.NOT_IN_A_FACTION;
+			}
 		}
 
 	}

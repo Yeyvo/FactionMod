@@ -67,14 +67,7 @@ public class Lands {
 	}
 
 	public static void clearChunksFaction(String name) {
-		List<ChunkCoordIntPair> toRemove = new ArrayList<ChunkCoordIntPair>();
-		Iterator<Entry<ChunkCoordIntPair, String>> iterator = Lands.chunks.entrySet().iterator();
-		while(iterator.hasNext()) {
-			Entry<ChunkCoordIntPair, String> entry = iterator.next();
-			if(entry.getValue().equalsIgnoreCase(name)) {
-				toRemove.add(entry.getKey());
-			}
-		}
+		List<ChunkCoordIntPair> toRemove = Lands.getLandsForFaction(name);
 		for(ChunkCoordIntPair chunk : toRemove) {
 			Lands.chunks.remove(chunk);
 		}
@@ -128,7 +121,7 @@ public class Lands {
 				Lands.setPlayerCache(event.player.getUniqueID(), factionName);
 				if(factionName != null) {
 					Faction faction = Faction.Registry.getFactionFromName(factionName);
-					event.player.addChatComponentMessage(new ChatComponentText(EnumChatFormatting.LIGHT_PURPLE + "-- " + EnumChatFormatting.GOLD + factionName + (faction == null || faction.getDescription().equals("") ? "" : EnumChatFormatting.LIGHT_PURPLE + " - " + EnumChatFormatting.BLUE + faction.getDescription()) + EnumChatFormatting.LIGHT_PURPLE + "--"));
+					event.player.addChatComponentMessage(new ChatComponentText(EnumChatFormatting.GOLD+ "-- " + factionName + (faction == null || faction.getDescription().equals("") ? "" : EnumChatFormatting.LIGHT_PURPLE + " - " + EnumChatFormatting.BLUE + faction.getDescription()) + " --"));
 				} else {
 					event.player.addChatComponentMessage(new ChatComponentTranslation("faction.chunk.free", new Object[0]));
 				}
@@ -140,6 +133,18 @@ public class Lands {
 		if(event.player.worldObj != null && !event.player.worldObj.isRemote) {
 			Lands.removePlayerCache(event.player.getUniqueID());
 		}
+	}
+	
+	public static List<ChunkCoordIntPair> getLandsForFaction(String factionName) {
+		List<ChunkCoordIntPair> lands = new ArrayList<ChunkCoordIntPair>();
+		Iterator<Entry<ChunkCoordIntPair, String>> iterator = Lands.chunks.entrySet().iterator();
+		while(iterator.hasNext()) {
+			Entry<ChunkCoordIntPair, String> entry = iterator.next();
+			if(entry.getValue().equalsIgnoreCase(factionName)) {
+				lands.add(entry.getKey());
+			}
+		}
+		return lands;
 	}
 
 }

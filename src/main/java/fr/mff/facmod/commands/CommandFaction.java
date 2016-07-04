@@ -108,19 +108,19 @@ public class CommandFaction extends CommandBase {
 				EnumResult result = Faction.Registry.leaveFaction(player.getUniqueID());
 				player.addChatComponentMessage(new ChatComponentTranslation(result.getLanguageKey(), result.getInformations()));
 			}
-			
+
 			// Invite
 			else if(args[0].equalsIgnoreCase("invite") && args.length >= 2) {
 				EnumResult result = Faction.Registry.invite(player.getUniqueID(), args[1]);
 				player.addChatComponentMessage(new ChatComponentTranslation(result.getLanguageKey(), result.getInformations()));
 			}
-			
+
 			// SetHome
 			else if(args[0].equalsIgnoreCase("sethome")) {
 				EnumResult result = Homes.setHome(player.getUniqueID(), player.getPosition());
 				player.addChatComponentMessage(new ChatComponentTranslation(result.getLanguageKey(), result.getInformations()));
 			}
-			
+
 			// Home
 			else if(args[0].equalsIgnoreCase("home")) {
 				EnumResult result = Homes.goToHome(player);
@@ -179,6 +179,14 @@ public class CommandFaction extends CommandBase {
 				}
 				EnumResult result = Faction.Registry.changeDescription(player.getUniqueID(), desc);
 				player.addChatComponentMessage(new ChatComponentTranslation(result.getLanguageKey(), result.getInformations()));
+			}
+
+			// Info
+			else if(args[0].equalsIgnoreCase("info")) {
+				EnumResult result = Faction.Registry.info(player, args);
+				if(result != null) {
+					player.addChatComponentMessage(new ChatComponentTranslation(result.getLanguageKey(), result.getInformations()));
+				}
 			}
 
 			else {
