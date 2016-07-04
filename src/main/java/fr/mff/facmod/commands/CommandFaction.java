@@ -93,7 +93,8 @@ public class CommandFaction extends CommandBase {
 
 			// Destroy
 			else if(args[0].equalsIgnoreCase("destroy")) {
-				Faction.Registry.destroyFaction(player.getUniqueID());
+				EnumResult result = Faction.Registry.destroyFaction(player.getUniqueID());
+				player.addChatComponentMessage(new ChatComponentTranslation(result.getLanguageKey(), result.getInformations()));
 			}
 
 			// Join
