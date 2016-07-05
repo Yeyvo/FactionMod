@@ -1,5 +1,6 @@
 package fr.mff.facmod.handlers;
 
+import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -13,6 +14,16 @@ public class CommonEventHandler {
 	public void onPlayerTick(TickEvent.PlayerTickEvent event) {
 		Lands.onPlayerTick(event);
 	}
+	
+	@SubscribeEvent
+	public void onWorldTick(TickEvent.WorldTickEvent event) {
+		Homes.onPlayerTick(event);
+	}
+	
+	@SubscribeEvent
+	public void onLivingHurt(LivingHurtEvent event) {
+		Homes.onLivingHurt(event);
+	}
 
 	@SubscribeEvent
 	public void onPlayerJoin(PlayerEvent.PlayerLoggedInEvent event) {
@@ -23,10 +34,4 @@ public class CommonEventHandler {
 	public void onPlayerLeave(PlayerEvent.PlayerLoggedOutEvent event) {
 		Lands.onPlayerLeave(event);
 	}
-	
-	@SubscribeEvent
-	public void onPlayerRespawn(PlayerEvent.PlayerRespawnEvent event) {
-		Homes.onPlayerRespawn(event);
-	}
-
 }

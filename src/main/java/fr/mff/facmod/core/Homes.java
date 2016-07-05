@@ -16,25 +16,22 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.ChunkCoordIntPair;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerRespawnEvent;
+import net.minecraftforge.event.entity.living.LivingHurtEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 public class Homes {
-	
+
 	private static final HashMap<UUID, BlockPos> homes = new HashMap<UUID, BlockPos>();
-	private static BlockPos mainSpawn = BlockPos.ORIGIN;
+	private static final HashMap<EntityPlayer, Object[]> tpTimers = new HashMap<EntityPlayer, Object[]>();
 	
 	public static void clear() {
 		homes.clear();
 	}
-	
-	public static BlockPos getMainSpawn() {
-		return mainSpawn;
-	}
-	
+
 	public static HashMap<UUID, BlockPos> getHomes() {
 		return homes;
 	}
-	
+
 	public static EnumResult setHome(UUID uuid, BlockPos position) {
 		Faction faction = Faction.Registry.getPlayerFaction(uuid);
 		if(faction != null) {
@@ -44,18 +41,14 @@ public class Homes {
 				homes.remove(uuid);
 				homes.put(uuid, position);
 				return EnumResult.HOME_SET.clear().addInformation(EnumChatFormatting.WHITE.toString() + position.getX())
-													.addInformation(EnumChatFormatting.WHITE.toString() + position.getY())
-													.addInformation(EnumChatFormatting.WHITE.toString() + position.getZ());
+						.addInformation(EnumChatFormatting.WHITE.toString() + position.getY())
+						.addInformation(EnumChatFormatting.WHITE.toString() + position.getZ());
 			}
 			return EnumResult.LAND_OF_THE_FACTION.clear().addInformation(EnumChatFormatting.GOLD + factionName);
 		}
 		return EnumResult.NOT_IN_A_FACTION;
 	}
 
-	public static void onPlayerRespawn(PlayerRespawnEvent event) {
-		Homes.goToHome(event.player);
-	}
-	
 	public static void writeToNBT(NBTTagCompound compound) {
 		NBTTagList homesList = new NBTTagList();
 		Iterator<Entry<UUID, BlockPos>> iterator = homes.entrySet().iterator();
@@ -70,7 +63,7 @@ public class Homes {
 		}
 		compound.setTag("homes", homesList);
 	}
-	
+
 	public static void readFromNBT(NBTTagCompound compound) {
 		Homes.clear();
 		NBTTagList homesList = (NBTTagList)compound.getTag("homes");
@@ -81,7 +74,7 @@ public class Homes {
 			FactionSaver.save();
 		}
 	}
-	
+
 	public static void onLandClaimed(ChunkCoordIntPair pair, String facName) {
 		List<UUID> toRemove = new ArrayList<UUID>();
 		Iterator<Entry<UUID, BlockPos>> iterator = homes.entrySet().iterator();
@@ -105,10 +98,56 @@ public class Homes {
 	public static EnumResult goToHome(EntityPlayer player) {
 		BlockPos pos = homes.get(player.getUniqueID());
 		if(pos != null) {
-			player.setPositionAndUpdate(pos.getX(), pos.getY(), pos.getZ());
-			return EnumResult.GONE_TO_HOME;
+			tpTimers.put(player, new Object[]{player.getPosition(), 0});
+			return EnumResult.TP_LANUCHED.clear().addInformation(EnumChatFormatting.WHITE.toString() + TP_TIMER);
 		}
 		return EnumResult.HOME_NOT_SET;
+	}
+
+	private static final int TP_TIMER = 10;
+
+	public static void onPlayerTick(TickEvent.WorldTickEvent event) {
+		if(!event.world.isRemote && event.world.equals(MinecraftServer.getServer().getEntityWorld())) {
+			List<EntityPlayer> remove = new ArrayList<EntityPlayer>();
+
+			Iterator<Entry<EntityPlayer, Object[]>> iterator = tpTimers.entrySet().iterator();
+			if(iterator.hasNext()) {
+				Entry<EntityPlayer, Object[]> entry = iterator.next();
+
+				if(entry.getKey().getPosition().equals(entry.getValue()[0])) {
+					Integer tick = (Integer) entry.getValue()[1];
+					tick += 1;
+					entry.getValue()[1] = tick;
+					if(tick % 20 == 0) {
+						if(tick / 20 == TP_TIMER) {
+							BlockPos pos = homes.get(entry.getKey().getUniqueID());
+							entry.getKey().setPositionAndUpdate(pos.getX(), pos.getY(), pos.getZ());
+							remove.add(entry.getKey());
+						} else {
+							entry.getKey().addChatComponentMessage(new ChatComponentTranslation("msg.tpTimer", String.valueOf(TP_TIMER - tick / 20)));
+						}
+					}
+				} else {
+					remove.add(entry.getKey());
+					entry.getKey().addChatComponentMessage(new ChatComponentTranslation("msg.tpCanceled", new Object[0]));
+				}
+			}
+
+			for(EntityPlayer player : remove) {
+				tpTimers.remove(player);
+			}
+		}
+	}
+
+	public static void onLivingHurt(LivingHurtEvent event) {
+		if(!event.entity.worldObj.isRemote) {
+			if(event.entity instanceof EntityPlayer) {
+				Object o = tpTimers.remove(event.entity);
+				if(o != null) {
+					((EntityPlayer)event.entity).addChatComponentMessage(new ChatComponentTranslation("msg.tpCanceled", new Object[0]));
+				}
+			}
+		}
 	}
 
 }

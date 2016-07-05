@@ -35,7 +35,7 @@ public enum EnumResult {
 	INVALID_DESCRIPTION_LENGTH("result.invalidDescriptionLength", false),
 	DESCRIPTION_CHANGED("result.descriptionChanged", true),
 	NO_PERMISSION("result.noPermission", false),
-	GONE_TO_HOME("result.goneToHome", true),
+	TP_LANUCHED("result.tpLaunched", true),
 	HOME_NOT_SET("result.homeNotSet", false),
 	
 	ERROR("result.error", false);
