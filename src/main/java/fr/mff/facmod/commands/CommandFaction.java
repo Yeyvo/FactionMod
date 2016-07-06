@@ -12,6 +12,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.world.ChunkCoordIntPair;
+import fr.mff.facmod.core.EnumRank;
 import fr.mff.facmod.core.EnumResult;
 import fr.mff.facmod.core.Faction;
 import fr.mff.facmod.core.Homes;
@@ -25,6 +26,7 @@ public class CommandFaction extends CommandBase {
 		fArgs.add("destroy");
 		fArgs.add("join");
 		fArgs.add("leave");
+		fArgs.add("promote");
 		fArgs.add("invite");
 		fArgs.add("sethome");
 		fArgs.add("home");
@@ -103,9 +105,13 @@ public class CommandFaction extends CommandBase {
 			}
 
 			// Join
-			else if(args[0].equalsIgnoreCase("join") && args.length >= 2) {
+			else if(args[0].equalsIgnoreCase("join")) {
+				if(args.length >= 2) {
 				EnumResult result = Faction.Registry.joinFaction(player.getUniqueID(), args[1]);
 				player.addChatComponentMessage(new ChatComponentTranslation(result.getLanguageKey(), result.getInformations()));
+				} else {
+					throw new WrongUsageException("/faction join <faction>", new Object[0]);
+				}
 			}
 
 			// Leave
@@ -115,9 +121,13 @@ public class CommandFaction extends CommandBase {
 			}
 
 			// Invite
-			else if(args[0].equalsIgnoreCase("invite") && args.length >= 2) {
-				EnumResult result = Faction.Registry.invite(player.getUniqueID(), args[1]);
-				player.addChatComponentMessage(new ChatComponentTranslation(result.getLanguageKey(), result.getInformations()));
+			else if(args[0].equalsIgnoreCase("invite")) {
+				if(args.length >= 2) {
+					EnumResult result = Faction.Registry.invite(player.getUniqueID(), args[1]);
+					player.addChatComponentMessage(new ChatComponentTranslation(result.getLanguageKey(), result.getInformations()));
+				} else {
+					throw new WrongUsageException("/faction invite <player>", new Object[0]);
+				}
 			}
 
 			// SetHome
@@ -137,6 +147,8 @@ public class CommandFaction extends CommandBase {
 				if(args.length >= 2) {
 					EnumResult result = Faction.Registry.kickPlayer(player.getUniqueID(), args[1]);
 					player.addChatComponentMessage(new ChatComponentTranslation(result.getLanguageKey(), result.getInformations()));
+				} else {
+					throw new WrongUsageException("/faction kick <player>", new Object[0]);
 				}
 			}
 
@@ -145,13 +157,19 @@ public class CommandFaction extends CommandBase {
 				if(args.length >= 2) {
 					EnumResult result = Faction.Registry.banPlayer(player.getUniqueID(), args[1]);
 					player.addChatComponentMessage(new ChatComponentTranslation(result.getLanguageKey(), result.getInformations()));
+				} else {
+					throw new WrongUsageException("/faction ban <player>", new Object[0]);
 				}
 			}
-			
+
 			// Promote
-			else if(args[0].equalsIgnoreCase("promote") && args.length >= 3) {
-				EnumResult result = Faction.Registry.promote(player.getUniqueID(), args);
-				player.addChatComponentMessage(new ChatComponentTranslation(result.getLanguageKey(), result.getInformations()));
+			else if(args[0].equalsIgnoreCase("promote")) {
+				if(args.length >= 3) {
+					EnumResult result = Faction.Registry.promote(player.getUniqueID(), args);
+					player.addChatComponentMessage(new ChatComponentTranslation(result.getLanguageKey(), result.getInformations()));
+				} else {
+					throw new WrongUsageException("/faction promote <player> <rank>", new Object[0]);
+				}
 			}
 
 			// Open
@@ -161,7 +179,7 @@ public class CommandFaction extends CommandBase {
 			}
 
 			// Close
-			else if(args[0].equalsIgnoreCase("clo")) {
+			else if(args[0].equalsIgnoreCase("close")) {
 				EnumResult result = Faction.Registry.setFactionOpen(player.getUniqueID(), false);
 				player.addChatComponentMessage(new ChatComponentTranslation(result.getLanguageKey(), result.getInformations()));
 			}
@@ -199,7 +217,7 @@ public class CommandFaction extends CommandBase {
 					player.addChatComponentMessage(new ChatComponentTranslation(result.getLanguageKey(), result.getInformations()));
 				}
 			}
-			
+
 			// Members
 			else if(args[0].equalsIgnoreCase("members")) {
 				EnumResult result = Faction.Registry.members(player, args);
@@ -230,6 +248,18 @@ public class CommandFaction extends CommandBase {
 				}
 			}
 			return completements;
+		} else if(args.length == 3) {
+			List<String> completements = new ArrayList<String>();
+			if(args[0].equalsIgnoreCase("promote")) {
+				for(EnumRank rank : EnumRank.values()) {
+					if(rank.name().toLowerCase().startsWith(args[2].toLowerCase())) {
+						if(rank != EnumRank.WITHOUT_FACTION) {
+							completements.add(rank.name());
+						}
+					}
+				}
+				return completements;
+			}
 		}
 		return null;
 	}
