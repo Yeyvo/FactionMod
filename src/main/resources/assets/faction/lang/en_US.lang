@@ -47,3 +47,9 @@ config.general=General
 config.general.tpDelay=Teleportation delay
 config.client=Client
 config.client.factionOverlay=Faction's name displaying
+
+rank.owner=Faction's owner
+rank.manager=Manager
+rank.communityManager=Community manager
+rank.landManager=Lands manager
+rank.basicMember=Member

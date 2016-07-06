@@ -4,39 +4,52 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import net.minecraft.client.resources.I18n;
+import net.minecraft.util.EnumChatFormatting;
+
 /**
  * 	Contains all faction's grades
  */
 public enum EnumRank {
 
 	/** The owner of the faction, has all permissions */
-	OWNER(5, new Permission[]{Permission.ALTER_BLOCK, Permission.USE_BLOCK, Permission.COMMUNITY_HANDLING, Permission.FACTION_HANDLING, Permission.LAND_HANDLING}),
+	OWNER(4, "owner", EnumChatFormatting.RED, new Permission[]{Permission.ALTER_BLOCK, Permission.USE_BLOCK, Permission.COMMUNITY_HANDLING, Permission.FACTION_HANDLING, Permission.LAND_HANDLING}),
 	/** A member managing members and lands */
-	MANAGER(4, new Permission[]{Permission.ALTER_BLOCK, Permission.USE_BLOCK, Permission.COMMUNITY_HANDLING, Permission.LAND_HANDLING}),
+	MANAGER(3, "manager", EnumChatFormatting.BLUE, new Permission[]{Permission.ALTER_BLOCK, Permission.USE_BLOCK, Permission.COMMUNITY_HANDLING, Permission.LAND_HANDLING}),
 	/** A member managing the community */
-	COMMUNITY_MANAGER(3, new Permission[]{Permission.ALTER_BLOCK, Permission.USE_BLOCK, Permission.COMMUNITY_HANDLING}),
+	COMMUNITY_MANAGER(2, "communityManager", EnumChatFormatting.GREEN, new Permission[]{Permission.ALTER_BLOCK, Permission.USE_BLOCK, Permission.COMMUNITY_HANDLING}),
 	/** A member managing lands */
-	LAND_MANAGER(3, new Permission[]{Permission.ALTER_BLOCK, Permission.USE_BLOCK, Permission.LAND_HANDLING}),
+	LAND_MANAGER(2, "landManager", EnumChatFormatting.GREEN, new Permission[]{Permission.ALTER_BLOCK, Permission.USE_BLOCK, Permission.LAND_HANDLING}),
 	/** A basic member (default rank) */
-	NEWBIE(2, new Permission[]{Permission.ALTER_BLOCK, Permission.USE_BLOCK}),
+	BASIC_MEMBER(1, "basicMember", EnumChatFormatting.WHITE, new Permission[]{Permission.ALTER_BLOCK, Permission.USE_BLOCK}),
 	/** A member who is able to move in the base */
-	VISITOR(1, new Permission[]{Permission.USE_BLOCK}),
-	/** A player who is not in a faction */
-	WITHOUT_FACTION(0, new Permission[]{});
+	WITHOUT_FACTION(0, "", EnumChatFormatting.GRAY, new Permission[]{});
 
 
 	private int autority;
 	private List<Permission> permissions = new ArrayList<Permission>();
+	private String translationKey;
+	private EnumChatFormatting formatting;
 
 	/**
 	 * @param degree Lowest degrees are the best ranks
 	 * @param perms Permissions for this grade
 	 */
-	private EnumRank(int degree, Permission[] perms) {
+	private EnumRank(int degree, String translationKey, EnumChatFormatting formatting, Permission[] perms) {
 		this.autority = degree;
+		this.translationKey = translationKey;
+		this.formatting = formatting;
 		for(Permission p : perms) {
 			this.permissions.add(p);
 		}
+	}
+	
+	public String getDisplay() {
+		return I18n.format("rank." + translationKey, new Object[0]);
+	}
+	
+	public EnumChatFormatting getColor() {
+		return this.formatting;
 	}
 
 	public int getAutority() {

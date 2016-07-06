@@ -193,6 +193,14 @@ public class CommandFaction extends CommandBase {
 					player.addChatComponentMessage(new ChatComponentTranslation(result.getLanguageKey(), result.getInformations()));
 				}
 			}
+			
+			// Members
+			else if(args[0].equalsIgnoreCase("members")) {
+				EnumResult result = Faction.Registry.members(player, args);
+				if(result != null) {
+					player.addChatComponentMessage(new ChatComponentTranslation(result.getLanguageKey(), result.getInformations()));
+				}
+			}
 
 			else {
 				throw new WrongUsageException(getCommandUsage(sender), new Object[0]);

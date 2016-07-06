@@ -290,7 +290,7 @@ public class Faction {
 				if(faction != null) {
 					if(faction.isOpened() || faction.getInvitations().contains(uuid)) {
 						faction.getInvitations().remove(uuid);
-						faction.addPlayer(uuid, EnumRank.NEWBIE);
+						faction.addPlayer(uuid, EnumRank.BASIC_MEMBER);
 						return EnumResult.FACTION_JOINED.clear().addInformation(EnumChatFormatting.GOLD + faction.getName());
 					}
 					return EnumResult.INVITATION_NEEDED.clear().addInformation(EnumChatFormatting.GOLD + faction.getName());
@@ -454,12 +454,35 @@ public class Faction {
 				faction = Faction.Registry.getPlayerFaction(player.getUniqueID());
 			}
 			if(faction != null) {
-				player.addChatComponentMessage(new ChatComponentText(EnumChatFormatting.GOLD + "-- " + faction.getName() + " --"));
+				player.addChatComponentMessage(new ChatComponentText(EnumChatFormatting.GOLD + "[ " + faction.getName() + " ]"));
 				if(!faction.getDescription().isEmpty()) {
 					player.addChatComponentMessage(new ChatComponentTranslation("msg.description", EnumChatFormatting.BLUE + faction.getDescription()));
 				}
 				player.addChatComponentMessage(new ChatComponentTranslation("msg.members", EnumChatFormatting.GREEN.toString() + faction.getMembers().size()));
 				player.addChatComponentMessage(new ChatComponentTranslation("msg.lands", EnumChatFormatting.YELLOW.toString() + Lands.getLandsForFaction(faction.getName()).size()));
+				return null;
+			}
+			if(args.length >= 2) {
+				return EnumResult.NOT_EXISTING_FACTION.clear().addInformation(EnumChatFormatting.GOLD + args[1]);
+			} else {
+				return  EnumResult.NOT_IN_A_FACTION;
+			}
+		}
+		
+		public static EnumResult members(EntityPlayer player, String[] args) {
+			Faction faction;
+			if(args.length >= 2) {
+				faction = Faction.Registry.getFactionFromName(args[1]);
+			} else {
+				faction = Faction.Registry.getPlayerFaction(player.getUniqueID());
+			}
+			if(faction != null) {
+				player.addChatComponentMessage(new ChatComponentText(EnumChatFormatting.GOLD + "[ " + faction.getName() + " ]"));
+				faction.getMembers().sort(new Member.MemberComparator());
+				for(Member member : faction.getMembers()) {
+					String memberName = MinecraftServer.getServer().getPlayerProfileCache().getProfileByUUID(member.getUUID()).getName();
+					player.addChatComponentMessage(new ChatComponentText(member.getRank().getColor() + memberName + EnumChatFormatting.RESET + " : " + member.getRank().getDisplay()));
+				}
 				return null;
 			}
 			if(args.length >= 2) {

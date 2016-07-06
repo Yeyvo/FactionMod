@@ -1,5 +1,6 @@
 package fr.mff.facmod.core;
 
+import java.util.Comparator;
 import java.util.UUID;
 
 import net.minecraft.nbt.NBTTagCompound;
@@ -35,6 +36,16 @@ public class Member {
 		UUID uuid = UUID.fromString(compound.getString("uuid"));
 		EnumRank rank = EnumRank.valueOf(compound.getString("rank"));
 		return new Member(uuid, rank);
+	}
+	
+	
+	public static class MemberComparator implements Comparator<Member> {
+
+		@Override
+		public int compare(Member o1, Member o2) {
+			return o1.getRank().getAutority() - o2.getRank().getAutority();
+		}
+		
 	}
 
 }

@@ -122,7 +122,7 @@ public class Lands {
 				Lands.setPlayerCache(event.player.getUniqueID(), factionName);
 				if(factionName != null) {
 					Faction faction = Faction.Registry.getFactionFromName(factionName);
-					event.player.addChatComponentMessage(new ChatComponentText(EnumChatFormatting.GOLD+ "-- " + factionName + (faction == null || faction.getDescription().equals("") ? "" : EnumChatFormatting.LIGHT_PURPLE + " - " + EnumChatFormatting.BLUE + faction.getDescription()) + " --"));
+					event.player.addChatComponentMessage(new ChatComponentText(EnumChatFormatting.GOLD+ "[ " + factionName + (faction == null || faction.getDescription().equals("") ? "" : EnumChatFormatting.LIGHT_PURPLE + " - " + EnumChatFormatting.BLUE + faction.getDescription()) + " ]"));
 		            
 					MinecraftServer.getServer().getCommandManager().executeCommand(MinecraftServer.getServer(), "title "+ event.player.getName() + " title " + EnumChatFormatting.GOLD+factionName );
 					
