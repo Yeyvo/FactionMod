@@ -16,7 +16,7 @@ result.notExistingFaction=§cThe faction %s§c doesn't exist
 result.invitationNeeded=§cThe faction %s§c is not opened, you need an invitation
 result.error=§cAn error has occured, please contact mod's author
 result.notExistingPlayer=§cThe player %s§c doesn't exist
-result.playerNotInTheFaction=$cThe player %s§c is not in the faction %s
+result.playerNotInTheFaction=§cThe player %s§c is not in the faction %s
 result.playerKicked=§aThe player %s§a has been kicked from the faction %s
 result.factionOpened=§aThe faction %s§a is now open
 result.factionClosed=§aThe faction %s§a is now closed
@@ -33,6 +33,8 @@ result.landOfTheFaction=§cThe land belongs to the faction %s
 result.homeSet=§aYou home is now set at %s§a, %s§a, %s
 result.homeNotSet=§cYou didn't set any home
 result.tpLaunched=§aYou will be teleported at your home in %s§a seconds, don't move and don't take any damage
+result.playerPromoted=§aThe player %s§a has been promoted to the rank %s
+result.wrongRank=§cThe rank %s§c isn't a valid rank
 
 faction.chunk.free=§dFree land
 msg.invitation.received=§1You received a invitation from the faction %s%1
@@ -42,6 +44,7 @@ msg.members=Member(s) : %s
 msg.lands=Land(s) : %s
 msg.tpTimer=§aRemaining time : %s
 msg.tpCanceled=§cYour teleportation has been canceled
+msg.promoted=§aYou have been promoted to the rank %s
 
 config.general=General
 config.general.tpDelay=Teleportation delay

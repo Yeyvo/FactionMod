@@ -21,9 +21,9 @@ public enum EnumRank {
 	/** A member managing lands */
 	LAND_MANAGER(2, "landManager", EnumChatFormatting.GREEN, new Permission[]{Permission.ALTER_BLOCK, Permission.USE_BLOCK, Permission.LAND_HANDLING}),
 	/** A basic member (default rank) */
-	BASIC_MEMBER(1, "basicMember", EnumChatFormatting.WHITE, new Permission[]{Permission.ALTER_BLOCK, Permission.USE_BLOCK}),
+	BASIC_MEMBER(1, "basicMember", EnumChatFormatting.GRAY, new Permission[]{Permission.ALTER_BLOCK, Permission.USE_BLOCK}),
 	/** A member who is able to move in the base */
-	WITHOUT_FACTION(0, "", EnumChatFormatting.GRAY, new Permission[]{});
+	WITHOUT_FACTION(0, "", EnumChatFormatting.WHITE, new Permission[]{});
 
 
 	private int autority;

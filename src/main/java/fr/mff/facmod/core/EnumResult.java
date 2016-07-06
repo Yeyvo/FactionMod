@@ -37,6 +37,8 @@ public enum EnumResult {
 	NO_PERMISSION("result.noPermission", false),
 	TP_LANUCHED("result.tpLaunched", true),
 	HOME_NOT_SET("result.homeNotSet", false),
+	PLAYER_PROMOTED("result.playerPromoted", true),
+	WRONG_RANK("result.wrongRank", false),
 	
 	ERROR("result.error", false);
 	

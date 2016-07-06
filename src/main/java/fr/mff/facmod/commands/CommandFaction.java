@@ -147,6 +147,12 @@ public class CommandFaction extends CommandBase {
 					player.addChatComponentMessage(new ChatComponentTranslation(result.getLanguageKey(), result.getInformations()));
 				}
 			}
+			
+			// Promote
+			else if(args[0].equalsIgnoreCase("promote") && args.length >= 3) {
+				EnumResult result = Faction.Registry.promote(player.getUniqueID(), args);
+				player.addChatComponentMessage(new ChatComponentTranslation(result.getLanguageKey(), result.getInformations()));
+			}
 
 			// Open
 			else if(args[0].equalsIgnoreCase("open")) {

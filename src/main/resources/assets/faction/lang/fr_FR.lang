@@ -16,7 +16,7 @@ result.notExistingFaction=§cLa faction %s§c n'existe pas
 result.invitationNeeded=§cLa faction %s§c n'est pas ouverte, vous avez besoin d'une invitation
 result.error=§cUne erreur est survenue, veillez contacter l'auteur du mod
 result.notExistingPlayer=§cLe joueur %s§c n'existe pas
-result.playerNotInTheFaction=$cLe joueur %s§c n'est pas dans la faction %s
+result.playerNotInTheFaction=§cLe joueur %s§c n'est pas dans la faction %s
 result.playerKicked=§aLe joueur %s§a a été congédié de la faction %s
 result.factionOpened=§aLa faction %s§a est maintenant ouverte
 result.factionClosed=§aLa faction %s§a est maintenant fermée
@@ -33,6 +33,8 @@ result.landOfTheFaction=§cLe terrain appartient à la faction %s
 result.homeSet=§aVotre maison est maintenant établie à %s§a, %s§a, %s
 result.homeNotSet=§cVous n'avez défini aucune maison
 result.tpLaunched=§aVous allez être téléporté à votre maison dans %s§a secondes, ne bougez pas et ne prenez aucun dégât
+result.playerPromoted=§aLe joueur %s§a a été promu au rang de %s
+result.wrongRank=§cLe rang %s§c n'est pas un rang valide
 
 faction.chunk.free=§dTerrain libre
 msg.invitation.received=§1Vous avez reçu une invitation de la faction %s%1
@@ -42,6 +44,7 @@ msg.members=Membre(s) : %s
 msg.lands=Terrain(s) : %s
 msg.tpTimer=§aTemps restant : %s
 msg.tpCanceled=§cVotre téléportation a été interrompue
+msg.promoted=§aVous avez été promu au rang de %s
 
 config.general=Général
 config.general.tpDelay=Délai de téléportation

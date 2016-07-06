@@ -468,7 +468,7 @@ public class Faction {
 				return  EnumResult.NOT_IN_A_FACTION;
 			}
 		}
-		
+
 		public static EnumResult members(EntityPlayer player, String[] args) {
 			Faction faction;
 			if(args.length >= 2) {
@@ -490,6 +490,46 @@ public class Faction {
 			} else {
 				return  EnumResult.NOT_IN_A_FACTION;
 			}
+		}
+
+		public static EnumResult promote(UUID uuid, String[] args) {
+			Faction faction = Faction.Registry.getPlayerFaction(uuid);
+			if(faction != null) {
+				GameProfile profile = MinecraftServer.getServer().getPlayerProfileCache().getGameProfileForUsername(args[1]);
+				if(profile != null) {
+					Faction pFaction = Faction.Registry.getPlayerFaction(profile.getId());
+					if(pFaction != null && pFaction == faction) {
+						Member pMember = faction.getMember(profile.getId());
+						Member member = faction.getMember(uuid);
+						if(pMember != null && member != null) {
+							if(EnumRank.canAffect(uuid, profile.getId()) && member.getRank().hasPermission(Permission.COMMUNITY_HANDLING)) {
+								EnumRank rank = EnumRank.valueOf(args[2]);
+								if(rank != null) {
+									if(rank.getAutority() < member.getRank().getAutority()) {
+										pMember.setRank(rank);
+										Entity entity = MinecraftServer.getServer().getEntityFromUuid(profile.getId());
+										if(entity instanceof EntityPlayer) {
+											((EntityPlayer)entity).addChatComponentMessage(new ChatComponentTranslation("msg.promoted", new Object[]{rank.getColor() + rank.getDisplay()}));
+										}
+										return EnumResult.PLAYER_PROMOTED.clear().addInformation(profile.getName()).addInformation(rank.getColor() + rank.getDisplay());
+									} else if(member.getRank().equals(EnumRank.OWNER) && rank.equals(EnumRank.OWNER)) {
+										member.setRank(EnumRank.MANAGER);
+										pMember.setRank(EnumRank.OWNER);
+										return EnumResult.PLAYER_PROMOTED.clear().addInformation(profile.getName()).addInformation(rank.getColor() + rank.getDisplay());
+									}
+									return EnumResult.NO_PERMISSION;
+								}
+								return EnumResult.WRONG_RANK.clear().addInformation(args[2]);
+							}
+							return EnumResult.NO_PERMISSION;
+						}
+						return EnumResult.ERROR;
+					}
+					return EnumResult.PLAYER_NOT_IN_THE_FACTION.clear().addInformation(EnumChatFormatting.WHITE + args[1]).addInformation(EnumChatFormatting.GOLD + faction.getName());
+				}
+				return EnumResult.NOT_EXISTING_PLAYER.clear().addInformation(EnumChatFormatting.WHITE + args[1]);
+			}
+			return EnumResult.NOT_IN_A_FACTION;
 		}
 
 	}
