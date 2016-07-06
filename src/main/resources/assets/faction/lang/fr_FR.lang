@@ -42,3 +42,8 @@ msg.members=Membre(s) : %s
 msg.lands=Terrain(s) : %s
 msg.tpTimer=§aTemps restant : %s
 msg.tpCanceled=§cVotre téléportation a été interrompue
+
+config.general=Général
+config.general.tpDelay=Délai de téléportation
+config.client=Client
+config.client.factionOverlay=Affichage du nom de votre faction

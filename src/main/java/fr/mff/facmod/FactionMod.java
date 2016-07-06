@@ -14,6 +14,7 @@ import org.apache.logging.log4j.Logger;
 
 import fr.mff.facmod.blocks.BlockRegistry;
 import fr.mff.facmod.commands.CommandRegistry;
+import fr.mff.facmod.config.ConfigFaction;
 import fr.mff.facmod.core.FactionSaver;
 import fr.mff.facmod.handlers.GuiHandler;
 import fr.mff.facmod.items.ItemRegistry;
@@ -26,7 +27,7 @@ import fr.mff.facmod.tileentities.TileEntityRegistry;
  * @author BrokenSwing
  * Version : versionMod.release.bugFix
  */
-@Mod(modid = FactionMod.MODID, version="0.0.1")
+@Mod(modid = FactionMod.MODID, version="0.0.1", guiFactory="fr.mff.facmod.client.gui.FactionGuiFactory")
 public class FactionMod {
 
 	public static final String MODID = "faction";
@@ -45,6 +46,7 @@ public class FactionMod {
 	public void preInit(FMLPreInitializationEvent event)
 	{
 		logger = event.getModLog();
+		ConfigFaction.preInit(event);
 		proxy.preInit(event);
 		BlockRegistry.preInit(event);
 		ItemRegistry.preInit(event);

@@ -7,18 +7,13 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.UUID;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.network.play.server.S45PacketTitle;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.IChatComponent;
 import net.minecraft.world.ChunkCoordIntPair;
-import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
@@ -130,8 +125,7 @@ public class Lands {
 					event.player.addChatComponentMessage(new ChatComponentText(EnumChatFormatting.GOLD+ "-- " + factionName + (faction == null || faction.getDescription().equals("") ? "" : EnumChatFormatting.LIGHT_PURPLE + " - " + EnumChatFormatting.BLUE + faction.getDescription()) + " --"));
 		            
 					MinecraftServer.getServer().getCommandManager().executeCommand(MinecraftServer.getServer(), "title "+ event.player.getName() + " title " + EnumChatFormatting.GOLD+factionName );
-					S45PacketTitle.Type s45packettitle$type = S45PacketTitle.Type.byName(EnumChatFormatting.GOLD+ "-- " + factionName + " --");
-
+					
 				} else {
 		            event.player.addChatComponentMessage(new ChatComponentTranslation("faction.chunk.free", new Object[0]));
 					MinecraftServer.getServer().getCommandManager().executeCommand(MinecraftServer.getServer(), "title "+ event.player.getName() + " title " + EnumChatFormatting.LIGHT_PURPLE+"Wilderness" );

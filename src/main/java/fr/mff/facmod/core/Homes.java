@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.UUID;
 
+import fr.mff.facmod.config.ConfigFaction;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -99,12 +100,10 @@ public class Homes {
 		BlockPos pos = homes.get(player.getUniqueID());
 		if(pos != null) {
 			tpTimers.put(player, new Object[]{player.getPosition(), 0});
-			return EnumResult.TP_LANUCHED.clear().addInformation(EnumChatFormatting.WHITE.toString() + TP_TIMER);
+			return EnumResult.TP_LANUCHED.clear().addInformation(EnumChatFormatting.WHITE.toString() + ConfigFaction.TP_DELAY);
 		}
 		return EnumResult.HOME_NOT_SET;
 	}
-
-	private static final int TP_TIMER = 10;
 
 	public static void onPlayerTick(TickEvent.WorldTickEvent event) {
 		if(!event.world.isRemote && event.world.equals(MinecraftServer.getServer().getEntityWorld())) {
@@ -119,12 +118,12 @@ public class Homes {
 					tick += 1;
 					entry.getValue()[1] = tick;
 					if(tick % 20 == 0) {
-						if(tick / 20 == TP_TIMER) {
+						if(tick / 20 >= ConfigFaction.TP_DELAY) {
 							BlockPos pos = homes.get(entry.getKey().getUniqueID());
 							entry.getKey().setPositionAndUpdate(pos.getX(), pos.getY(), pos.getZ());
 							remove.add(entry.getKey());
 						} else {
-							entry.getKey().addChatComponentMessage(new ChatComponentTranslation("msg.tpTimer", String.valueOf(TP_TIMER - tick / 20)));
+							entry.getKey().addChatComponentMessage(new ChatComponentTranslation("msg.tpTimer", String.valueOf(ConfigFaction.TP_DELAY - tick / 20)));
 						}
 					}
 				} else {
