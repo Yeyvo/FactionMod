@@ -9,6 +9,7 @@ import java.util.UUID;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.EnumChatFormatting;
@@ -158,33 +159,34 @@ public class Lands {
 	 * @param event
 	 */
 	public static void onPlayerBreakBlock(BreakEvent event) {
-		if(!event.world.isRemote) {
+		if(!event.world.isRemote && event.world == MinecraftServer.getServer().getEntityWorld()) {
 			if(event.state.getBlock() == BlockRegistry.homeBase) {
 				String factionName = Lands.getLandFaction().get(event.world.getChunkFromBlockCoords(event.pos).getChunkCoordIntPair());
 				Homes.getHomes().remove(factionName);
 				FactionSaver.save();
 			} else {
-				String ownerName = Lands.getLandFaction().get(event.world.getChunkFromBlockCoords(event.pos));
-				event.getPlayer().addChatComponentMessage(new ChatComponentText("Chunk's faction : " + ownerName));
+				ChunkCoordIntPair coords = event.world.getChunkFromBlockCoords(event.pos).getChunkCoordIntPair();
+				String ownerName = Lands.getLandFaction().get(coords);
+				//event.getPlayer().addChatComponentMessage(new ChatComponentText("Chunk's faction : " + ownerName));
 				if(ownerName != null) {
 					Faction faction = Faction.Registry.getPlayerFaction(event.getPlayer().getUniqueID());
-					event.getPlayer().addChatComponentMessage(new ChatComponentText("Your faction : " + ownerName));
+					//event.getPlayer().addChatComponentMessage(new ChatComponentText("Your faction : " + ownerName));
 					if(faction != null) {
 						if(faction.getName().equalsIgnoreCase(ownerName)) {
 							Member member = faction.getMember(event.getPlayer().getUniqueID());
-							event.getPlayer().addChatComponentMessage(new ChatComponentText("Member : " + member.getRank().getDisplay()));
+							//event.getPlayer().addChatComponentMessage(new ChatComponentText("Member : " + member.getRank().getDisplay()));
 							if(member != null) {
 								if(!member.getRank().hasPermission(Permission.ALTER_BLOCK)) {
-									event.getPlayer().addChatComponentMessage(new ChatComponentText("Canceled, cause : you hasn't the permission"));
+									//event.getPlayer().addChatComponentMessage(new ChatComponentText("Canceled, cause : you hasn't the permission"));
 									event.setCanceled(true);
 								}
 							}
 						} else {
-							event.getPlayer().addChatComponentMessage(new ChatComponentText("Canceled, cause : land claimed and you're in an other faction"));
+							//event.getPlayer().addChatComponentMessage(new ChatComponentText("Canceled, cause : land claimed and you're in an other faction"));
 							event.setCanceled(true);
 						}
 					} else {
-						event.getPlayer().addChatComponentMessage(new ChatComponentText("Canceled, cause : land claimed and you're not in a faction"));
+						//event.getPlayer().addChatComponentMessage(new ChatComponentText("Canceled, cause : land claimed and you're not in a faction"));
 						event.setCanceled(true);
 					}
 				}
