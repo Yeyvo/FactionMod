@@ -7,9 +7,6 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.UUID;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
@@ -21,6 +18,7 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.ChunkCoordIntPair;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import fr.mff.facmod.blocks.BlockRegistry;
 import fr.mff.facmod.config.ConfigFaction;
 
 public class Homes {
@@ -44,16 +42,17 @@ public class Homes {
 				if(member.getRank().hasPermission(Permission.FACTION_HANDLING)) {
 					ChunkCoordIntPair pair = MinecraftServer.getServer().getEntityWorld().getChunkFromBlockCoords(position).getChunkCoordIntPair();
 					String factionName = Lands.getLandFaction().get(pair);
-					Block blk = Blocks.sea_lantern;
-	                IBlockState iblockstate = blk.getDefaultState();
 
 					if(factionName != null) {
 						if(faction.getName().equalsIgnoreCase(factionName)) {
-							homes.remove(factionName);
+							BlockPos lastPos = homes.remove(factionName);
+							if(lastPos != null) {
+								MinecraftServer.getServer().getEntityWorld().setBlockState(lastPos.down(), Blocks.air.getDefaultState());
+							}
 							homes.put(factionName, position);
-		                    Minecraft.getMinecraft().theWorld.notifyNeighborsRespectDebug(position.add(0, -1, 0), iblockstate.getBlock());
-							
-		                    FactionSaver.save();
+							MinecraftServer.getServer().getEntityWorld().setBlockState(position.down(), BlockRegistry.homeBase.getDefaultState());
+
+							FactionSaver.save();
 							return EnumResult.HOME_SET.clear().addInformation(EnumChatFormatting.WHITE.toString() + position.getX())
 									.addInformation(EnumChatFormatting.WHITE.toString() + position.getY())
 									.addInformation(EnumChatFormatting.WHITE.toString() + position.getZ());
@@ -151,7 +150,7 @@ public class Homes {
 			}
 		}
 	}
-//commit de debug
+	//commit de debug
 	public static void onLivingHurt(LivingHurtEvent event) {
 		if(!event.entity.worldObj.isRemote) {
 			if(event.entity instanceof EntityPlayer) {

@@ -32,7 +32,7 @@ public class ClientProxy extends CommonProxy {
 	 * Register all renders (blocks, items, ect ...)
 	 */
 	private void registerRenders() {
-		registerBlockTexture(new BlockRegistry().FactionHome, "factionhome");
+		registerBlockTexture(BlockRegistry.homeBase, "homeBase");
 	}
 	
 	@Override

@@ -1,6 +1,7 @@
 package fr.mff.facmod.handlers;
 
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
+import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -33,5 +34,10 @@ public class CommonEventHandler {
 	@SubscribeEvent
 	public void onPlayerLeave(PlayerEvent.PlayerLoggedOutEvent event) {
 		Lands.onPlayerLeave(event);
+	}
+	
+	@SubscribeEvent
+	public void onPlayerBreakBlock(BlockEvent.BreakEvent event) {
+		Lands.onPlayerBreakBlock(event);
 	}
 }
