@@ -8,6 +8,7 @@ import java.util.Map.Entry;
 import java.util.UUID;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.server.MinecraftServer;
@@ -42,8 +43,12 @@ public class Homes {
 					String factionName = Lands.getLandFaction().get(pair);
 					if(factionName != null) {
 						if(faction.getName().equalsIgnoreCase(factionName)) {
-							homes.remove(factionName);
+							BlockPos lastPos = homes.remove(factionName);
+							if(lastPos != null) {
+								MinecraftServer.getServer().getEntityWorld().setBlockState(lastPos.down(), Blocks.air.getDefaultState());
+							}
 							homes.put(factionName, position);
+							MinecraftServer.getServer().getEntityWorld().setBlockState(position.down(), Blocks.sea_lantern.getDefaultState());
 							FactionSaver.save();
 							return EnumResult.HOME_SET.clear().addInformation(EnumChatFormatting.WHITE.toString() + position.getX())
 									.addInformation(EnumChatFormatting.WHITE.toString() + position.getY())

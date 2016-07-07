@@ -7,13 +7,14 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.UUID;
 
+import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.ChunkCoordIntPair;
+import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
@@ -91,7 +92,7 @@ public class Lands {
 		}
 		return EnumResult.NOT_IN_A_FACTION;
 	}
-	
+
 	public static EnumResult unClaimChunk(UUID uuid, ChunkCoordIntPair pair) {
 		Faction faction = Faction.Registry.getPlayerFaction(uuid);
 		if(faction != null) {
@@ -111,7 +112,7 @@ public class Lands {
 		}
 		return EnumResult.NOT_IN_A_FACTION;
 	}
-	
+
 	public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
 		if(!event.player.getEntityWorld().isRemote) {
 			ChunkCoordIntPair coords = event.player.getEntityWorld().getChunkFromBlockCoords(event.player.getPosition()).getChunkCoordIntPair();
@@ -122,24 +123,19 @@ public class Lands {
 				if(factionName != null) {
 					Faction faction = Faction.Registry.getFactionFromName(factionName);
 					event.player.addChatComponentMessage(new ChatComponentText(EnumChatFormatting.GOLD+ "[ " + factionName + (faction == null || faction.getDescription().equals("") ? "" : EnumChatFormatting.LIGHT_PURPLE + " - " + EnumChatFormatting.BLUE + faction.getDescription()) + " ]"));
-		            
-					MinecraftServer.getServer().getCommandManager().executeCommand(MinecraftServer.getServer(), "title "+ event.player.getName() + " title " + EnumChatFormatting.GOLD+factionName );
-					
 				} else {
-		            event.player.addChatComponentMessage(new ChatComponentTranslation("faction.chunk.free", new Object[0]));
-					MinecraftServer.getServer().getCommandManager().executeCommand(MinecraftServer.getServer(), "title "+ event.player.getName() + " title " + EnumChatFormatting.LIGHT_PURPLE+"Wilderness" );
-
+					event.player.addChatComponentMessage(new ChatComponentTranslation("faction.chunk.free", new Object[0]));
 				}
 			}
 		}
 	}
-	
+
 	public static void onPlayerLeave(PlayerEvent.PlayerLoggedOutEvent event) {
 		if(event.player.worldObj != null && !event.player.worldObj.isRemote) {
 			Lands.removePlayerCache(event.player.getUniqueID());
 		}
 	}
-	
+
 	public static List<ChunkCoordIntPair> getLandsForFaction(String factionName) {
 		List<ChunkCoordIntPair> lands = new ArrayList<ChunkCoordIntPair>();
 		Iterator<Entry<ChunkCoordIntPair, String>> iterator = Lands.chunks.entrySet().iterator();
@@ -150,6 +146,42 @@ public class Lands {
 			}
 		}
 		return lands;
+	}
+
+	/**
+	 * Cancel if :
+	 * <ul>
+	 * 		<li>The land is claimed and the player isn't in a faction</li>
+	 * 		<li>The land is claimed and the player is in an other faction</li>
+	 * 		<li>The land is claimed, the player is in the faction and the player hasn't the permission to break blocks</li>
+	 * </ul>
+	 * @param event
+	 */
+	public static void onPlayerBreakBlock(BreakEvent event) {
+		if(event.state.getBlock() == Blocks.sea_lantern) {
+			String factionName = Lands.getLandFaction().get(event.world.getChunkFromBlockCoords(event.getPlayer().getPosition()).getChunkCoordIntPair());
+			Homes.getHomes().remove(factionName);
+			FactionSaver.save();
+		} else {
+			String ownerName = Lands.getLandFaction().get(event.world.getChunkFromBlockCoords(event.getPlayer().getPosition()));
+			if(ownerName != null) {
+				Faction faction = Faction.Registry.getPlayerFaction(event.getPlayer().getUniqueID());
+				if(faction != null) {
+					if(faction.getName().equalsIgnoreCase(ownerName)) {
+						Member member = faction.getMember(event.getPlayer().getUniqueID());
+						if(member != null) {
+							if(!member.getRank().hasPermission(Permission.ALTER_BLOCK)) {
+								event.setCanceled(true);
+							}
+						}
+					} else {
+						event.setCanceled(true);
+					}
+				} else {
+					event.setCanceled(true);
+				}
+			}
+		}
 	}
 
 }
