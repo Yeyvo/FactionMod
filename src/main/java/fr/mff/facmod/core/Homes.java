@@ -52,7 +52,8 @@ public class Homes {
 							homes.remove(factionName);
 							homes.put(factionName, position);
 		                    Minecraft.getMinecraft().theWorld.notifyNeighborsRespectDebug(position.add(0, -1, 0), iblockstate.getBlock());
-							FactionSaver.save();
+							
+		                    FactionSaver.save();
 							return EnumResult.HOME_SET.clear().addInformation(EnumChatFormatting.WHITE.toString() + position.getX())
 									.addInformation(EnumChatFormatting.WHITE.toString() + position.getY())
 									.addInformation(EnumChatFormatting.WHITE.toString() + position.getZ());
@@ -150,7 +151,7 @@ public class Homes {
 			}
 		}
 	}
-
+//commit de debug
 	public static void onLivingHurt(LivingHurtEvent event) {
 		if(!event.entity.worldObj.isRemote) {
 			if(event.entity instanceof EntityPlayer) {
