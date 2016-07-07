@@ -12,6 +12,7 @@ import fr.mff.facmod.FactionMod;
 import fr.mff.facmod.blocks.BlockRegistry;
 import fr.mff.facmod.core.EnumRank;
 import fr.mff.facmod.handlers.ClientEventHandler;
+import fr.mff.facmod.items.ItemRegistry;
 
 public class ClientProxy extends CommonProxy {
 	
@@ -35,6 +36,8 @@ public class ClientProxy extends CommonProxy {
 	 */
 	private void registerRenders() {
 		registerBlockTexture(BlockRegistry.homeBase, "homeBase");
+		
+		registerItemTexture(ItemRegistry.landMap, "landMap");
 	}
 	
 	@Override
