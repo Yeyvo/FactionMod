@@ -82,7 +82,6 @@ public class Lands {
 				String name = chunks.get(pair);
 				if(name == null) {
 					chunks.put(pair, faction.getName());
-					Homes.onLandClaimed(pair, faction.getName());
 					FactionSaver.save();
 					return EnumResult.LAND_CLAIMED.clear().addInformation(EnumChatFormatting.GOLD + faction.getName());
 				}

@@ -511,6 +511,7 @@ public class Faction {
 										if(entity instanceof EntityPlayer) {
 											((EntityPlayer)entity).addChatComponentMessage(new ChatComponentTranslation("msg.promoted", new Object[]{rank.getColor() + rank.getDisplay()}));
 										}
+										FactionSaver.save();
 										return EnumResult.PLAYER_PROMOTED.clear().addInformation(profile.getName()).addInformation(rank.getColor() + rank.getDisplay());
 									} else if(member.getRank().equals(EnumRank.OWNER) && rank.equals(EnumRank.OWNER)) {
 										member.setRank(EnumRank.MANAGER);

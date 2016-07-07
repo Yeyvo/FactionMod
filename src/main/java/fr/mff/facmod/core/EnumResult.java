@@ -35,7 +35,7 @@ public enum EnumResult {
 	INVALID_DESCRIPTION_LENGTH("result.invalidDescriptionLength", false),
 	DESCRIPTION_CHANGED("result.descriptionChanged", true),
 	NO_PERMISSION("result.noPermission", false),
-	TP_LANUCHED("result.tpLaunched", true),
+	TP_LAUNCHED("result.tpLaunched", true),
 	HOME_NOT_SET("result.homeNotSet", false),
 	PLAYER_PROMOTED("result.playerPromoted", true),
 	WRONG_RANK("result.wrongRank", false),
