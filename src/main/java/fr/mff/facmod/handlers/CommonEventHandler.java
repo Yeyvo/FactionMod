@@ -1,6 +1,7 @@
 package fr.mff.facmod.handlers;
 
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
+import net.minecraftforge.event.entity.player.FillBucketEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.BlockEvent.PlaceEvent;
@@ -52,5 +53,10 @@ public class CommonEventHandler {
 	@SubscribeEvent
 	public void onPlayerPlaceBlock(PlaceEvent event) {
 		Lands.onPlayerPlaceBlock(event);
+	}
+	
+	@SubscribeEvent
+	public void onBucketFill(FillBucketEvent event) {
+		Lands.onBucketFill(event);
 	}
 }

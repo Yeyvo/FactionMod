@@ -14,6 +14,7 @@ import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.ChunkCoordIntPair;
+import net.minecraftforge.event.entity.player.FillBucketEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 import net.minecraftforge.event.world.BlockEvent.PlaceEvent;
@@ -213,7 +214,7 @@ public class Lands {
 			}
 		}
 	}
-	
+
 	public static void onPlayerPlaceBlock(PlaceEvent event) {
 		if(!event.world.isRemote && event.world == MinecraftServer.getServer().getEntityWorld()) {
 			ChunkCoordIntPair coords = event.world.getChunkFromBlockCoords(event.pos).getChunkCoordIntPair();
@@ -223,6 +224,30 @@ public class Lands {
 				if(faction != null) {
 					if(faction.getName().equalsIgnoreCase(ownerName)) {
 						Member member = faction.getMember(event.player.getUniqueID());
+						if(member != null) {
+							if(!member.getRank().hasPermission(Permission.ALTER_BLOCK)) {
+								event.setCanceled(true);
+							}
+						}
+					} else {
+						event.setCanceled(true);
+					}
+				} else {
+					event.setCanceled(true);
+				}
+			}
+		}
+	}
+
+	public static void onBucketFill(FillBucketEvent event) {
+		if(!event.world.isRemote && event.world == MinecraftServer.getServer().getEntityWorld()) {
+			ChunkCoordIntPair coords = event.world.getChunkFromBlockCoords(event.target.getBlockPos()).getChunkCoordIntPair();
+			String ownerName = Lands.getLandFaction().get(coords);
+			if(ownerName != null) {
+				Faction faction = Faction.Registry.getPlayerFaction(event.entityPlayer.getUniqueID());
+				if(faction != null) {
+					if(faction.getName().equalsIgnoreCase(ownerName)) {
+						Member member = faction.getMember(event.entityPlayer.getUniqueID());
 						if(member != null) {
 							if(!member.getRank().hasPermission(Permission.ALTER_BLOCK)) {
 								event.setCanceled(true);
