@@ -1,7 +1,9 @@
 package fr.mff.facmod.handlers;
 
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent;
+import net.minecraftforge.event.world.BlockEvent.PlaceEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -40,5 +42,15 @@ public class CommonEventHandler {
 	@SubscribeEvent
 	public void onPlayerBreakBlock(BlockEvent.BreakEvent event) {
 		Lands.onPlayerBreakBlock(event);
+	}
+	
+	@SubscribeEvent
+	public void onPlayerInteract(PlayerInteractEvent event) {
+		Lands.onPlayerInteract(event);
+	}
+	
+	@SubscribeEvent
+	public void onPlayerPlaceBlock(PlaceEvent event) {
+		Lands.onPlayerPlaceBlock(event);
 	}
 }
