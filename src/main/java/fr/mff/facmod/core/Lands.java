@@ -125,8 +125,10 @@ public class Lands {
 			if(factionName != cacheFactionName) {
 				Lands.setPlayerCache(event.player.getUniqueID(), factionName);
 				if(factionName != null) {
-					Faction faction = Faction.Registry.getFactionFromName(factionName);
-					event.player.addChatComponentMessage(new ChatComponentText(EnumChatFormatting.GOLD + "[ " + factionName + (faction == null || faction.getDescription().equals("") ? "" : EnumChatFormatting.LIGHT_PURPLE + " - " + EnumChatFormatting.BLUE + faction.getDescription()) + " ]"));   
+					if(!factionName.equalsIgnoreCase(cacheFactionName)) {
+						Faction faction = Faction.Registry.getFactionFromName(factionName);
+						event.player.addChatComponentMessage(new ChatComponentText(EnumChatFormatting.GOLD + "[ " + factionName + (faction == null || faction.getDescription().equals("") ? "" : EnumChatFormatting.LIGHT_PURPLE + " - " + EnumChatFormatting.BLUE + faction.getDescription()) + " ]"));
+					}
 				} else {
 					event.player.addChatComponentMessage(new ChatComponentTranslation("faction.chunk.free", new Object[0]));
 				}
