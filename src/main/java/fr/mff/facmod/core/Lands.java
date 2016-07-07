@@ -160,11 +160,11 @@ public class Lands {
 	public static void onPlayerBreakBlock(BreakEvent event) {
 		if(!event.world.isRemote) {
 			if(event.state.getBlock() == BlockRegistry.homeBase) {
-				String factionName = Lands.getLandFaction().get(event.world.getChunkFromBlockCoords(event.getPlayer().getPosition()).getChunkCoordIntPair());
+				String factionName = Lands.getLandFaction().get(event.world.getChunkFromBlockCoords(event.pos).getChunkCoordIntPair());
 				Homes.getHomes().remove(factionName);
 				FactionSaver.save();
 			} else {
-				String ownerName = Lands.getLandFaction().get(event.world.getChunkFromBlockCoords(event.getPlayer().getPosition()));
+				String ownerName = Lands.getLandFaction().get(event.world.getChunkFromBlockCoords(event.pos));
 				if(ownerName != null) {
 					Faction faction = Faction.Registry.getPlayerFaction(event.getPlayer().getUniqueID());
 					if(faction != null) {
