@@ -10,8 +10,7 @@ public class TileEntityHomeBase extends TileEntity implements IInventory {
 
 	@Override
 	public String getName() {
-		// TODO Auto-generated method stub
-		return null;
+		return "Faction Home";
 	}
 
 	@Override
