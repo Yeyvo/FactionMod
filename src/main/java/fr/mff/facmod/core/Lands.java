@@ -167,26 +167,20 @@ public class Lands {
 			} else {
 				ChunkCoordIntPair coords = event.world.getChunkFromBlockCoords(event.pos).getChunkCoordIntPair();
 				String ownerName = Lands.getLandFaction().get(coords);
-				//event.getPlayer().addChatComponentMessage(new ChatComponentText("Chunk's faction : " + ownerName));
 				if(ownerName != null) {
 					Faction faction = Faction.Registry.getPlayerFaction(event.getPlayer().getUniqueID());
-					//event.getPlayer().addChatComponentMessage(new ChatComponentText("Your faction : " + ownerName));
 					if(faction != null) {
 						if(faction.getName().equalsIgnoreCase(ownerName)) {
 							Member member = faction.getMember(event.getPlayer().getUniqueID());
-							//event.getPlayer().addChatComponentMessage(new ChatComponentText("Member : " + member.getRank().getDisplay()));
 							if(member != null) {
 								if(!member.getRank().hasPermission(Permission.ALTER_BLOCK)) {
-									//event.getPlayer().addChatComponentMessage(new ChatComponentText("Canceled, cause : you hasn't the permission"));
 									event.setCanceled(true);
 								}
 							}
 						} else {
-							//event.getPlayer().addChatComponentMessage(new ChatComponentText("Canceled, cause : land claimed and you're in an other faction"));
 							event.setCanceled(true);
 						}
 					} else {
-						//event.getPlayer().addChatComponentMessage(new ChatComponentText("Canceled, cause : land claimed and you're not in a faction"));
 						event.setCanceled(true);
 					}
 				}
