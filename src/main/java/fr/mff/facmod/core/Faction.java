@@ -85,7 +85,8 @@ public class Faction {
 	public void addPlayer(UUID uuid, EnumRank rank) {
 		this.members.add(new Member(uuid, rank));
 		Faction.Registry.playersFactions.put(uuid, this.name);
-		PacketHelper.updateClient(uuid);
+		PacketHelper.updateClientFaction(uuid);
+		PacketHelper.updateClientRank(uuid);
 		FactionSaver.save();
 	}
 
@@ -103,7 +104,8 @@ public class Faction {
 		}
 		this.members.remove(toRemove);
 		Faction.Registry.playersFactions.remove(uuid);
-		PacketHelper.updateClient(uuid);
+		PacketHelper.updateClientFaction(uuid);
+		PacketHelper.updateClientRank(uuid);
 		FactionSaver.save();
 		return toRemove;
 	}
@@ -134,7 +136,8 @@ public class Faction {
 		Faction.Registry.factions.remove(this);
 		for(Member member : this.members) {
 			Faction.Registry.factions.remove(member.getUUID());
-			PacketHelper.updateClient(member.getUUID());
+			PacketHelper.updateClientFaction(member.getUUID());
+			PacketHelper.updateClientRank(member.getUUID());
 		}
 		Lands.clearChunksFaction(this.name);
 		FactionSaver.save();

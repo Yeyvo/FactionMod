@@ -16,6 +16,7 @@ public class ConfigFaction {
 
 	public static int TP_DELAY = 10;
 	public static boolean FACTION_OVERLAY = true;
+	public static boolean RANK_OVERLAY = true;
 
 	public static void preInit(FMLPreInitializationEvent event) {
 		cfg = new Configuration(event.getSuggestedConfigurationFile());
@@ -48,11 +49,19 @@ public class ConfigFaction {
 		
 		cfg.setCategoryPropertyOrder(Configuration.CATEGORY_GENERAL, propOrder);
 		
+		
 		propOrder = new ArrayList<String>();
+		
 		prop = cfg.get(Configuration.CATEGORY_CLIENT, "factionOverlay", true);
 		prop.comment = "Set to false to disable faction's name displaying";
 		prop.setLanguageKey("config.client.factionOverlay");
 		FACTION_OVERLAY = prop.getBoolean(true);
+		propOrder.add(prop.getName());
+		
+		prop = cfg.get(Configuration.CATEGORY_CLIENT, "rankOverlay", true);
+		prop.comment = "Set to false to disable rank's displaying";
+		prop.setLanguageKey("config.client.rankOverlay");
+		RANK_OVERLAY = prop.getBoolean(true);
 		propOrder.add(prop.getName());
 		
 		cfg.setCategoryPropertyOrder(Configuration.CATEGORY_CLIENT, propOrder);

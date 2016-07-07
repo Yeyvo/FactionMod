@@ -3,6 +3,7 @@ package fr.mff.facmod.core;
 import java.util.Comparator;
 import java.util.UUID;
 
+import fr.mff.facmod.network.PacketHelper;
 import net.minecraft.nbt.NBTTagCompound;
 
 public class Member {
@@ -25,6 +26,7 @@ public class Member {
 	
 	public void setRank(EnumRank rank) {
 		this.rank = rank;
+		PacketHelper.updateClientRank(this.getUUID());
 	}
 	
 	public void writeToNBT(NBTTagCompound compound) {

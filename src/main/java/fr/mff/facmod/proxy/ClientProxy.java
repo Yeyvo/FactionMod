@@ -10,11 +10,13 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import fr.mff.facmod.FactionMod;
 import fr.mff.facmod.blocks.BlockRegistry;
+import fr.mff.facmod.core.EnumRank;
 import fr.mff.facmod.handlers.ClientEventHandler;
 
 public class ClientProxy extends CommonProxy {
 	
 	public String factionName = "";
+	public EnumRank rank = EnumRank.WITHOUT_FACTION;
 	
 	@Override
 	public void preInit(FMLPreInitializationEvent event) {
