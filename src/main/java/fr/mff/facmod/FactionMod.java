@@ -1,5 +1,20 @@
 package fr.mff.facmod;
 
+import org.apache.logging.log4j.Logger;
+
+import fr.mff.facmod.blocks.BlockRegistry;
+import fr.mff.facmod.commands.CommandRegistry;
+import fr.mff.facmod.config.ConfigFaction;
+import fr.mff.facmod.core.FactionSaver;
+import fr.mff.facmod.core.FactionTabs;
+import fr.mff.facmod.handlers.GuiHandler;
+import fr.mff.facmod.items.ItemRegistry;
+import fr.mff.facmod.network.PacketRegistry;
+import fr.mff.facmod.proxy.CommonProxy;
+import fr.mff.facmod.recipes.RecipeRegistry;
+import fr.mff.facmod.tileentities.TileEntityRegistry;
+import net.minecraft.block.Block;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
@@ -9,19 +24,6 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
-
-import org.apache.logging.log4j.Logger;
-
-import fr.mff.facmod.blocks.BlockRegistry;
-import fr.mff.facmod.commands.CommandRegistry;
-import fr.mff.facmod.config.ConfigFaction;
-import fr.mff.facmod.core.FactionSaver;
-import fr.mff.facmod.handlers.GuiHandler;
-import fr.mff.facmod.items.ItemRegistry;
-import fr.mff.facmod.network.PacketRegistry;
-import fr.mff.facmod.proxy.CommonProxy;
-import fr.mff.facmod.recipes.RecipeRegistry;
-import fr.mff.facmod.tileentities.TileEntityRegistry;
 
 /**
  * @author BrokenSwing
@@ -39,9 +41,9 @@ public class FactionMod {
 	public static CommonProxy proxy;
 
 	public static Logger logger;
-
-	public static SimpleNetworkWrapper network;
-
+	public static CreativeTabs FactionTabs = new FactionTabs("FactionTabs");
+	public static SimpleNetworkWrapper network;	
+	
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event)
 	{
@@ -64,6 +66,7 @@ public class FactionMod {
 		NetworkRegistry.INSTANCE.registerGuiHandler(FactionMod.INSTANCE, new GuiHandler());
 		network = NetworkRegistry.INSTANCE.newSimpleChannel(FactionMod.MODID);
 		PacketRegistry.init(event);
+		BlockRegistry.init(event);
 	}
 
 	@EventHandler

@@ -9,6 +9,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import fr.mff.facmod.FactionMod;
+import fr.mff.facmod.blocks.BlockRegistry;
 import fr.mff.facmod.handlers.ClientEventHandler;
 
 public class ClientProxy extends CommonProxy {
@@ -31,7 +32,7 @@ public class ClientProxy extends CommonProxy {
 	 * Register all renders (blocks, items, ect ...)
 	 */
 	private void registerRenders() {
-		
+		registerBlockTexture(new BlockRegistry().FactionHome, "factionhome");
 	}
 	
 	@Override
