@@ -15,7 +15,7 @@ public class ItemChestWatcher extends Item{
 	public ItemChestWatcher()
 	{
 		this.setMaxStackSize(1);
-		this.setMaxDamage(5);
+		this.setMaxDamage(9);
 		this.setCreativeTab(FactionMod.factionTabs);
 	}
 	
@@ -31,6 +31,7 @@ public class ItemChestWatcher extends Item{
 			}
 			if (tile instanceof IInventory)
 			{
+				stack.damageItem(1, player);
 				player.openGui(FactionMod.INSTANCE, 1, world, pos.getX(), pos.getY(), pos.getZ());
 				
 				return true;

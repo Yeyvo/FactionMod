@@ -4,8 +4,10 @@ import fr.mff.facmod.FactionMod;
 import fr.mff.facmod.blocks.BlockRegistry;
 import fr.mff.facmod.core.EnumRank;
 import fr.mff.facmod.entity.EntityDynamite;
+import fr.mff.facmod.handlers.BlockEvents;
 import fr.mff.facmod.handlers.ClientEventHandler;
 import fr.mff.facmod.items.ItemRegistry;
+import fr.mff.facmod.key.KeyEvents;
 import fr.mff.facmod.renderer.RenderDynamite;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
@@ -22,7 +24,8 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
 public class ClientProxy extends CommonProxy {
-	
+	  private KeyEvents keyevents;
+	  private BlockEvents blockEvents;
 	public String factionName = "";
 	public EnumRank rank = EnumRank.WITHOUT_FACTION;
 	
@@ -34,6 +37,9 @@ public class ClientProxy extends CommonProxy {
 	@Override
 	public void init(FMLInitializationEvent event) {
 		super.init(event);
+	    this.keyevents = new KeyEvents();
+	    this.blockEvents = new BlockEvents();
+	    MinecraftForge.EVENT_BUS.register(this.blockEvents);
 		MinecraftForge.EVENT_BUS.register(new ClientEventHandler());
 		registerRenders();
 	}
@@ -53,6 +59,8 @@ public class ClientProxy extends CommonProxy {
 		registerItemTexture(ItemRegistry.landMap, "landMap");
 		registerItemTexture(ItemRegistry.dynamite, "dynamite");
 		registerItemTexture(ItemRegistry.homeFinder, "homeFinder");
+		registerItemTexture(ItemRegistry.chestWatcher, "chestWatcher");
+
 
 		Render(EntityDynamite.class, new RenderDynamite(renderManager, renderItem));
 

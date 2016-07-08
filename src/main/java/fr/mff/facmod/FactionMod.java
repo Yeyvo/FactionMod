@@ -10,9 +10,12 @@ import fr.mff.facmod.entity.EntityDynamite;
 import fr.mff.facmod.handlers.GuiHandler;
 import fr.mff.facmod.items.ItemRegistry;
 import fr.mff.facmod.network.PacketRegistry;
+import fr.mff.facmod.network.PacketWandActivate;
 import fr.mff.facmod.proxy.CommonProxy;
 import fr.mff.facmod.recipes.RecipeRegistry;
 import fr.mff.facmod.tileentities.TileEntityRegistry;
+import fr.mff.facmod.util.conversion.CustomMappingManager;
+import fr.mff.facmod.util.conversion.StackedBlockManager;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
@@ -26,6 +29,7 @@ import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
+import net.minecraftforge.fml.relauncher.Side;
 
 /**
  * @author BrokenSwing
@@ -43,6 +47,9 @@ public class FactionMod {
 	public static CommonProxy proxy;
 
 	public static Logger logger;
+	public StackedBlockManager blockCache;
+	public CustomMappingManager mappingManager;
+	public SimpleNetworkWrapper networkWrapper;
 	public static CreativeTabs factionTabs = new CreativeTabs("FactionTab") {
 		
 		@Override
@@ -56,11 +63,15 @@ public class FactionMod {
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event)
 	{
+		this.networkWrapper = NetworkRegistry.INSTANCE.newSimpleChannel("factionmod");
+		this.networkWrapper.registerMessage(PacketWandActivate.Handler.class, PacketWandActivate.class, 0, Side.SERVER);
 		logger = event.getModLog();
 		ConfigFaction.preInit(event);
 		BlockRegistry.preInit(event);
 		ItemRegistry.preInit(event);
 		proxy.preInit(event);
+	    this.blockCache = new StackedBlockManager();
+	    this.mappingManager = new CustomMappingManager();
 	}
 
 	@EventHandler
