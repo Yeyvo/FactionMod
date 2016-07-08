@@ -9,12 +9,9 @@ public class PacketRegistry {
 	public static void init(FMLInitializationEvent event) {
 		FactionMod.network.registerMessage(PacketFaction.Handler.class, PacketFaction.class, 0, Side.CLIENT);
 		FactionMod.network.registerMessage(PacketRank.Handler.class, PacketRank.class, 1, Side.CLIENT);
-<<<<<<< HEAD
-		FactionMod.network.registerMessage(PacketWandActivate.Handler.class, PacketWandActivate.class, 2, Side.SERVER);
-
-=======
 		FactionMod.network.registerMessage(PacketOpenMap.Handler.class, PacketOpenMap.class, 2, Side.CLIENT);
->>>>>>> origin/master
+		FactionMod.network.registerMessage(PacketWandActivate.Handler.class, PacketWandActivate.class, 3, Side.SERVER);
+
 	}
 
 }
