@@ -21,6 +21,7 @@ import net.minecraftforge.event.world.BlockEvent.PlaceEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import fr.mff.facmod.blocks.BlockRegistry;
+import fr.mff.facmod.items.ItemRegistry;
 
 public class Lands {
 
@@ -195,6 +196,9 @@ public class Lands {
 
 	public static void onPlayerInteract(PlayerInteractEvent event) {
 		if(!event.world.isRemote && event.world == MinecraftServer.getServer().getEntityWorld()) {
+			if(event.entityPlayer.getHeldItem() != null && (event.entityLiving.getHeldItem().getItem() == ItemRegistry.chestWatcher || event.entityPlayer.getHeldItem().getItem() == ItemRegistry.briseObsi) && event.entityPlayer.isSneaking()) {
+				return;
+			}
 			ChunkCoordIntPair coords = event.world.getChunkFromBlockCoords(event.pos).getChunkCoordIntPair();
 			String ownerName = Lands.getLandFaction().get(coords);
 			if(ownerName != null) {
