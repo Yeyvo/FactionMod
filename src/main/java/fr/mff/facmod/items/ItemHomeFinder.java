@@ -37,5 +37,8 @@ public class ItemHomeFinder extends Item {
 		}
 		return super.onItemRightClick(itemStackIn, worldIn, player);
 	}
-
+	@Override
+	public boolean isBookEnchantable(ItemStack stack, ItemStack book) {
+		return false;
+	}
 }

@@ -45,4 +45,9 @@ public class ItemBuilderWand
   {
     return EnumLock.HORIZONTAL;
   }
+  
+	@Override
+	public boolean isBookEnchantable(ItemStack stack, ItemStack book) {
+		return false;
+	}
 }
