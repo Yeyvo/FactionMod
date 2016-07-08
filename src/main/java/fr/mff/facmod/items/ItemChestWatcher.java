@@ -32,6 +32,7 @@ public class ItemChestWatcher extends Item{
 			if (tile instanceof IInventory)
 			{
 				player.openGui(FactionMod.INSTANCE, 1, world, pos.getX(), pos.getY(), pos.getZ());
+				
 				return true;
 			}
 		}
