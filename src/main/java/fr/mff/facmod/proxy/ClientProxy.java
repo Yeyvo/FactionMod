@@ -47,9 +47,13 @@ public class ClientProxy extends CommonProxy {
 	    RenderItem renderItem = Minecraft.getMinecraft().getRenderItem();
 	    
 		registerBlockTexture(BlockRegistry.homeBase, "homeBase");
+		registerBlockTexture(BlockRegistry.xrayBlock, "xrayBlock");
+
+		
 		registerItemTexture(ItemRegistry.landMap, "landMap");
 		registerItemTexture(ItemRegistry.dynamite, "dynamite");
 		registerItemTexture(ItemRegistry.homeFinder, "homeFinder");
+
 		Render(EntityDynamite.class, new RenderDynamite(renderManager, renderItem));
 
 	}

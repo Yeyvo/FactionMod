@@ -34,7 +34,7 @@ public class EntityDynamite extends EntityThrowable {
 			byte b0 = 0;
 			par1MovingObjectPosition.entityHit.attackEntityFrom(DamageSource.causeThrownDamage(this, getThrower()), b0);
 		}
-		for (int i = 0; i < 8; i++) {
+		for (int i = 0; i < 16; i++) {
 			this.worldObj.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, this.posX, this.posY, this.posZ, 0.0D, 0.0D,
 					0.0D, new int[0]);
 		}

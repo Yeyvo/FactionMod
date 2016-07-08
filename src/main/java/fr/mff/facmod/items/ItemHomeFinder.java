@@ -27,7 +27,7 @@ public class ItemHomeFinder extends Item {
 	public ItemStack onItemRightClick(ItemStack itemStackIn, World worldIn, EntityPlayer player) {
 		if (player.inventory.consumeInventoryItem(this)) {
 			if (!worldIn.isRemote) {
-				Object[] crunchifyKeys = Homes.homes.values().toArray();
+				Object[] crunchifyKeys = Homes.getHomes().values().toArray();
 				Object key = crunchifyKeys[new Random().nextInt(crunchifyKeys.length)];
 				String fac = key.toString().replace("{", "").replace("}", "").replace("=", " = ").replace("BlockPos", "");
 				player.addChatComponentMessage(new ChatComponentText(EnumChatFormatting.AQUA + "Selection d'un f home aléatoirement : "));

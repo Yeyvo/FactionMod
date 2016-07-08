@@ -10,6 +10,8 @@ public class TileEntityRegistry {
 	
 	public static void init(FMLInitializationEvent event) {
 	 GameRegistry.registerTileEntity(TileEntityHomeBase.class, "tileentityhomebase");
+	 GameRegistry.registerTileEntity(TileEntityBlockXray.class, "tileentityblockxray");
+
 	}
 
 }
