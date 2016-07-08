@@ -51,9 +51,11 @@ config.general.tpDelay=Délai de téléportation
 config.client=Client
 config.client.factionOverlay=Affichage du nom de votre faction
 config.client.rankOverlay=Affichage du rang
+config.client.landOwnerOverlay=Affichage du nom du propriétaire du terrain
 
 overlay.faction=Faction
 overlay.rank=Rang
+overlay.landOwner=Propriétaire du terrain
 
 rank.owner=Propriétaire de la faction
 rank.manager=Gérant

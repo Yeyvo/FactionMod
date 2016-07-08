@@ -3,6 +3,7 @@ package fr.mff.facmod.network;
 import java.util.UUID;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.ChunkCoordIntPair;
@@ -41,6 +42,14 @@ public class PacketHelper {
 			PacketRank packet = new PacketRank(rank);
 			FactionMod.network.sendTo(packet, (EntityPlayerMP)player);
 		}
+	}
+	
+	public static void updateLandOwner(EntityPlayer player, String factionName) {
+		if(factionName == null) {
+			factionName = "";
+		}
+		PacketLandOwner packet = new PacketLandOwner(factionName);
+		FactionMod.network.sendTo(packet, (EntityPlayerMP)player);
 	}
 	
 	public static void sendMap(EntityPlayerMP player) {

@@ -29,6 +29,13 @@ public class Overlays {
 				Minecraft.getMinecraft().fontRendererObj.drawString(str, 10, 25, 0xFFFFFF);
 			}
 		}
+		if(ConfigFaction.LAND_OWNER_OVERLAY) {
+			String factionName = ((ClientProxy)FactionMod.proxy).landOwner;
+			if(!factionName.equals("")) {
+				String str = EnumChatFormatting.UNDERLINE + I18n.format("overlay.landOwner", new Object[0]) + "§r : " + EnumChatFormatting.GOLD + factionName;
+				Minecraft.getMinecraft().fontRendererObj.drawString(str, 10, 40, 0xFFFFFF);
+			}
+		}
 	}
 
 }

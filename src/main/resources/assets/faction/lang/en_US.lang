@@ -51,9 +51,11 @@ config.general.tpDelay=Teleportation delay
 config.client=Client
 config.client.factionOverlay=Faction's name displaying
 config.client.rankOverlay=Rank's displaying
+config.client.landOwnerOverlay=Land's owner's name displaying
 
 overlay.faction=Faction
 overlay.rank=Rank
+overlay.landOwner=Land owner
 
 rank.owner=Faction's owner
 rank.manager=Manager

@@ -17,6 +17,7 @@ public class ConfigFaction {
 	public static int TP_DELAY = 10;
 	public static boolean FACTION_OVERLAY = true;
 	public static boolean RANK_OVERLAY = true;
+	public static boolean LAND_OWNER_OVERLAY = true;
 
 	public static void preInit(FMLPreInitializationEvent event) {
 		cfg = new Configuration(event.getSuggestedConfigurationFile());
@@ -62,6 +63,12 @@ public class ConfigFaction {
 		prop.comment = "Set to false to disable rank's displaying";
 		prop.setLanguageKey("config.client.rankOverlay");
 		RANK_OVERLAY = prop.getBoolean(true);
+		propOrder.add(prop.getName());
+		
+		prop = cfg.get(Configuration.CATEGORY_CLIENT, "landOwnerOverlay", true);
+		prop.comment = "Set to false to disable land's owner's name displaying";
+		prop.setLanguageKey("config.client.landOwnerOverlay");
+		LAND_OWNER_OVERLAY = prop.getBoolean(true);
 		propOrder.add(prop.getName());
 		
 		cfg.setCategoryPropertyOrder(Configuration.CATEGORY_CLIENT, propOrder);

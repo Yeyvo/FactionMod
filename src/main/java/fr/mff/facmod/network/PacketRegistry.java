@@ -11,7 +11,7 @@ public class PacketRegistry {
 		FactionMod.network.registerMessage(PacketRank.Handler.class, PacketRank.class, 1, Side.CLIENT);
 		FactionMod.network.registerMessage(PacketOpenMap.Handler.class, PacketOpenMap.class, 2, Side.CLIENT);
 		FactionMod.network.registerMessage(PacketWandActivate.Handler.class, PacketWandActivate.class, 3, Side.SERVER);
-
+		FactionMod.network.registerMessage(PacketLandOwner.Handler.class, PacketLandOwner.class, 4, Side.CLIENT);
 	}
 
 }

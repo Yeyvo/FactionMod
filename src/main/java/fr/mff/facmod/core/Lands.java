@@ -22,6 +22,7 @@ import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import fr.mff.facmod.blocks.BlockRegistry;
 import fr.mff.facmod.items.ItemRegistry;
+import fr.mff.facmod.network.PacketHelper;
 
 public class Lands {
 
@@ -128,11 +129,12 @@ public class Lands {
 				if(factionName != null) {
 					if(!factionName.equalsIgnoreCase(cacheFactionName)) {
 						Faction faction = Faction.Registry.getFactionFromName(factionName);
-						event.player.addChatComponentMessage(new ChatComponentText(EnumChatFormatting.GOLD + "[ " + factionName + (faction == null || faction.getDescription().equals("") ? "" : EnumChatFormatting.LIGHT_PURPLE + " - " + EnumChatFormatting.BLUE + faction.getDescription()) + " ]"));
+						event.player.addChatComponentMessage(new ChatComponentText(EnumChatFormatting.GOLD + "[ " + factionName + (faction == null || faction.getDescription().equals("") ? "" : EnumChatFormatting.LIGHT_PURPLE + " - " + EnumChatFormatting.BLUE + faction.getDescription()) + EnumChatFormatting.GOLD + " ]"));
 					}
 				} else {
 					event.player.addChatComponentMessage(new ChatComponentTranslation("faction.chunk.free", new Object[0]));
 				}
+				PacketHelper.updateLandOwner(event.player, factionName);
 			}
 		}
 	}
