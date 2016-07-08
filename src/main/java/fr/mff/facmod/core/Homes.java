@@ -23,7 +23,7 @@ import fr.mff.facmod.config.ConfigFaction;
 
 public class Homes {
 
-	public static final HashMap<String, BlockPos> homes = new HashMap<String, BlockPos>();
+	private static final HashMap<String, BlockPos> homes = new HashMap<String, BlockPos>();
 	private static final HashMap<EntityPlayer, Object[]> tpTimers = new HashMap<EntityPlayer, Object[]>();
 
 	public static void clear() {
