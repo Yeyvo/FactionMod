@@ -1,18 +1,25 @@
 package fr.mff.facmod.proxy;
 
-import net.minecraft.block.Block;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.ItemModelMesher;
-import net.minecraft.client.resources.model.ModelResourceLocation;
-import net.minecraft.item.Item;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import fr.mff.facmod.FactionMod;
 import fr.mff.facmod.blocks.BlockRegistry;
 import fr.mff.facmod.core.EnumRank;
+import fr.mff.facmod.entity.EntityDynamite;
 import fr.mff.facmod.handlers.ClientEventHandler;
 import fr.mff.facmod.items.ItemRegistry;
+import fr.mff.facmod.renderer.RenderDynamite;
+import net.minecraft.block.Block;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.ItemModelMesher;
+import net.minecraft.client.renderer.entity.Render;
+import net.minecraft.client.renderer.entity.RenderItem;
+import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.entity.Entity;
+import net.minecraft.item.Item;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.client.registry.RenderingRegistry;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
 public class ClientProxy extends CommonProxy {
 	
@@ -35,11 +42,21 @@ public class ClientProxy extends CommonProxy {
 	 * Register all renders (blocks, items, ect ...)
 	 */
 	private void registerRenders() {
-		registerBlockTexture(BlockRegistry.homeBase, "homeBase");
 		
+	    RenderManager renderManager = Minecraft.getMinecraft().getRenderManager();
+	    RenderItem renderItem = Minecraft.getMinecraft().getRenderItem();
+	    
+		registerBlockTexture(BlockRegistry.homeBase, "homeBase");
 		registerItemTexture(ItemRegistry.landMap, "landMap");
+		registerItemTexture(ItemRegistry.dynamite, "dynamite");
+		registerItemTexture(ItemRegistry.homeFinder, "homeFinder");
+		Render(EntityDynamite.class, new RenderDynamite(renderManager, renderItem));
+
 	}
-	
+	  public void Render(Class<? extends Entity> par1, Render par2)
+	  {
+	    RenderingRegistry.registerEntityRenderingHandler(par1, par2);
+	  }
 	@Override
 	public void registerItemTexture(Item item, int metadata, String name)
 	{

@@ -1,6 +1,20 @@
 package fr.mff.facmod;
 
+import org.apache.logging.log4j.Logger;
+
+import fr.mff.facmod.blocks.BlockRegistry;
+import fr.mff.facmod.commands.CommandRegistry;
+import fr.mff.facmod.config.ConfigFaction;
+import fr.mff.facmod.core.FactionSaver;
+import fr.mff.facmod.entity.EntityDynamite;
+import fr.mff.facmod.handlers.GuiHandler;
+import fr.mff.facmod.items.ItemRegistry;
+import fr.mff.facmod.network.PacketRegistry;
+import fr.mff.facmod.proxy.CommonProxy;
+import fr.mff.facmod.recipes.RecipeRegistry;
+import fr.mff.facmod.tileentities.TileEntityRegistry;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
@@ -11,19 +25,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
-
-import org.apache.logging.log4j.Logger;
-
-import fr.mff.facmod.blocks.BlockRegistry;
-import fr.mff.facmod.commands.CommandRegistry;
-import fr.mff.facmod.config.ConfigFaction;
-import fr.mff.facmod.core.FactionSaver;
-import fr.mff.facmod.handlers.GuiHandler;
-import fr.mff.facmod.items.ItemRegistry;
-import fr.mff.facmod.network.PacketRegistry;
-import fr.mff.facmod.proxy.CommonProxy;
-import fr.mff.facmod.recipes.RecipeRegistry;
-import fr.mff.facmod.tileentities.TileEntityRegistry;
+import net.minecraftforge.fml.common.registry.EntityRegistry;
 
 /**
  * @author BrokenSwing
@@ -33,7 +35,7 @@ import fr.mff.facmod.tileentities.TileEntityRegistry;
 public class FactionMod {
 
 	public static final String MODID = "faction";
-
+	public static int IDE;
 	@Instance
 	public static FactionMod INSTANCE;
 
@@ -72,6 +74,7 @@ public class FactionMod {
 		NetworkRegistry.INSTANCE.registerGuiHandler(FactionMod.INSTANCE, new GuiHandler());
 		network = NetworkRegistry.INSTANCE.newSimpleChannel(FactionMod.MODID);
 		PacketRegistry.init(event);
+	    Render(EntityDynamite.class, "entitydynamite", 65, this, 512, 1, true);
 	}
 
 	@EventHandler
@@ -79,5 +82,13 @@ public class FactionMod {
 		FactionSaver.onServerStarting(event);
 		CommandRegistry.onServerStarting(event);
 	}
+	  public void Set(Class<? extends Entity> par1, String par2, int par3)
+	  {
+	    EntityRegistry.registerGlobalEntityID(par1, par2, par3);
+	  }
+	  public void Render(Class<? extends Entity> par1, String par2, int par3, Object par4, int par5, int par6, boolean par7)
+	  {
+	    EntityRegistry.registerModEntity(par1, par2, par3, par4, par5, par6, par7);
+	  }
 
 }
