@@ -1,4 +1,4 @@
-package fr.mff.facmod.util.conversion;
+package fr.mff.facmod.wand.util.conversion;
 
 import java.util.ArrayList;
 import java.util.regex.Matcher;

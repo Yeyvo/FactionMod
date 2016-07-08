@@ -14,8 +14,8 @@ import fr.mff.facmod.network.PacketWandActivate;
 import fr.mff.facmod.proxy.CommonProxy;
 import fr.mff.facmod.recipes.RecipeRegistry;
 import fr.mff.facmod.tileentities.TileEntityRegistry;
-import fr.mff.facmod.util.conversion.CustomMappingManager;
-import fr.mff.facmod.util.conversion.StackedBlockManager;
+import fr.mff.facmod.wand.util.conversion.CustomMappingManager;
+import fr.mff.facmod.wand.util.conversion.StackedBlockManager;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
@@ -49,7 +49,6 @@ public class FactionMod {
 	public static Logger logger;
 	public StackedBlockManager blockCache;
 	public CustomMappingManager mappingManager;
-	public SimpleNetworkWrapper networkWrapper;
 	public static CreativeTabs factionTabs = new CreativeTabs("FactionTab") {
 		
 		@Override
@@ -63,8 +62,6 @@ public class FactionMod {
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event)
 	{
-		this.networkWrapper = NetworkRegistry.INSTANCE.newSimpleChannel("factionmod");
-		this.networkWrapper.registerMessage(PacketWandActivate.Handler.class, PacketWandActivate.class, 0, Side.SERVER);
 		logger = event.getModLog();
 		ConfigFaction.preInit(event);
 		BlockRegistry.preInit(event);
@@ -81,9 +78,8 @@ public class FactionMod {
 
 		RecipeRegistry.init(event);
 		TileEntityRegistry.init(event);
-
+		network = NetworkRegistry.INSTANCE.newSimpleChannel("facmod");
 		NetworkRegistry.INSTANCE.registerGuiHandler(FactionMod.INSTANCE, new GuiHandler());
-		network = NetworkRegistry.INSTANCE.newSimpleChannel(FactionMod.MODID);
 		PacketRegistry.init(event);
 	    Render(EntityDynamite.class, "entitydynamite", 65, this, 512, 1, true);
 	}
@@ -93,10 +89,6 @@ public class FactionMod {
 		FactionSaver.onServerStarting(event);
 		CommandRegistry.onServerStarting(event);
 	}
-	  public void Set(Class<? extends Entity> par1, String par2, int par3)
-	  {
-	    EntityRegistry.registerGlobalEntityID(par1, par2, par3);
-	  }
 	  public void Render(Class<? extends Entity> par1, String par2, int par3, Object par4, int par5, int par6, boolean par7)
 	  {
 	    EntityRegistry.registerModEntity(par1, par2, par3, par4, par5, par6, par7);

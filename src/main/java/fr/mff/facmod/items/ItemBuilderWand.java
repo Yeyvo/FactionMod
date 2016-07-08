@@ -1,12 +1,11 @@
 package fr.mff.facmod.items;
 
-import fr.mff.facmod.util.EnumFluidLock;
-import fr.mff.facmod.util.EnumLock;
-import fr.mff.facmod.util.RestrictedWand;
+import fr.mff.facmod.wand.util.EnumFluidLock;
+import fr.mff.facmod.wand.util.EnumLock;
+import fr.mff.facmod.wand.util.RestrictedWand;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-
 public class ItemBuilderWand
   extends ItemBasicWand
 {

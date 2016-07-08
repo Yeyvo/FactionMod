@@ -1,11 +1,11 @@
-package fr.mff.facmod.util.conversion;
+package fr.mff.facmod.wand.util.conversion;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 
-import fr.mff.facmod.util.IWorldShim;
-import fr.mff.facmod.util.Point3d;
+import fr.mff.facmod.wand.util.IWorldShim;
+import fr.mff.facmod.wand.util.Point3d;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;

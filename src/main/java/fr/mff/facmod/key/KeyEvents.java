@@ -35,7 +35,7 @@ public class KeyEvents
     {
       this.isPressed = currentIsPressed;
       PacketWandActivate packet = new PacketWandActivate(currentIsPressed, currentFluidIsPressed);
-      FactionMod.INSTANCE.networkWrapper.sendToServer(packet);
+      FactionMod.INSTANCE.network.sendToServer(packet);
     }
   }
 }

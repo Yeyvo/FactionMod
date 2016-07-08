@@ -1,4 +1,4 @@
-package fr.mff.facmod.util;
+package fr.mff.facmod.wand.util;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -6,7 +6,7 @@ import java.util.LinkedList;
 import java.util.Random;
 
 import fr.mff.facmod.FactionMod;
-import fr.mff.facmod.util.conversion.CustomMapping;
+import fr.mff.facmod.wand.util.conversion.CustomMapping;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.item.Item;

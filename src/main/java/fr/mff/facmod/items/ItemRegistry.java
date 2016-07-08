@@ -1,6 +1,6 @@
 package fr.mff.facmod.items;
 
-import fr.mff.facmod.util.RestrictedWand;
+import fr.mff.facmod.wand.util.RestrictedWand;
 import net.minecraft.item.Item;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;

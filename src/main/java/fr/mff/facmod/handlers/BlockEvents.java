@@ -4,15 +4,15 @@ import java.util.LinkedList;
 
 import org.lwjgl.opengl.GL11;
 
-import fr.mff.facmod.util.BasicPlayerShim;
-import fr.mff.facmod.util.BasicWorldShim;
-import fr.mff.facmod.util.CreativePlayerShim;
-import fr.mff.facmod.util.IPlayerShim;
-import fr.mff.facmod.util.IWand;
-import fr.mff.facmod.util.IWandItem;
-import fr.mff.facmod.util.IWorldShim;
-import fr.mff.facmod.util.Point3d;
-import fr.mff.facmod.util.WandWorker;
+import fr.mff.facmod.wand.util.BasicPlayerShim;
+import fr.mff.facmod.wand.util.BasicWorldShim;
+import fr.mff.facmod.wand.util.CreativePlayerShim;
+import fr.mff.facmod.wand.util.IPlayerShim;
+import fr.mff.facmod.wand.util.IWand;
+import fr.mff.facmod.wand.util.IWandItem;
+import fr.mff.facmod.wand.util.IWorldShim;
+import fr.mff.facmod.wand.util.Point3d;
+import fr.mff.facmod.wand.util.WandWorker;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderGlobal;

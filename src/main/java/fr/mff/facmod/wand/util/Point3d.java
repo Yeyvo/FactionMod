@@ -1,4 +1,4 @@
-package fr.mff.facmod.util;
+package fr.mff.facmod.wand.util;
 
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;

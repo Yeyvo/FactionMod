@@ -1,4 +1,4 @@
-package fr.mff.facmod.util.conversion;
+package fr.mff.facmod.wand.util.conversion;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;

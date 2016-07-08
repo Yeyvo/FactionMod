@@ -2,7 +2,7 @@ package fr.mff.facmod.network;
 
 import java.util.UUID;
 
-import fr.mff.facmod.util.IWandItem;
+import fr.mff.facmod.wand.util.IWandItem;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
@@ -49,7 +49,7 @@ public class PacketWandActivate
         ItemStack wandItemstack = player.getCurrentEquippedItem();
         IWandItem wandItem = (IWandItem)wandItemstack.getItem();
         wandItem.nextMode(wandItemstack, player);
-        player.addChatMessage(new ChatComponentTranslation("bbw.chat.mode." + wandItem.getMode(wandItemstack).toString().toLowerCase(), new Object[0]));
+        player.addChatMessage(new ChatComponentTranslation("chat.mode." + wandItem.getMode(wandItemstack).toString().toLowerCase(), new Object[0]));
       }
       if ((packetWandActivate.keyFluidActive) && (player.getCurrentEquippedItem() != null) && (player.getCurrentEquippedItem().getItem() != null) && 
         ((player.getCurrentEquippedItem().getItem() instanceof IWandItem)))
@@ -57,7 +57,7 @@ public class PacketWandActivate
         ItemStack wandItemstack = player.getCurrentEquippedItem();
         IWandItem wandItem = (IWandItem)wandItemstack.getItem();
         wandItem.nextFluidMode(wandItemstack, player);
-        player.addChatMessage(new ChatComponentTranslation("bbw.chat.fluidmode." + wandItem.getFluidMode(wandItemstack).toString().toLowerCase(), new Object[0]));
+        player.addChatMessage(new ChatComponentTranslation("chat.fluidmode." + wandItem.getFluidMode(wandItemstack).toString().toLowerCase(), new Object[0]));
       }
     }
   }
