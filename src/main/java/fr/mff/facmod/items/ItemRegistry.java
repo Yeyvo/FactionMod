@@ -12,7 +12,7 @@ public class ItemRegistry {
 	
 	public static final Item chestWatcher = new ItemChestWatcher().setUnlocalizedName("chestWatcher"); 
 	public static final Item landMap = new ItemLandMap().setUnlocalizedName("landMap");
-	public static final Item homeFinder = new ItemHomeFinder().setUnlocalizedName("homefinder");
+	public static final Item homeFinder = new ItemHomeFinder().setUnlocalizedName("homeFinder");
 	public static final Item dynamite = new ItemDynamite().setUnlocalizedName("dynamite");
 	public static final Item briseObsi = new ItemBriseObsi().setUnlocalizedName("briseObsi");
 	public static final Item builderWand = new ItemBuilderWand(new RestrictedWand(9)).setUnlocalizedName("builderWand");

@@ -45,6 +45,7 @@ msg.lands=Land(s) : %s
 msg.tpTimer=§aRemaining time : %s
 msg.tpCanceled=§cYour teleportation has been canceled
 msg.promoted=§aYou have been promoted to the rank %s
+msg.faction.coordo.home=§bLooking for random f home
 
 config.general=General
 config.general.tpDelay=Teleportation delay
@@ -62,3 +63,22 @@ rank.manager=Manager
 rank.communityManager=Community manager
 rank.landManager=Lands manager
 rank.basicMember=Member
+
+itemGroup.FactionTab=§5-Faction-
+
+tile.homeBase.name=Home Block
+tile.xrayBlock.name=Xray Block
+item.landMap.name=Land Map
+item.chestWatcher.name=Chest Watcher
+item.homeFinder.name=Home Finder
+item.dynamite.name=Dynamite
+item.briseObsi.name=Obsidian Brocker
+
+item.builderWand.name=Builder Wand
+mode.horizontal=Horizontal
+bloc.maxblocks=9 Blocks Max
+chat.mode.horizontal=Horizontal
+chat.mode.vertical=Vertical
+mode.vertical=Vertical
+
+

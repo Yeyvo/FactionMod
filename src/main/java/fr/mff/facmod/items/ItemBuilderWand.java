@@ -11,8 +11,7 @@ public class ItemBuilderWand
 {
   public ItemBuilderWand(RestrictedWand wand)
   {
-    setMaxDamage(Item.ToolMaterial.IRON.getMaxUses());
-    setUnlocalizedName("faction:builderwand");
+    setMaxDamage(500);
     
     this.wand = wand;
   }

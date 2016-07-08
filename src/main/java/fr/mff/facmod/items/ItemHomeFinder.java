@@ -12,6 +12,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.World;
 
@@ -30,7 +31,7 @@ public class ItemHomeFinder extends Item {
 				Object[] crunchifyKeys = Homes.getHomes().values().toArray();
 				Object key = crunchifyKeys[new Random().nextInt(crunchifyKeys.length)];
 				String fac = key.toString().replace("{", "").replace("}", "").replace("=", " = ").replace("BlockPos", "");
-				player.addChatComponentMessage(new ChatComponentText(EnumChatFormatting.AQUA + "Selection d'un f home aléatoirement : "));
+				player.addChatComponentMessage(new ChatComponentTranslation("msg.faction.coordo.home", new Object[0]));
 				player.addChatComponentMessage(new ChatComponentText(EnumChatFormatting.RED + fac));
 			}
 		}

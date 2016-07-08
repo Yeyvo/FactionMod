@@ -45,6 +45,7 @@ msg.lands=Terrain(s) : %s
 msg.tpTimer=§aTemps restant : %s
 msg.tpCanceled=§cVotre téléportation a été interrompue
 msg.promoted=§aVous avez été promu au rang de %s
+msg.faction.coordo.home=§bRecherche d'un f home aléatoire
 
 config.general=Général
 config.general.tpDelay=Délai de téléportation
@@ -62,3 +63,20 @@ rank.manager=Gérant
 rank.communityManager=Gérant de la communauté
 rank.landManager=Gérant des terrains
 rank.basicMember=Membre
+
+itemGroup.FactionTab=§5-Faction-
+
+tile.homeBase.name=Home Bloc
+tile.xrayBlock.name=Xray Bloc
+item.landMap.name=Carte des terrains
+item.chestWatcher.name=Observateur de coffre
+item.homeFinder.name=Chercheur de home
+item.dynamite.name=Dynamite
+item.briseObsi.name=Casseur d'obsidien
+
+item.builderWand.name=Baguette du constructeur
+mode.horizontal=Horizontal
+bloc.maxblocks=9 Blocs Max
+chat.mode.horizontal=Horizontal
+chat.mode.vertical=Vertical
+mode.vertical=Vertical

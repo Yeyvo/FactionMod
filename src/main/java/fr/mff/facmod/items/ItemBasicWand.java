@@ -125,10 +125,10 @@ public abstract class ItemBasicWand extends Item implements IWandItem {
 		EnumFluidLock fluidMode = getFluidMode(itemstack);
 		switch (fluidMode) {
 		case STOPAT:
-			lines.add(StatCollector.translateToLocal("fluidmode.stopat"));
+			
 			break;
 		case IGNORE:
-			lines.add(StatCollector.translateToLocal("fluidmode.ignore"));
+			
 		}
 		if ((!itemstack.isItemStackDamageable()) || (!itemstack.isItemDamaged())) {
 			lines.add(StatCollector.translateToLocalFormatted("bloc.maxblocks",
