@@ -35,8 +35,19 @@ result.homeNotSet=§cAucune maison de faction a été définie
 result.tpLaunched=§aVous allez être téléporté à votre maison dans %s§a secondes, ne bougez pas et ne prenez aucun dégât
 result.playerPromoted=§aLe joueur %s§a a été promu au rang de %s
 result.wrongRank=§cLe rang %s§c n'est pas un rang valide
+result.wrongWorld=§cVous ne pouvez pas utiliser cette commande dans ce monde
+result.inASafeZone=§cVous êtes dans une zone sécurisée
+result.inAWarZone=§cVous êtes dans une zone de combat
+result.removedSafeZone=§aCette zone sécurisée a été supprimée
+result.removedWarZone=§aCette zone de combat a été supprimée
+result.notWarOrSafeZone=§cCe terrain n'est ni une zone de combat, ni une zone sécurisée
+result.safeZoneSet=§aVous avez défini une zone sécurisée
+result.warZoneSet=§aVous avez défini une zone de combat
 
-faction.chunk.free=§dTerrain libre
+faction.chunk.free=§d** Terrain libre **
+faction.chunk.safeZone=§4** Zone de combat **
+faction.chunk.warZone=§e** Zone de sécurité **
+
 msg.invitation.received=§1Vous avez reçu une invitation de la faction %s%1
 msg.homeRemoved=§cVotre maison a été supprimée
 msg.description=Description : %s
@@ -57,6 +68,8 @@ config.client.landOwnerOverlay=Affichage du nom du propriétaire du terrain
 overlay.faction=Faction
 overlay.rank=Rang
 overlay.landOwner=Propriétaire du terrain
+overlay.safeZone=Zone sécurisée
+overlay.warZone=Zone de combat
 
 rank.owner=Propriétaire de la faction
 rank.manager=Gérant

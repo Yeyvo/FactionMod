@@ -6,6 +6,7 @@ public class CommandRegistry {
 
 	public static void onServerStarting(FMLServerStartingEvent event) {
 		event.registerServerCommand(new CommandFaction());
+		event.registerServerCommand(new CommandZone());
 	}
 
 }

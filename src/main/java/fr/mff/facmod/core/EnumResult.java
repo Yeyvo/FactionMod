@@ -21,7 +21,7 @@ public enum EnumResult {
 	ALREADY_CLAIMED_LAND("result.alreadyClaimedLand", false),
 	LAND_OF_THE_FACTION("result.landOfTheFaction", false),
 	NOT_CLAIMED_LAND("result.notClaimedLand", false),
-	CLAIMED_BY_FACTION("result.claimedByFaction", false),
+	//CLAIMED_BY_FACTION("result.claimedByFaction", false),
 	LAND_UNCLAIMED("result.landUnclaimed", true),
 	NOT_IN_A_FACTION("result.notInAFaction", false),
 	IN_A_FACTION("result.inAFaction", false),
@@ -39,6 +39,14 @@ public enum EnumResult {
 	HOME_NOT_SET("result.homeNotSet", false),
 	PLAYER_PROMOTED("result.playerPromoted", true),
 	WRONG_RANK("result.wrongRank", false),
+	WRONG_WORLD("result.wrongWorld", false),
+	IN_A_SAFE_ZONE("result.inASafeZone", false),
+	IN_A_WAR_ZONE("result.inAWarZone", false),
+	REMOVED_SAFE_ZONE("result.removedSafeZone", true),
+	REMOVED_WAR_ZONE("result.removedWarZone", true),
+	NOT_WAR_OR_SAFE_ZONE("result.notWarOrSafeZone", false),
+	SAFE_ZONE_SET("result.safeZoneSet", true),
+	WAR_ZONE_SET("result.warZoneSet", true),
 	
 	ERROR("result.error", false);
 	

@@ -15,25 +15,37 @@ import fr.mff.facmod.proxy.ClientProxy;
 public class Overlays {
 
 	public static void onRenderGameOverlay(RenderGameOverlayEvent.Text e) {
+		int i = 0;
 		if(ConfigFaction.FACTION_OVERLAY) {
 			String factionName = ((ClientProxy)FactionMod.proxy).factionName;
-			if(!factionName.equals("")) {
+			if(!factionName.isEmpty()) {
 				String str = EnumChatFormatting.UNDERLINE + I18n.format("overlay.faction", new Object[0]) + "§r : " + EnumChatFormatting.GOLD + factionName;
-				Minecraft.getMinecraft().fontRendererObj.drawString(str, 10, 10, 0xFFFFFF);
+				Minecraft.getMinecraft().fontRendererObj.drawString(str, 10, 10 + i * 15, 0xFFFFFF);
+				i++;
 			}
 		}
 		if(ConfigFaction.RANK_OVERLAY) {
 			EnumRank rank = ((ClientProxy)FactionMod.proxy).rank;
 			if(rank != EnumRank.WITHOUT_FACTION) {
 				String str = EnumChatFormatting.UNDERLINE + I18n.format("overlay.rank", new Object[0]) + "§r : " + rank.getColor() + rank.getDisplay();
-				Minecraft.getMinecraft().fontRendererObj.drawString(str, 10, 25, 0xFFFFFF);
+				Minecraft.getMinecraft().fontRendererObj.drawString(str, 10, 10 + i * 15, 0xFFFFFF);
+				i++;
 			}
 		}
 		if(ConfigFaction.LAND_OWNER_OVERLAY) {
 			String factionName = ((ClientProxy)FactionMod.proxy).landOwner;
-			if(!factionName.equals("")) {
+			if(factionName.equalsIgnoreCase("safezone")) {
+				String str = EnumChatFormatting.YELLOW + I18n.format("overlay.safeZone", new Object[0]);
+				Minecraft.getMinecraft().fontRendererObj.drawString(str, 10, 10 + i * 15, 0xFFFFFF);
+				i++;
+			} else if(factionName.equalsIgnoreCase("warzone")) {
+				String str = EnumChatFormatting.DARK_RED + I18n.format("overlay.warZone", new Object[0]);
+				Minecraft.getMinecraft().fontRendererObj.drawString(str, 10, 10 + i * 15, 0xFFFFFF);
+				i++;
+			} else if(!factionName.isEmpty()) {
 				String str = EnumChatFormatting.UNDERLINE + I18n.format("overlay.landOwner", new Object[0]) + "§r : " + EnumChatFormatting.GOLD + factionName;
-				Minecraft.getMinecraft().fontRendererObj.drawString(str, 10, 40, 0xFFFFFF);
+				Minecraft.getMinecraft().fontRendererObj.drawString(str, 10, 10 + i * 15, 0xFFFFFF);
+				i++;
 			}
 		}
 	}

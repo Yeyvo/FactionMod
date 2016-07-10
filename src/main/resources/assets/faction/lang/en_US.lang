@@ -35,8 +35,19 @@ result.homeNotSet=§cAny faction's home has been set
 result.tpLaunched=§aYou will be teleported at your home in %s§a seconds, don't move and don't take any damage
 result.playerPromoted=§aThe player %s§a has been promoted to the rank %s
 result.wrongRank=§cThe rank %s§c isn't a valid rank
+result.wrongWorld=§cYou can't use this command in this world
+result.inASafeZone=§cYou are in a safe zone
+result.inAWarZone=§cYou are in a war zone
+result.removedSafeZone=§aThis safe zone has been removed
+result.removedWarZone=§aThis war zone has been removed
+result.notWarOrSafeZone=§cThis land is not a war zone or a safe zone
+result.safeZoneSet=§aYou set a safe zone
+result.warZoneSet=§aYou set a war zone
 
-faction.chunk.free=§dFree land
+faction.chunk.free=§d** Free land **
+faction.chunk.safeZone=§e** Safe zone **
+faction.chunk.warZone=§4** War zone **
+
 msg.invitation.received=§1You received a invitation from the faction %s%1
 msg.homeRemoved=§cYour home has been removed
 msg.description=Description : %s
@@ -57,6 +68,8 @@ config.client.landOwnerOverlay=Land's owner's name displaying
 overlay.faction=Faction
 overlay.rank=Rank
 overlay.landOwner=Land owner
+overlay.safeZone=Safe zone
+overlay.warZone=War zone
 
 rank.owner=Faction's owner
 rank.manager=Manager

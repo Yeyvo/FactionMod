@@ -1,21 +1,5 @@
 package fr.mff.facmod;
 
-import org.apache.logging.log4j.Logger;
-
-import fr.mff.facmod.blocks.BlockRegistry;
-import fr.mff.facmod.commands.CommandRegistry;
-import fr.mff.facmod.config.ConfigFaction;
-import fr.mff.facmod.core.FactionSaver;
-import fr.mff.facmod.entity.EntityDynamite;
-import fr.mff.facmod.handlers.GuiHandler;
-import fr.mff.facmod.items.ItemRegistry;
-import fr.mff.facmod.network.PacketRegistry;
-import fr.mff.facmod.network.PacketWandActivate;
-import fr.mff.facmod.proxy.CommonProxy;
-import fr.mff.facmod.recipes.RecipeRegistry;
-import fr.mff.facmod.tileentities.TileEntityRegistry;
-import fr.mff.facmod.wand.util.conversion.CustomMappingManager;
-import fr.mff.facmod.wand.util.conversion.StackedBlockManager;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
@@ -29,7 +13,22 @@ import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
-import net.minecraftforge.fml.relauncher.Side;
+
+import org.apache.logging.log4j.Logger;
+
+import fr.mff.facmod.blocks.BlockRegistry;
+import fr.mff.facmod.commands.CommandRegistry;
+import fr.mff.facmod.config.ConfigFaction;
+import fr.mff.facmod.core.FactionSaver;
+import fr.mff.facmod.entity.EntityDynamite;
+import fr.mff.facmod.handlers.GuiHandler;
+import fr.mff.facmod.items.ItemRegistry;
+import fr.mff.facmod.network.PacketRegistry;
+import fr.mff.facmod.proxy.CommonProxy;
+import fr.mff.facmod.recipes.RecipeRegistry;
+import fr.mff.facmod.tileentities.TileEntityRegistry;
+import fr.mff.facmod.wand.util.conversion.CustomMappingManager;
+import fr.mff.facmod.wand.util.conversion.StackedBlockManager;
 
 /**
  * @author BrokenSwing
