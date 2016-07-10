@@ -41,9 +41,9 @@ public class PacketOpenMap implements IMessage {
 		return this.names;
 	}
 
-	@SideOnly(Side.CLIENT)
 	public static class Handler implements IMessageHandler<PacketOpenMap, IMessage> {
 
+		@SideOnly(Side.CLIENT)
 		@Override
 		public IMessage onMessage(PacketOpenMap message, MessageContext ctx) {
 			Minecraft.getMinecraft().displayGuiScreen(new GuiLandMap(message.names));
