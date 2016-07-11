@@ -271,15 +271,18 @@ public class Faction {
 			if(faction == null) {
 				faction = Faction.Registry.getFactionFromName(name);
 				if(faction == null) {
-					if(name.length() >= MINIMUM_NAME_LENGTH && name.length() <= MAXIMUM_NAME_LENGTH) {
-						if(description.length() <= MAXIMUM_DESCRIPTION_LENGTH) {
-							Faction newFaction = new Faction(name, description);
-							newFaction.addPlayer(uuid, EnumRank.OWNER);
-							return EnumResult.FACTION_CREATED.clear().addInformation(EnumChatFormatting.GOLD + newFaction.getName());
+					if(!name.equalsIgnoreCase("safezone") && !name.equalsIgnoreCase("warzone")) {
+						if(name.length() >= MINIMUM_NAME_LENGTH && name.length() <= MAXIMUM_NAME_LENGTH) {
+							if(description.length() <= MAXIMUM_DESCRIPTION_LENGTH) {
+								Faction newFaction = new Faction(name, description);
+								newFaction.addPlayer(uuid, EnumRank.OWNER);
+								return EnumResult.FACTION_CREATED.clear().addInformation(EnumChatFormatting.GOLD + newFaction.getName());
+							}
+							return EnumResult.INVALID_DESCRIPTION_LENGTH.clear().addInformation(EnumChatFormatting.WHITE + String.valueOf(MAXIMUM_DESCRIPTION_LENGTH));
 						}
-						return EnumResult.INVALID_DESCRIPTION_LENGTH.clear().addInformation(EnumChatFormatting.WHITE + String.valueOf(MAXIMUM_DESCRIPTION_LENGTH));
+						return EnumResult.INVALID_NAME_LENGTH.clear().addInformation(EnumChatFormatting.WHITE + String.valueOf(MINIMUM_NAME_LENGTH)).addInformation(EnumChatFormatting.WHITE + String.valueOf(MAXIMUM_NAME_LENGTH));
 					}
-					return EnumResult.INVALID_NAME_LENGTH.clear().addInformation(EnumChatFormatting.WHITE + String.valueOf(MINIMUM_NAME_LENGTH)).addInformation(EnumChatFormatting.WHITE + String.valueOf(MAXIMUM_NAME_LENGTH));
+					return EnumResult.TAKEN_FACTION_NAME.clear().addInformation(name);
 				}
 				return EnumResult.TAKEN_FACTION_NAME.clear().addInformation(EnumChatFormatting.GOLD + faction.getName());
 			}

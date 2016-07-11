@@ -11,10 +11,12 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.ChunkCoordIntPair;
+import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
@@ -22,8 +24,8 @@ import net.minecraftforge.event.entity.player.FillBucketEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 import net.minecraftforge.event.world.BlockEvent.PlaceEvent;
+import net.minecraftforge.event.world.ExplosionEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 import com.google.common.collect.Lists;
 
@@ -257,11 +259,12 @@ public class Lands {
 		}
 	}
 
-	public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
-		if(!event.player.getEntityWorld().isRemote) {
-			ChunkCoordIntPair coords = event.player.getEntityWorld().getChunkFromBlockCoords(event.player.getPosition()).getChunkCoordIntPair();
+	public static void onEntityEnteringChunk(EntityEvent.EnteringChunk event) {
+		if(!event.entity.getEntityWorld().isRemote && event.entity instanceof EntityPlayer) {
+			EntityPlayer player = (EntityPlayer)event.entity;
+			ChunkCoordIntPair coords = new ChunkCoordIntPair(event.newChunkX, event.newChunkZ);
 			String factionName = Lands.getLandFaction().get(coords);
-			String cacheFactionName = Lands.getPlayerCache().get(event.player.getUniqueID());
+			String cacheFactionName = Lands.getPlayerCache().get(player.getUniqueID());
 			if(factionName == null) {
 				if(Lands.isSafeZone(coords)) {
 					factionName = "safezone";
@@ -272,20 +275,20 @@ public class Lands {
 				}
 			}
 			if(!factionName.equalsIgnoreCase(cacheFactionName)) {
-				Lands.setPlayerCache(event.player.getUniqueID(), factionName);
+				Lands.setPlayerCache(player.getUniqueID(), factionName);
 				if(!factionName.isEmpty() && !factionName.equalsIgnoreCase("safezone") && !factionName.equalsIgnoreCase("warzone")) {
 					Faction faction = Faction.Registry.getFactionFromName(factionName);
-					event.player.addChatComponentMessage(new ChatComponentText(EnumChatFormatting.GOLD + "[ " + factionName + (faction == null || faction.getDescription().equals("") ? "" : EnumChatFormatting.LIGHT_PURPLE + " - " + EnumChatFormatting.BLUE + faction.getDescription()) + EnumChatFormatting.GOLD + " ]"));
+					player.addChatComponentMessage(new ChatComponentText(EnumChatFormatting.GOLD + "[ " + factionName + (faction == null || faction.getDescription().equals("") ? "" : EnumChatFormatting.LIGHT_PURPLE + " - " + EnumChatFormatting.BLUE + faction.getDescription()) + EnumChatFormatting.GOLD + " ]"));
 				} else {
 					if(Lands.isSafeZone(coords)) {
-						event.player.addChatComponentMessage(new ChatComponentTranslation("faction.chunk.safeZone", new Object[0]));
+						player.addChatComponentMessage(new ChatComponentTranslation("faction.chunk.safeZone", new Object[0]));
 					} else if(Lands.isWarZone(coords)) {
-						event.player.addChatComponentMessage(new ChatComponentTranslation("faction.chunk.warZone", new Object[0]));
+						player.addChatComponentMessage(new ChatComponentTranslation("faction.chunk.warZone", new Object[0]));
 					} else {
-						event.player.addChatComponentMessage(new ChatComponentTranslation("faction.chunk.free", new Object[0]));
+						player.addChatComponentMessage(new ChatComponentTranslation("faction.chunk.free", new Object[0]));
 					}
 				}
-				PacketHelper.updateLandOwner(event.player, factionName);
+				PacketHelper.updateLandOwner(player, factionName);
 			}
 		}
 	}
@@ -489,6 +492,21 @@ public class Lands {
 				if(Lands.isSafeZone(pair)) {
 					event.setCanceled(true);
 				}
+			}
+		}
+	}
+
+	public static void onExplosion(ExplosionEvent.Detonate event) {
+		if(!event.world.isRemote && event.world.equals(MinecraftServer.getServer().getEntityWorld())) {
+			List<BlockPos> dontExplode = Lists.newArrayList();
+			for(BlockPos pos : event.getAffectedBlocks()) {
+				ChunkCoordIntPair pair = event.world.getChunkFromBlockCoords(pos).getChunkCoordIntPair();
+				if(Lands.isSafeZone(pair) || Lands.isWarZone(pair)) {
+					dontExplode.add(pos);
+				}
+			}
+			for(BlockPos pos : dontExplode) {
+				event.getAffectedBlocks().remove(pos);
 			}
 		}
 	}
