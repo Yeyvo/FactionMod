@@ -55,6 +55,10 @@ public class CommandZone implements ICommand {
 				EnumResult result = Lands.removeZone(player);
 				player.addChatComponentMessage(new ChatComponentTranslation(result.getLanguageKey(), result.getInformations()));
 			}
+
+			else {
+				throw new WrongUsageException(getCommandUsage(sender), new Object[0]);
+			}
 		}
 	}
 

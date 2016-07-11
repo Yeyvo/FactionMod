@@ -27,7 +27,7 @@ public class PacketHelper {
 			FactionMod.network.sendTo(packet, (EntityPlayerMP)player);
 		}
 	}
-	
+
 	public static void updateClientRank(UUID uuid) {
 		Entity player = MinecraftServer.getServer().getEntityFromUuid(uuid);
 		if(player instanceof EntityPlayerMP) {
@@ -43,7 +43,7 @@ public class PacketHelper {
 			FactionMod.network.sendTo(packet, (EntityPlayerMP)player);
 		}
 	}
-	
+
 	public static void updateLandOwner(EntityPlayer player, String factionName) {
 		if(factionName == null) {
 			factionName = "";
@@ -51,7 +51,7 @@ public class PacketHelper {
 		PacketLandOwner packet = new PacketLandOwner(factionName);
 		FactionMod.network.sendTo(packet, (EntityPlayerMP)player);
 	}
-	
+
 	public static void sendMap(EntityPlayerMP player) {
 		String[] names = new String[25];
 		ChunkCoordIntPair pair = player.getEntityWorld().getChunkFromBlockCoords(player.getPosition()).getChunkCoordIntPair();
@@ -61,7 +61,13 @@ public class PacketHelper {
 				ChunkCoordIntPair coords = player.getEntityWorld().getChunkFromChunkCoords(pair.chunkXPos + i, pair.chunkZPos + k).getChunkCoordIntPair();
 				String factionName = Lands.getLandFaction().get(coords);
 				if(factionName == null) {
-					factionName = "";
+					if(Lands.isSafeZone(coords)) {
+						factionName = "safezone";
+					} else if(Lands.isWarZone(coords)) {
+						factionName = "warzone";
+					} else {
+						factionName = "";
+					}
 				}
 				names[index] = factionName;
 				index++;
