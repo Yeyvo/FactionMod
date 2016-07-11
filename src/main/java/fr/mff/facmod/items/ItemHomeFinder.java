@@ -26,17 +26,22 @@ public class ItemHomeFinder extends Item {
 
 	@Override
 	public ItemStack onItemRightClick(ItemStack itemStackIn, World worldIn, EntityPlayer player) {
-		if (player.inventory.consumeInventoryItem(this)) {
-			if (!worldIn.isRemote) {
-				Object[] crunchifyKeys = Homes.getHomes().values().toArray();
-				Object key = crunchifyKeys[new Random().nextInt(crunchifyKeys.length)];
-				String fac = key.toString().replace("{", "").replace("}", "").replace("=", " = ").replace("BlockPos", "");
-				player.addChatComponentMessage(new ChatComponentTranslation("msg.faction.coordo.home", new Object[0]));
-				player.addChatComponentMessage(new ChatComponentText(EnumChatFormatting.RED + fac));
+		if (!worldIn.isRemote) {
+			Object[] crunchifyKeys = Homes.getHomes().values().toArray();
+			if (crunchifyKeys.length > 0) {
+				if (player.inventory.consumeInventoryItem(this)) {
+					Object key = crunchifyKeys[new Random().nextInt(crunchifyKeys.length)];
+					String fac = key.toString().replace("{", "").replace("}", "").replace("=", " = ")
+							.replace("BlockPos", "");
+					player.addChatComponentMessage(
+							new ChatComponentTranslation("msg.faction.coordo.home", new Object[0]));
+					player.addChatComponentMessage(new ChatComponentText(EnumChatFormatting.RED + fac));
+				}
 			}
 		}
 		return super.onItemRightClick(itemStackIn, worldIn, player);
 	}
+
 	@Override
 	public boolean isBookEnchantable(ItemStack stack, ItemStack book) {
 		return false;
