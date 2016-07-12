@@ -16,7 +16,6 @@ import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.ChunkCoordIntPair;
-import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
@@ -26,6 +25,7 @@ import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 import net.minecraftforge.event.world.BlockEvent.PlaceEvent;
 import net.minecraftforge.event.world.ExplosionEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 import com.google.common.collect.Lists;
 
@@ -259,12 +259,11 @@ public class Lands {
 		}
 	}
 
-	public static void onEntityEnteringChunk(EntityEvent.EnteringChunk event) {
-		if(!event.entity.getEntityWorld().isRemote && event.entity instanceof EntityPlayer) {
-			EntityPlayer player = (EntityPlayer)event.entity;
-			ChunkCoordIntPair coords = new ChunkCoordIntPair(event.newChunkX, event.newChunkZ);
+	public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
+		if(!event.player.getEntityWorld().isRemote && event.player.getEntityWorld().equals(MinecraftServer.getServer().getEntityWorld())) {
+			ChunkCoordIntPair coords = event.player.getEntityWorld().getChunkFromBlockCoords(event.player.getPosition()).getChunkCoordIntPair();
 			String factionName = Lands.getLandFaction().get(coords);
-			String cacheFactionName = Lands.getPlayerCache().get(player.getUniqueID());
+			String cacheFactionName = Lands.getPlayerCache().get(event.player.getUniqueID());
 			if(factionName == null) {
 				if(Lands.isSafeZone(coords)) {
 					factionName = "safezone";
@@ -275,20 +274,20 @@ public class Lands {
 				}
 			}
 			if(!factionName.equalsIgnoreCase(cacheFactionName)) {
-				Lands.setPlayerCache(player.getUniqueID(), factionName);
+				Lands.setPlayerCache(event.player.getUniqueID(), factionName);
 				if(!factionName.isEmpty() && !factionName.equalsIgnoreCase("safezone") && !factionName.equalsIgnoreCase("warzone")) {
 					Faction faction = Faction.Registry.getFactionFromName(factionName);
-					player.addChatComponentMessage(new ChatComponentText(EnumChatFormatting.GOLD + "[ " + factionName + (faction == null || faction.getDescription().equals("") ? "" : EnumChatFormatting.LIGHT_PURPLE + " - " + EnumChatFormatting.BLUE + faction.getDescription()) + EnumChatFormatting.GOLD + " ]"));
+					event.player.addChatComponentMessage(new ChatComponentText(EnumChatFormatting.GOLD + "[ " + factionName + (faction == null || faction.getDescription().equals("") ? "" : EnumChatFormatting.LIGHT_PURPLE + " - " + EnumChatFormatting.BLUE + faction.getDescription()) + EnumChatFormatting.GOLD + " ]"));
 				} else {
 					if(Lands.isSafeZone(coords)) {
-						player.addChatComponentMessage(new ChatComponentTranslation("faction.chunk.safeZone", new Object[0]));
+						event.player.addChatComponentMessage(new ChatComponentTranslation("faction.chunk.safeZone", new Object[0]));
 					} else if(Lands.isWarZone(coords)) {
-						player.addChatComponentMessage(new ChatComponentTranslation("faction.chunk.warZone", new Object[0]));
+						event.player.addChatComponentMessage(new ChatComponentTranslation("faction.chunk.warZone", new Object[0]));
 					} else {
-						player.addChatComponentMessage(new ChatComponentTranslation("faction.chunk.free", new Object[0]));
+						event.player.addChatComponentMessage(new ChatComponentTranslation("faction.chunk.free", new Object[0]));
 					}
 				}
-				PacketHelper.updateLandOwner(player, factionName);
+				PacketHelper.updateLandOwner(event.player, factionName);
 			}
 		}
 	}
@@ -362,6 +361,9 @@ public class Lands {
 
 	public static void onPlayerInteract(PlayerInteractEvent event) {
 		if(!event.world.isRemote && event.world.equals(MinecraftServer.getServer().getEntityWorld())) {
+			if(event.action == PlayerInteractEvent.Action.LEFT_CLICK_BLOCK) {
+				return;
+			}
 			ChunkCoordIntPair coords = event.world.getChunkFromBlockCoords(event.pos).getChunkCoordIntPair();
 			if(Lands.isSafeZone(coords)) {
 				event.entityPlayer.addChatComponentMessage(new ChatComponentTranslation(EnumResult.IN_A_SAFE_ZONE.getLanguageKey(), new Object[0]));

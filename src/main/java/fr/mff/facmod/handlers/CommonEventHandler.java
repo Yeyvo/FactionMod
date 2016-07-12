@@ -1,6 +1,5 @@
 package fr.mff.facmod.handlers;
 
-import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
@@ -19,8 +18,8 @@ import fr.mff.facmod.network.PacketHelper;
 public class CommonEventHandler {
 
 	@SubscribeEvent
-	public void onEntityEnteringChunk(EntityEvent.EnteringChunk event) {
-		Lands.onEntityEnteringChunk(event);
+	public void onEntityEnteringChunk(TickEvent.PlayerTickEvent event) {
+		Lands.onPlayerTick(event);
 	}
 	
 	@SubscribeEvent
