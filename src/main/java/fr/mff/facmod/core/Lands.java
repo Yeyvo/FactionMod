@@ -74,7 +74,7 @@ public class Lands {
 			NBTTagCompound warZoneTag = new NBTTagCompound();
 			warZoneTag.setInteger("x", chunk.chunkXPos);
 			warZoneTag.setInteger("z", chunk.chunkZPos);
-			safeZonesList.appendTag(warZoneTag);
+			warZoneList.appendTag(warZoneTag);
 		}
 		compound.setTag("warZones", warZoneList);
 	}
