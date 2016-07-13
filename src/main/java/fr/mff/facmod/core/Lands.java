@@ -245,6 +245,7 @@ public class Lands {
 					String owner = chunks.get(pair);
 					if(owner != null) {
 						if(faction.getName().equalsIgnoreCase(owner)) {
+							Homes.onLandUnclaimedPre(pair);
 							chunks.remove(pair);
 							FactionSaver.save();
 							return EnumResult.LAND_UNCLAIMED.clear().addInformation(EnumChatFormatting.GOLD + faction.getName());
