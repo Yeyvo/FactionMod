@@ -210,54 +210,62 @@ public class Lands {
 		return EnumResult.WRONG_WORLD;
 	}
 
-	public static EnumResult claimChunk(UUID claimer, ChunkCoordIntPair pair) {
-		if(Lands.isSafeZone(pair)) {
-			return EnumResult.IN_A_SAFE_ZONE;
-		} else if(Lands.isWarZone(pair)) {
-			return EnumResult.IN_A_WAR_ZONE;
-		} else {
-			Faction faction = Faction.Registry.getPlayerFaction(claimer);
-			if(faction != null) {
-				if(faction.getMember(claimer).getRank().hasPermission(Permission.LAND_HANDLING)) {
-					String name = chunks.get(pair);
-					if(name == null) {
-						chunks.put(pair, faction.getName());
-						FactionSaver.save();
-						return EnumResult.LAND_CLAIMED.clear().addInformation(EnumChatFormatting.GOLD + faction.getName());
+	public static EnumResult claimChunk(EntityPlayer player, ChunkCoordIntPair pair) {
+		if(player.getEntityWorld().equals(MinecraftServer.getServer().getEntityWorld())) {
+			UUID claimer = player.getUniqueID();
+			if(Lands.isSafeZone(pair)) {
+				return EnumResult.IN_A_SAFE_ZONE;
+			} else if(Lands.isWarZone(pair)) {
+				return EnumResult.IN_A_WAR_ZONE;
+			} else {
+				Faction faction = Faction.Registry.getPlayerFaction(claimer);
+				if(faction != null) {
+					if(faction.getMember(claimer).getRank().hasPermission(Permission.LAND_HANDLING)) {
+						String name = chunks.get(pair);
+						if(name == null) {
+							chunks.put(pair, faction.getName());
+							FactionSaver.save();
+							return EnumResult.LAND_CLAIMED.clear().addInformation(EnumChatFormatting.GOLD + faction.getName());
+						}
+						return EnumResult.ALREADY_CLAIMED_LAND.clear().addInformation(EnumChatFormatting.GOLD + name);
 					}
-					return EnumResult.ALREADY_CLAIMED_LAND.clear().addInformation(EnumChatFormatting.GOLD + name);
+					return EnumResult.NO_PERMISSION;
 				}
-				return EnumResult.NO_PERMISSION;
+				return EnumResult.NOT_IN_A_FACTION;
 			}
-			return EnumResult.NOT_IN_A_FACTION;
 		}
+		return EnumResult.WRONG_WORLD;
 	}
 
-	public static EnumResult unClaimChunk(UUID uuid, ChunkCoordIntPair pair) {
-		if(Lands.isSafeZone(pair)) {
-			return EnumResult.IN_A_SAFE_ZONE;
-		} else if(Lands.isWarZone(pair)) {
-			return EnumResult.IN_A_WAR_ZONE;
-		} else {
-			Faction faction = Faction.Registry.getPlayerFaction(uuid);
-			if(faction != null) {
-				if(faction.getMember(uuid).getRank().hasPermission(Permission.LAND_HANDLING)) {
-					String owner = chunks.get(pair);
-					if(owner != null) {
-						if(faction.getName().equalsIgnoreCase(owner)) {
-							Homes.onLandUnclaimedPre(pair);
-							chunks.remove(pair);
-							FactionSaver.save();
-							return EnumResult.LAND_UNCLAIMED.clear().addInformation(EnumChatFormatting.GOLD + faction.getName());
+	public static EnumResult unClaimChunk(EntityPlayer player, ChunkCoordIntPair pair) {
+		UUID uuid = player.getUniqueID();
+		if(player.getEntityWorld().equals(MinecraftServer.getServer().getEntityWorld())) {
+			if(Lands.isSafeZone(pair)) {
+				return EnumResult.IN_A_SAFE_ZONE;
+			} else if(Lands.isWarZone(pair)) {
+				return EnumResult.IN_A_WAR_ZONE;
+			} else {
+				Faction faction = Faction.Registry.getPlayerFaction(uuid);
+				if(faction != null) {
+					if(faction.getMember(uuid).getRank().hasPermission(Permission.LAND_HANDLING)) {
+						String owner = chunks.get(pair);
+						if(owner != null) {
+							if(faction.getName().equalsIgnoreCase(owner)) {
+								Homes.onLandUnclaimedPre(pair);
+								chunks.remove(pair);
+								FactionSaver.save();
+								return EnumResult.LAND_UNCLAIMED.clear().addInformation(EnumChatFormatting.GOLD + faction.getName());
+							}
+							return EnumResult.ALREADY_CLAIMED_LAND.clear().addInformation(EnumChatFormatting.GOLD + owner);
 						}
-						return EnumResult.ALREADY_CLAIMED_LAND.clear().addInformation(EnumChatFormatting.GOLD + owner);
+						return EnumResult.NOT_CLAIMED_LAND;
 					}
-					return EnumResult.NOT_CLAIMED_LAND;
+					return EnumResult.NO_PERMISSION;
 				}
-				return EnumResult.NO_PERMISSION;
+				return EnumResult.NOT_IN_A_FACTION;
 			}
-			return EnumResult.NOT_IN_A_FACTION;
 		}
+		return EnumResult.WRONG_WORLD;
 	}
 
 	public static void onPlayerTick(TickEvent.PlayerTickEvent event) {

@@ -187,14 +187,14 @@ public class CommandFaction extends CommandBase {
 			// Claim
 			else if(args[0].equalsIgnoreCase("claim")) {
 				ChunkCoordIntPair pair = player.getEntityWorld().getChunkFromBlockCoords(player.getPosition()).getChunkCoordIntPair();
-				EnumResult result = Lands.claimChunk(player.getUniqueID(), pair);
+				EnumResult result = Lands.claimChunk(player, pair);
 				player.addChatComponentMessage(new ChatComponentTranslation(result.getLanguageKey(), result.getInformations()));
 			}
 
 			// Un-Claim
 			else if(args[0].equalsIgnoreCase("unclaim")) {
 				ChunkCoordIntPair pair = player.getEntityWorld().getChunkFromBlockCoords(player.getPosition()).getChunkCoordIntPair();
-				EnumResult result = Lands.unClaimChunk(player.getUniqueID(), pair);
+				EnumResult result = Lands.unClaimChunk(player, pair);
 				player.addChatComponentMessage(new ChatComponentTranslation(result.getLanguageKey(), result.getInformations()));
 			}
 
