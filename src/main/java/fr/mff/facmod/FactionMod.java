@@ -28,8 +28,6 @@ import fr.mff.facmod.perm.PermissionManager;
 import fr.mff.facmod.proxy.CommonProxy;
 import fr.mff.facmod.recipes.RecipeRegistry;
 import fr.mff.facmod.tileentities.TileEntityRegistry;
-import fr.mff.facmod.wand.util.conversion.CustomMappingManager;
-import fr.mff.facmod.wand.util.conversion.StackedBlockManager;
 
 /**
  * @author BrokenSwing
@@ -47,8 +45,6 @@ public class FactionMod {
 	public static CommonProxy proxy;
 
 	public static Logger logger;
-	public StackedBlockManager blockCache;
-	public CustomMappingManager mappingManager;
 	public static CreativeTabs factionTabs = new CreativeTabs("FactionTab") {
 		
 		@Override
@@ -67,8 +63,6 @@ public class FactionMod {
 		BlockRegistry.preInit(event);
 		ItemRegistry.preInit(event);
 		proxy.preInit(event);
-	    this.blockCache = new StackedBlockManager();
-	    this.mappingManager = new CustomMappingManager();
 	}
 
 	@EventHandler
