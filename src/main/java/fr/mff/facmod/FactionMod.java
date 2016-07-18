@@ -24,6 +24,7 @@ import fr.mff.facmod.entity.EntityDynamite;
 import fr.mff.facmod.handlers.GuiHandler;
 import fr.mff.facmod.items.ItemRegistry;
 import fr.mff.facmod.network.PacketRegistry;
+import fr.mff.facmod.perm.PermissionManager;
 import fr.mff.facmod.proxy.CommonProxy;
 import fr.mff.facmod.recipes.RecipeRegistry;
 import fr.mff.facmod.tileentities.TileEntityRegistry;
@@ -86,6 +87,7 @@ public class FactionMod {
 	@EventHandler
 	public void serverStarting(FMLServerStartingEvent event) {
 		FactionSaver.onServerStarting(event);
+		PermissionManager.onServerStarting(event);
 		CommandRegistry.onServerStarting(event);
 	}
 	  public void Render(Class<? extends Entity> par1, String par2, int par3, Object par4, int par5, int par6, boolean par7)

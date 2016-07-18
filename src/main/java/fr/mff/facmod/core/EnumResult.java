@@ -2,6 +2,7 @@ package fr.mff.facmod.core;
 
 public enum EnumResult {
 	
+	//Faction
 	FACTION_JOINED("result.factionJoined", true),
 	FACTION_CREATED("result.factionCreated", true),
 	FACTION_LEFT("result.factionLeft", true),
@@ -21,7 +22,6 @@ public enum EnumResult {
 	ALREADY_CLAIMED_LAND("result.alreadyClaimedLand", false),
 	LAND_OF_THE_FACTION("result.landOfTheFaction", false),
 	NOT_CLAIMED_LAND("result.notClaimedLand", false),
-	//CLAIMED_BY_FACTION("result.claimedByFaction", false),
 	LAND_UNCLAIMED("result.landUnclaimed", true),
 	NOT_IN_A_FACTION("result.notInAFaction", false),
 	IN_A_FACTION("result.inAFaction", false),
@@ -47,6 +47,22 @@ public enum EnumResult {
 	NOT_WAR_OR_SAFE_ZONE("result.notWarOrSafeZone", false),
 	SAFE_ZONE_SET("result.safeZoneSet", true),
 	WAR_ZONE_SET("result.warZoneSet", true),
+	
+	//Permission
+	GROUP_CREATED("result.groupCreated", true),
+	EXISTING_GROUP("result.existingGroup", false),
+	NOT_EXISTING_GROUP("result.notExistingGroup", false),
+	GROUP_REMOVED("result.groupRemoved", true),
+	PLAYER_ADDED_TO_GROUP("result.playerAddedToGroup", true),
+	PLAYER_ALREADY_IN_THE_GROUP("result.playerAlreadyInTheGroup", false),
+	WRONG_SYNTAX("result.wrongSyntax", false),
+	PERMISSION_ADDED("result.permissionAdded", true),
+	PERMISSION_REMOVED("result.permissionRemoved", true),
+	INVALID_NAME("result.invalidName", false),
+	NO_PERMISSION_FOUND("result.noPermissionFound", false),
+	FOUND_PERMISSIONS("result.foundPermissions", true),
+	PLAYER_REMOVED_FROM_GROUP("result.playerRemovedFromGroup", true),
+	PLAYER_NOT_IN_A_GROUP("result.playerNotInAGroup", false),
 	
 	ERROR("result.error", false);
 	
