@@ -1,14 +1,20 @@
-package fr.mff.facmod;
+ package fr.mff.facmod;
 
+import java.util.Map;
+import java.util.Map.Entry;
+
+import net.minecraft.command.ICommand;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
+import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLServerStartedEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
@@ -88,5 +94,13 @@ public class FactionMod {
 	  {
 	    EntityRegistry.registerModEntity(par1, par2, par3, par4, par5, par6, par7);
 	  }
+	  
+	@EventHandler
+	public void serverStarted(FMLServerStartedEvent event) {
+		Map<String, ICommand> commands = MinecraftServer.getServer().getCommandManager().getCommands();
+		for(Entry<String, ICommand> command : commands.entrySet()) {
+			PermissionManager.API.registerPermission("command." + command.getKey());
+		}
+	}
 
 }

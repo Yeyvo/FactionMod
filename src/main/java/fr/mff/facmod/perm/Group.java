@@ -32,7 +32,7 @@ public class Group {
 		return this.prefix;
 	}
 
-	public String getDisplayPrefix() {
+	public String getDisplay() {
 		return this.color + "[" + this.getPrefix() + "]";
 	}
 	
@@ -42,24 +42,18 @@ public class Group {
 	
 	public void addMember(UUID uuid) {
 		members.add(uuid);
-		PermissionManager.players.put(uuid, this);
-		PermissionManager.save();
 	}
 
 	public void addPermission(String perm) {
 		permissions.add(perm);
-		PermissionManager.save();
 	}
 	
 	public void removeMember(UUID uuid) {
 		members.remove(uuid);
-		PermissionManager.players.remove(uuid);
-		PermissionManager.save();
 	}
 	
 	public void removePermission(String perm) {
 		permissions.remove(perm);
-		PermissionManager.save();
 	}
 	
 	public void writeToNBT(NBTTagCompound compound) {
@@ -90,7 +84,9 @@ public class Group {
 		
 		NBTTagList membersList = (NBTTagList)compound.getTag("members");
 		for(int i = 0; i < membersList.tagCount(); i++) {
-			g.addMember(UUID.fromString(membersList.getStringTagAt(i)));
+			UUID uuid = UUID.fromString(membersList.getStringTagAt(i));
+			g.addMember(uuid);
+			PermissionManager.players.put(uuid, g);
 		}
 		
 		return g;

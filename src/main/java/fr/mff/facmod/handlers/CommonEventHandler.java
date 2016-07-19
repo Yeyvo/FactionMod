@@ -1,11 +1,13 @@
 package fr.mff.facmod.handlers;
 
 import net.minecraft.init.Items;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.FillBucketEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent.NameFormat;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.BlockEvent.PlaceEvent;
@@ -18,6 +20,7 @@ import fr.mff.addons.permission.PermissionApi;
 import fr.mff.facmod.core.Homes;
 import fr.mff.facmod.core.Lands;
 import fr.mff.facmod.network.PacketHelper;
+import fr.mff.facmod.perm.Group;
 import fr.mff.facmod.perm.PermissionManager;
 
 public class CommonEventHandler {
@@ -42,6 +45,7 @@ public class CommonEventHandler {
 	public void onPlayerJoin(PlayerEvent.PlayerLoggedInEvent event) {
 		PacketHelper.updateClientFaction(event.player.getUniqueID());
 		PacketHelper.updateClientRank(event.player.getUniqueID());
+		event.player.refreshDisplayName();
 	}
 
 	@SubscribeEvent
@@ -109,6 +113,14 @@ public class CommonEventHandler {
 				event.setCanceled(true);
 				event.setResult(Result.DENY);
 			}
+		}
+	}
+	
+	@SubscribeEvent
+	public void onNameFormat(NameFormat event) {
+		Group g = PermissionManager.getPlayerGroup(event.entityPlayer.getUniqueID());
+		if(g != null) {
+			event.displayname = g.getDisplay() + " " + EnumChatFormatting.RESET + event.displayname;
 		}
 	}
 }

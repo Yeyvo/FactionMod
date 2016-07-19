@@ -55,6 +55,7 @@ public class PermissionManager extends WorldSavedData {
 				Group playerGroup = getPlayerGroup(profile.getId());
 				if(playerGroup == null) {
 					g.addMember(profile.getId());
+					System.out.println(players.put(profile.getId(), g));
 					save();
 					return EnumResult.PLAYER_ADDED_TO_GROUP.clear().addInformation(profile.getName()).addInformation(g.getName());
 				}
@@ -71,6 +72,7 @@ public class PermissionManager extends WorldSavedData {
 			Group playerGroup = getPlayerGroup(profile.getId());
 			if(playerGroup != null) {
 				playerGroup.removeMember(profile.getId());
+				players.remove(profile.getId());
 				save();
 				return EnumResult.PLAYER_REMOVED_FROM_GROUP.clear().addInformation(profile.getName()).addInformation(playerGroup.getName());
 			}
@@ -81,7 +83,7 @@ public class PermissionManager extends WorldSavedData {
 
 	public static EnumResult createGroup(String name, String prefix, String color) {
 		if(!name.equalsIgnoreCase("create") && !name.equalsIgnoreCase("remove")) {
-			Group group = new Group(name, prefix, EnumChatFormatting.valueOf(color));
+			Group group = new Group(name, prefix, EnumChatFormatting.getValueByName(color));
 			if(groups.add(group)) {
 				save();
 				return EnumResult.GROUP_CREATED.clear().addInformation(group.getName());
@@ -157,16 +159,18 @@ public class PermissionManager extends WorldSavedData {
 	}
 
 	public static boolean canEntityExecuteCommand(Entity entity, ICommand command) {
-		if(isOperator(entity.getName())) {
-			return true;
-		}
 
 		Group g = players.get(entity.getUniqueID());
 		if(g != null) {
+			System.out.println(command.getCommandName());
 			if(g.hasPermission("command." + command.getCommandName())) {
 				return true;
 			}
 			return false;
+		} else {
+			if(isOperator(entity.getName())) {
+				return true;
+			}
 		}
 		return false;
 	}

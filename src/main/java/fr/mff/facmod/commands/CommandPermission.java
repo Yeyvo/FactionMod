@@ -9,11 +9,14 @@ import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.util.EnumChatFormatting;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import com.mojang.authlib.GameProfile;
 
 import fr.mff.facmod.core.EnumResult;
 import fr.mff.facmod.perm.PermissionManager;
@@ -37,13 +40,13 @@ public class CommandPermission implements ICommand {
 		groupArgs.add("create");
 		groupArgs.add("remove");
 	}
-	
+
 	public static final Set<String> groupGroup = Sets.newHashSet();
 	static {
 		groupGroup.add("add");
 		groupGroup.add("remove");
 	}
-	
+
 	public static final Set<String> groupAdd = Sets.newHashSet();
 	static {
 		groupAdd.add("perm");
@@ -150,12 +153,21 @@ public class CommandPermission implements ICommand {
 			// Perm
 			else if(args[0].equalsIgnoreCase("perm") ) {
 				if(args.length < 2) throw new WrongUsageException("/permission perm <list>", new Object[0]);
-				
+
 				//Perm list
 				if(args[1].equalsIgnoreCase("list")) {
 					if(args.length < 3) throw new WrongUsageException("/permission perm list <pattern>", new Object[0]);
 					EnumResult result = PermissionManager.permissionList(args[2]);
 					player.addChatComponentMessage(new ChatComponentTranslation(result.getLanguageKey(), result.getInformations()));
+				}
+			}
+			
+			else if(args[0].equalsIgnoreCase("user")) {
+				if(args.length >= 2) {
+					GameProfile profile = MinecraftServer.getServer().getPlayerProfileCache().getGameProfileForUsername(args[1]);
+					if(profile != null) {
+						System.out.println(PermissionManager.getPlayerGroup(profile.getId()));
+					}
 				}
 			}
 
@@ -196,6 +208,14 @@ public class CommandPermission implements ICommand {
 			if(args[0].equalsIgnoreCase("group")) {
 				if(!args[1].equalsIgnoreCase("create") && !args[1].equalsIgnoreCase("remove")) {
 					tab.addAll(getStringStartingWith(args[3], groupAdd));
+				}
+			}
+		} else if(args.length == 5) {
+			if(args[0].equalsIgnoreCase("group")) {
+				if(args[1].equalsIgnoreCase("create")) {
+					for(EnumChatFormatting format : EnumChatFormatting.values()) {
+						tab.add(format.getFriendlyName());
+					}
 				}
 			}
 		}
