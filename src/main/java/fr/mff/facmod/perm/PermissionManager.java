@@ -1,24 +1,28 @@
 package fr.mff.facmod.perm;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.Map.Entry;
 
 import net.minecraft.command.ICommand;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.WorldSavedData;
 import net.minecraft.world.storage.MapStorage;
+import net.minecraftforge.fml.common.event.FMLServerStartedEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.mojang.authlib.GameProfile;
 
-import fr.mff.addons.permission.IPermissionManager;
+import fr.mff.facmod.config.ConfigFaction;
 import fr.mff.facmod.core.EnumResult;
 
 
@@ -34,7 +38,6 @@ public class PermissionManager extends WorldSavedData {
 	}
 
 	private static PermissionManager INSTANCE = null;
-	public static PermissionManager.API API = new PermissionManager.API();
 
 	public PermissionManager(String name) {
 		super(name);
@@ -55,7 +58,11 @@ public class PermissionManager extends WorldSavedData {
 				Group playerGroup = getPlayerGroup(profile.getId());
 				if(playerGroup == null) {
 					g.addMember(profile.getId());
-					System.out.println(players.put(profile.getId(), g));
+					players.put(profile.getId(), g);
+					Entity entity = MinecraftServer.getServer().getEntityFromUuid(profile.getId());
+					if(entity instanceof EntityPlayer) {
+						((EntityPlayer)entity).refreshDisplayName();
+					}
 					save();
 					return EnumResult.PLAYER_ADDED_TO_GROUP.clear().addInformation(profile.getName()).addInformation(g.getName());
 				}
@@ -73,6 +80,10 @@ public class PermissionManager extends WorldSavedData {
 			if(playerGroup != null) {
 				playerGroup.removeMember(profile.getId());
 				players.remove(profile.getId());
+				Entity entity = MinecraftServer.getServer().getEntityFromUuid(profile.getId());
+				if(entity instanceof EntityPlayer) {
+					((EntityPlayer)entity).refreshDisplayName();
+				}
 				save();
 				return EnumResult.PLAYER_REMOVED_FROM_GROUP.clear().addInformation(profile.getName()).addInformation(playerGroup.getName());
 			}
@@ -103,6 +114,13 @@ public class PermissionManager extends WorldSavedData {
 		}
 		if(toRemove != null) {
 			groups.remove(toRemove);
+			for(UUID uuid : toRemove.getMembers()) {
+				players.remove(uuid);
+				Entity entity = MinecraftServer.getServer().getEntityFromUuid(uuid);
+				if(entity instanceof EntityPlayer) {
+					((EntityPlayer)entity).refreshDisplayName();
+				}
+			}
 			save();
 			return EnumResult.GROUP_REMOVED.clear().addInformation(toRemove.getName());
 		}
@@ -226,7 +244,7 @@ public class PermissionManager extends WorldSavedData {
 	}
 
 	public static void onServerStarting(FMLServerStartingEvent event) {
-		if(!event.getServer().getEntityWorld().isRemote) {
+		if(ConfigFaction.ENABLE_PERMISSION) {
 			clear();
 			MapStorage storage = event.getServer().getEntityWorld().getMapStorage();
 			PermissionManager data = (PermissionManager)storage.loadData(PermissionManager.class, "permissionAddon");
@@ -238,41 +256,36 @@ public class PermissionManager extends WorldSavedData {
 		}
 	}
 
-	public static class API implements IPermissionManager {
+	public static void registerPermission(String name) {
+		permissions.add(name);
+	}
 
-		@Override
-		public void registerPermission(String name) {
-			permissions.add(name);
+	public static boolean hasPlayerPermission(String name, String permission) {
+		GameProfile profile = MinecraftServer.getServer().getPlayerProfileCache().getGameProfileForUsername(name);
+		if(profile != null) {
+			return hasEntityPermission(profile.getId(), permission);
 		}
+		return false;
+	}
 
-		@Override
-		public boolean hasPlayerPermission(String name, String permission) {
-			GameProfile profile = MinecraftServer.getServer().getPlayerProfileCache().getGameProfileForUsername(name);
-			if(profile != null) {
-				return hasEntityPermission(profile.getId(), permission);
-			}
-			return false;
+	public static boolean hasEntityPermission(UUID uuid, String permission) {
+		if(!ConfigFaction.ENABLE_PERMISSION) {
+			return true;
 		}
-
-		@Override
-		public boolean hasEntityPermission(UUID uuid, String permission) {
-			if(isOperator(uuid)) {
+		if(isOperator(uuid)) {
+			return true;
+		}
+		Group g = getPlayerGroup(uuid);
+		if(g != null) {
+			if(g.hasPermission(permission)) {
 				return true;
 			}
-			Group g = getPlayerGroup(uuid);
-			if(g != null) {
-				if(g.hasPermission(permission)) {
-					return true;
-				}
-			}
-			return false;
 		}
+		return false;
+	}
 
-		@Override
-		public boolean hasEntityPermission(Entity entity, String permission) {
-			return hasEntityPermission(entity.getUniqueID(), permission);
-		}
-
+	public static boolean hasEntityPermission(Entity entity, String permission) {
+		return hasEntityPermission(entity.getUniqueID(), permission);
 	}
 
 	public static EnumResult permissionList(String pattern) {
@@ -290,7 +303,7 @@ public class PermissionManager extends WorldSavedData {
 		}
 		return EnumResult.WRONG_SYNTAX;
 	}
-	
+
 	public static Set<String> getGroupsNames() {
 		Set<String> names = Sets.newHashSet();
 		for(Group g : groups) {
@@ -299,4 +312,12 @@ public class PermissionManager extends WorldSavedData {
 		return names;
 	}
 
+	public static void onServerStarted(FMLServerStartedEvent event) {
+		if(ConfigFaction.ENABLE_PERMISSION) {
+			Map<String, ICommand> commands = MinecraftServer.getServer().getCommandManager().getCommands();
+			for(Entry<String, ICommand> command : commands.entrySet()) {
+				PermissionManager.registerPermission("command." + command.getKey());
+			}		
+		}
+	}
 }

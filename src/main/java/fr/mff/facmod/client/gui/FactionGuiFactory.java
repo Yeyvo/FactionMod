@@ -47,6 +47,7 @@ public class FactionGuiFactory implements IModGuiFactory {
 			List<IConfigElement> list = new ArrayList<IConfigElement>();
 			list.add(new DummyCategoryElement(Configuration.CATEGORY_GENERAL, "config.general", new ConfigElement(ConfigFaction.cfg.getCategory(Configuration.CATEGORY_GENERAL)).getChildElements()));
 			list.add(new DummyCategoryElement(Configuration.CATEGORY_CLIENT, "config.client", new ConfigElement(ConfigFaction.cfg.getCategory(Configuration.CATEGORY_CLIENT)).getChildElements()));
+			list.add(new DummyCategoryElement("addons", "config.addons", new ConfigElement(ConfigFaction.cfg.getCategory("addons")).getChildElements()).setRequiresWorldRestart(true));
 			return list;
 		}
 

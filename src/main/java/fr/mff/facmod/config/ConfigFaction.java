@@ -18,6 +18,8 @@ public class ConfigFaction {
 	public static boolean FACTION_OVERLAY = true;
 	public static boolean RANK_OVERLAY = true;
 	public static boolean LAND_OWNER_OVERLAY = true;
+	
+	public static boolean ENABLE_PERMISSION = true;
 
 	public static void preInit(FMLPreInitializationEvent event) {
 		cfg = new Configuration(event.getSuggestedConfigurationFile());
@@ -72,6 +74,17 @@ public class ConfigFaction {
 		propOrder.add(prop.getName());
 		
 		cfg.setCategoryPropertyOrder(Configuration.CATEGORY_CLIENT, propOrder);
+		
+		propOrder = new ArrayList<String>();
+		
+		prop = cfg.get("addons", "enablePermission", true);
+		prop.comment = "Set to false to disable permission addon";
+		prop.setLanguageKey("config.addons.permission.enable");
+		prop.setRequiresWorldRestart(true);
+		ENABLE_PERMISSION = prop.getBoolean(true);
+		propOrder.add(prop.getName());
+		
+		cfg.setCategoryPropertyOrder("addons", propOrder);
 
 		if(cfg.hasChanged()) {
 			cfg.save();

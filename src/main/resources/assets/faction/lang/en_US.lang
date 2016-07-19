@@ -77,6 +77,8 @@ config.client=Client
 config.client.factionOverlay=Faction's name displaying
 config.client.rankOverlay=Rank's displaying
 config.client.landOwnerOverlay=Land's owner's name displaying
+config.addons.permission.enable=Permission enabling
+config.addons=Addons
 
 overlay.faction=Faction
 overlay.rank=Rank
@@ -106,5 +108,3 @@ bloc.maxblocks=9 Blocks Max
 chat.mode.horizontal=Horizontal
 chat.mode.vertical=Vertical
 mode.vertical=Vertical
-
-

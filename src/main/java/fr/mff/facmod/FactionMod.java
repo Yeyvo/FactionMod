@@ -1,13 +1,8 @@
- package fr.mff.facmod;
+package fr.mff.facmod;
 
-import java.util.Map;
-import java.util.Map.Entry;
-
-import net.minecraft.command.ICommand;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
-import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
@@ -52,15 +47,15 @@ public class FactionMod {
 
 	public static Logger logger;
 	public static CreativeTabs factionTabs = new CreativeTabs("FactionTab") {
-		
+
 		@Override
 		public Item getTabIconItem() {
 			return Item.getItemFromBlock(BlockRegistry.homeBase);
 		}
 	};
-	
+
 	public static SimpleNetworkWrapper network;	
-	
+
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event)
 	{
@@ -81,7 +76,7 @@ public class FactionMod {
 		network = NetworkRegistry.INSTANCE.newSimpleChannel("facmod");
 		NetworkRegistry.INSTANCE.registerGuiHandler(FactionMod.INSTANCE, new GuiHandler());
 		PacketRegistry.init(event);
-	    Render(EntityDynamite.class, "entitydynamite", 65, this, 512, 1, true);
+		Render(EntityDynamite.class, "entitydynamite", 65, this, 512, 1, true);
 	}
 
 	@EventHandler
@@ -90,17 +85,15 @@ public class FactionMod {
 		PermissionManager.onServerStarting(event);
 		CommandRegistry.onServerStarting(event);
 	}
-	  public void Render(Class<? extends Entity> par1, String par2, int par3, Object par4, int par5, int par6, boolean par7)
-	  {
-	    EntityRegistry.registerModEntity(par1, par2, par3, par4, par5, par6, par7);
-	  }
-	  
+	
+	public void Render(Class<? extends Entity> par1, String par2, int par3, Object par4, int par5, int par6, boolean par7)
+	{
+		EntityRegistry.registerModEntity(par1, par2, par3, par4, par5, par6, par7);
+	}
+
 	@EventHandler
 	public void serverStarted(FMLServerStartedEvent event) {
-		Map<String, ICommand> commands = MinecraftServer.getServer().getCommandManager().getCommands();
-		for(Entry<String, ICommand> command : commands.entrySet()) {
-			PermissionManager.API.registerPermission("command." + command.getKey());
-		}
+		PermissionManager.onServerStarted(event);
 	}
 
 }

@@ -33,11 +33,15 @@ public class Group {
 	}
 
 	public String getDisplay() {
-		return this.color + "[" + this.getPrefix() + "]";
+		return "[" + this.color + this.getPrefix() + EnumChatFormatting.RESET + "]";
 	}
 	
 	public boolean hasPermission(String permission) {
 		return permissions.contains(permission);
+	}
+	
+	public Set<UUID> getMembers() {
+		return members;
 	}
 	
 	public void addMember(UUID uuid) {
