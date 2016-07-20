@@ -28,7 +28,7 @@ result.descriptionChanged=§aLa description de la faction %s§a a été changée
 result.notConnectedPlayer=§cLe joueur %s§c n'est pas connecté
 result.playerInvited=§aLe joueur %s§a a été invité
 result.alreadyInvitedPlayer=§cLe joueur %s§c est déjà invité
-result.inTheFaction=§aLe joueur %s§a est déjà dans la faction %s
+result.inTheFaction=§cLe joueur %s§c est déjà dans la faction %s
 result.landOfTheFaction=§cLe terrain appartient à la faction %s
 result.homeSet=§aLa maison de votre faction est maintenant établie à %s§a, %s§a, %s
 result.homeNotSet=§cAucune maison de faction a été définie
@@ -56,12 +56,17 @@ result.foundPermissions=§aPermission(s) trouvée(s) :%s
 result.permissionRemoved=§aLa permission %s§a a été supprimée du groupe %s
 result.playerRemovedFromGroup=§aLe joueur %s§a a été supprimé du groupe %s
 result.playerNotInAGroup=§cLe joueur %s§c n'est pas dans un groupe
+result.specialPermissionAdded=§aLa permission spécial %s§a a été ajoutée au joueur %s
+result.specialRestrictionAdded=§aLa restriction spécial %s§a a été ajoutée au joueur %s
+result.specialsCleared=§aLes permissions ou restrictions spéciales du joueur %s§a ont été supprimées
+result.colorChanged=§aLa couleur du groupe %s§a a été changé pour %s
+result.prefixChanged=§aLe préfix du groupe %s§a a été changé en %s
 
 faction.chunk.free=§d** Terrain libre **
 faction.chunk.safeZone=§4** Zone de combat **
 faction.chunk.warZone=§e** Zone de sécurité **
 
-msg.invitation.received=§1Vous avez reçu une invitation de la faction %s%1
+msg.invitation.received=§1Vous avez reçu une invitation de la faction %s
 msg.homeRemoved=§cVotre maison a été supprimée
 msg.description=Description : %s
 msg.members=Membre(s) : %s

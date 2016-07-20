@@ -1,6 +1,8 @@
 package fr.mff.facmod.handlers;
 
 import net.minecraft.init.Items;
+import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
@@ -15,6 +17,7 @@ import net.minecraftforge.fml.common.eventhandler.Event.Result;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import fr.mff.facmod.core.EnumResult;
 import fr.mff.facmod.core.Homes;
 import fr.mff.facmod.core.Lands;
 import fr.mff.facmod.network.PacketHelper;
@@ -108,6 +111,7 @@ public class CommonEventHandler {
 	public void onCommand(CommandEvent event) {
 		if(!event.sender.getEntityWorld().isRemote) {
 			if(event.sender.getCommandSenderEntity() != null && !PermissionManager.canEntityExecuteCommand(event.sender.getCommandSenderEntity(), event.command)) {
+				event.sender.addChatMessage(new ChatComponentTranslation(EnumResult.NO_PERMISSION.getLanguageKey(), new Object[0]));
 				event.setCanceled(true);
 				event.setResult(Result.DENY);
 			}
@@ -118,7 +122,9 @@ public class CommonEventHandler {
 	public void onNameFormat(NameFormat event) {
 		Group g = PermissionManager.getPlayerGroup(event.entityPlayer.getUniqueID());
 		if(g != null) {
-			event.displayname = g.getDisplay() + " " + event.displayname;
+			event.displayname = g.getDisplay() + EnumChatFormatting.RESET + " " + event.displayname;
+		} else if(PermissionManager.isOperator(event.username)) {
+			event.displayname = EnumChatFormatting.RED + "Operator " + EnumChatFormatting.RESET + event.displayname;
 		}
 	}
 }

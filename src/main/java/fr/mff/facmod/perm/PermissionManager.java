@@ -2,15 +2,16 @@ package fr.mff.facmod.perm;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
-import java.util.Map.Entry;
 
 import net.minecraft.command.ICommand;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.NBTTagString;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.WorldSavedData;
@@ -31,6 +32,8 @@ public class PermissionManager extends WorldSavedData {
 	public static Set<Group> groups = Sets.newHashSet();
 	public static HashMap<UUID, Group> players = Maps.newHashMap();
 	public static PermissionBase permissions = new PermissionBase("", null);
+	public static HashMap<UUID, Set<String>> playersSpecialPermissions = Maps.newHashMap();
+	public static HashMap<UUID, Set<String>> playersSpecialRestrictions = Maps.newHashMap();
 	static {
 		permissions.add("world.block.break");
 		permissions.add("world.block.place");
@@ -48,6 +51,54 @@ public class PermissionManager extends WorldSavedData {
 		if(INSTANCE != null) {
 			INSTANCE.markDirty();
 		}
+	}
+
+	public static EnumResult addPlayerPermission(String playerName, String pattern) {
+		GameProfile profile = MinecraftServer.getServer().getPlayerProfileCache().getGameProfileForUsername(playerName);
+		if(profile != null) {
+			if(pattern.matches("^([a-zA-Z0-9]+(\\.[a-zA-Z0-9]+)+)|(([a-zA-Z0-9]+\\.)*\\*)$")) {
+				Set<String> perms = getPaths(permissions.get(pattern));
+				Set<String> currentsPermsAdded = playersSpecialPermissions.get(profile.getId());
+				Set<String> currentsPermsRemoved = playersSpecialRestrictions.get(profile.getId());
+				if(currentsPermsAdded == null) {
+					currentsPermsAdded = Sets.newHashSet();
+					playersSpecialPermissions.put(profile.getId(), currentsPermsAdded);
+				}
+				if(currentsPermsRemoved != null) {
+					currentsPermsRemoved.removeAll(perms);
+				}
+				currentsPermsAdded.addAll(perms);
+
+				save();
+				return EnumResult.SPECIAL_PERMISSION_ADDED.clear().addInformation(pattern).addInformation(profile.getName());
+			}
+			return EnumResult.WRONG_SYNTAX;
+		}
+		return EnumResult.NOT_EXISTING_PLAYER.clear().addInformation(playerName);
+	}
+	
+	public static EnumResult addPlayerRestriction(String playerName, String pattern) {
+		GameProfile profile = MinecraftServer.getServer().getPlayerProfileCache().getGameProfileForUsername(playerName);
+		if(profile != null) {
+			if(pattern.matches("^([a-zA-Z0-9]+(\\.[a-zA-Z0-9]+)+)|(([a-zA-Z0-9]+\\.)*\\*)$")) {
+				Set<String> perms = getPaths(permissions.get(pattern));
+				Set<String> currentsPermsAdded = playersSpecialPermissions.get(profile.getId());
+				Set<String> currentsPermsRemoved = playersSpecialRestrictions.get(profile.getId());
+				if(currentsPermsRemoved == null) {
+					currentsPermsRemoved = Sets.newHashSet();
+					playersSpecialRestrictions.put(profile.getId(), currentsPermsRemoved);
+				}
+				if(currentsPermsAdded != null) {
+					currentsPermsAdded.removeAll(perms);
+				}
+				currentsPermsRemoved.addAll(perms);
+
+				save();
+				return EnumResult.SPECIAL_RESTRICTION_ADDED.clear().addInformation(pattern).addInformation(profile.getName());
+			}
+			return EnumResult.WRONG_SYNTAX;
+		}
+		return EnumResult.NOT_EXISTING_PLAYER.clear().addInformation(playerName);
 	}
 
 	public static EnumResult setGroup(String playerName, String groupName) {
@@ -93,7 +144,7 @@ public class PermissionManager extends WorldSavedData {
 	}
 
 	public static EnumResult createGroup(String name, String prefix, String color) {
-		if(!name.equalsIgnoreCase("create") && !name.equalsIgnoreCase("remove")) {
+		if(!name.equalsIgnoreCase("create") && !name.equalsIgnoreCase("remove") && !name.equalsIgnoreCase("operator")) {
 			Group group = new Group(name, prefix, EnumChatFormatting.getValueByName(color));
 			if(groups.add(group)) {
 				save();
@@ -178,9 +229,8 @@ public class PermissionManager extends WorldSavedData {
 
 	public static boolean canEntityExecuteCommand(Entity entity, ICommand command) {
 
-		Group g = players.get(entity.getUniqueID());
+		/*Group g = players.get(entity.getUniqueID());
 		if(g != null) {
-			System.out.println(command.getCommandName());
 			if(g.hasPermission("command." + command.getCommandName())) {
 				return true;
 			}
@@ -189,8 +239,8 @@ public class PermissionManager extends WorldSavedData {
 			if(isOperator(entity.getName())) {
 				return true;
 			}
-		}
-		return false;
+		}*/
+		return hasEntityPermission(entity, "command." + command.getCommandName());
 	}
 
 	public static boolean isOperator(String name) {
@@ -221,6 +271,30 @@ public class PermissionManager extends WorldSavedData {
 		for(int i = 0; i < groupsList.tagCount(); i++) {
 			groups.add(Group.readFromNBT(groupsList.getCompoundTagAt(i)));
 		}
+		
+		NBTTagList allowList = (NBTTagList)compound.getTag("allow");
+		for(int i = 0; i < allowList.tagCount(); i++) {
+			NBTTagCompound entryTag = allowList.getCompoundTagAt(i);
+			UUID uuid = UUID.fromString(entryTag.getString("uuid"));
+			NBTTagList permList = (NBTTagList)entryTag.getTag("perms");
+			Set<String> perms = Sets.newHashSet();
+			for(int k = 0; k < permList.tagCount(); k++) {
+				perms.add(permList.getStringTagAt(k));
+			}
+			playersSpecialPermissions.put(uuid, perms);
+		}
+		
+		NBTTagList disallowList = (NBTTagList)compound.getTag("disallow");
+		for(int i = 0; i < disallowList.tagCount(); i++) {
+			NBTTagCompound entryTag = disallowList.getCompoundTagAt(i);
+			UUID uuid = UUID.fromString(entryTag.getString("uuid"));
+			NBTTagList permList = (NBTTagList)entryTag.getTag("perms");
+			Set<String> perms = Sets.newHashSet();
+			for(int k = 0; k < permList.tagCount(); k++) {
+				perms.add(permList.getStringTagAt(k));
+			}
+			playersSpecialRestrictions.put(uuid, perms);
+		}
 	}
 
 	@Override
@@ -234,6 +308,32 @@ public class PermissionManager extends WorldSavedData {
 			groupsList.appendTag(groupTag);
 		}
 		compound.setTag("groups", groupsList);
+		
+		NBTTagList allowList = new NBTTagList();
+		for(Entry<UUID, Set<String>> entry : playersSpecialPermissions.entrySet()) {
+			NBTTagCompound entryTag = new NBTTagCompound();
+			entryTag.setString("uuid", entry.getKey().toString());
+			NBTTagList permList = new NBTTagList();
+			for(String perm : entry.getValue()) {
+				permList.appendTag(new NBTTagString(perm));
+			}
+			entryTag.setTag("perms", permList);
+			allowList.appendTag(entryTag);
+		}
+		compound.setTag("allow", allowList);
+		
+		NBTTagList disallowList = new NBTTagList();
+		for(Entry<UUID, Set<String>> entry : playersSpecialRestrictions.entrySet()) {
+			NBTTagCompound entryTag = new NBTTagCompound();
+			entryTag.setString("uuid", entry.getKey().toString());
+			NBTTagList permList = new NBTTagList();
+			for(String perm : entry.getValue()) {
+				permList.appendTag(new NBTTagString(perm));
+			}
+			entryTag.setTag("perms", permList);
+			disallowList.appendTag(entryTag);
+		}
+		compound.setTag("disallow", disallowList);
 
 		nbt.setTag("permissionAddon", compound);
 	}
@@ -241,6 +341,8 @@ public class PermissionManager extends WorldSavedData {
 	public static void clear() {
 		groups.clear();
 		players.clear();
+		playersSpecialPermissions.clear();
+		playersSpecialRestrictions.clear();
 	}
 
 	public static void onServerStarting(FMLServerStartingEvent event) {
@@ -272,14 +374,19 @@ public class PermissionManager extends WorldSavedData {
 		if(!ConfigFaction.ENABLE_PERMISSION) {
 			return true;
 		}
-		if(isOperator(uuid)) {
+		if(playersSpecialPermissions.get(uuid) != null && playersSpecialPermissions.get(uuid).contains(permission)) {
 			return true;
+		}
+		if(playersSpecialRestrictions.get(uuid) != null && playersSpecialRestrictions.get(uuid).contains(permission)) {
+			return false;
 		}
 		Group g = getPlayerGroup(uuid);
 		if(g != null) {
 			if(g.hasPermission(permission)) {
 				return true;
 			}
+		} else {
+			return isOperator(uuid);
 		}
 		return false;
 	}
@@ -319,5 +426,62 @@ public class PermissionManager extends WorldSavedData {
 				PermissionManager.registerPermission("command." + command.getKey());
 			}		
 		}
+	}
+
+	public static Set<String> getPaths(Set<PermissionBase> bases) {
+		Set<String> ret = Sets.newHashSet();
+		for(PermissionBase base : bases) {
+			ret.add(base.getPath());
+		}
+		return ret;
+	}
+	
+	public static EnumResult clearSpecialsPermissionsOrRestrictions(String name, boolean perms, boolean restricts) {
+		GameProfile profile = MinecraftServer.getServer().getPlayerProfileCache().getGameProfileForUsername(name);
+		if(profile != null) {
+			if(perms) {
+				playersSpecialPermissions.remove(profile.getId());
+				save();
+			}
+			if(restricts) {
+				playersSpecialRestrictions.remove(profile.getId());
+				save();
+			}
+			return EnumResult.SPECIALS_CLEARED.clear().addInformation(profile.getName());
+		}
+		return EnumResult.NOT_EXISTING_PLAYER.clear().addInformation(name);
+	}
+	
+	public static EnumResult changeColor(String groupName, String colorName) {
+		Group g = getGroupFromName(groupName);
+		if(g != null) {
+			EnumChatFormatting color = EnumChatFormatting.getValueByName(colorName);
+			g.setColor(color);
+			for(UUID uuid : g.getMembers()) {
+				Entity entity = MinecraftServer.getServer().getEntityFromUuid(uuid);
+				if(entity instanceof EntityPlayer) {
+					((EntityPlayer)entity).refreshDisplayName();
+				}
+			}
+			save();
+			return EnumResult.COLOR_CHANGED.clear().addInformation(g.getName()).addInformation(g.getColor().getFriendlyName());
+		}
+		return EnumResult.NOT_EXISTING_GROUP.clear().addInformation(groupName);
+	}
+	
+	public static EnumResult changePrefix(String groupName, String prefix) {
+		Group g = getGroupFromName(groupName);
+		if(g != null) {
+			g.setPrefix(prefix);
+			for(UUID uuid : g.getMembers()) {
+				Entity entity = MinecraftServer.getServer().getEntityFromUuid(uuid);
+				if(entity instanceof EntityPlayer) {
+					((EntityPlayer)entity).refreshDisplayName();
+				}
+			}
+			save();
+			return EnumResult.PREFIX_CHANGED.clear().addInformation(g.getName()).addInformation(g.getPrefix());
+		}
+		return EnumResult.NOT_EXISTING_GROUP.clear().addInformation(groupName);
 	}
 }

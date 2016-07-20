@@ -286,7 +286,7 @@ public class Lands {
 				Lands.setPlayerCache(event.player.getUniqueID(), factionName);
 				if(!factionName.isEmpty() && !factionName.equalsIgnoreCase("safezone") && !factionName.equalsIgnoreCase("warzone")) {
 					Faction faction = Faction.Registry.getFactionFromName(factionName);
-					event.player.addChatComponentMessage(new ChatComponentText(EnumChatFormatting.GOLD + "[ " + factionName + (faction == null || faction.getDescription().equals("") ? "" : EnumChatFormatting.LIGHT_PURPLE + " - " + EnumChatFormatting.BLUE + faction.getDescription()) + EnumChatFormatting.GOLD + " ]"));
+					event.player.addChatComponentMessage(new ChatComponentText(EnumChatFormatting.WHITE + "[ " + EnumChatFormatting.GOLD + factionName + (faction == null || faction.getDescription().equals("") ? "" : EnumChatFormatting.WHITE + " - " + EnumChatFormatting.BLUE + faction.getDescription()) + EnumChatFormatting.WHITE + " ]"));
 				} else {
 					if(Lands.isSafeZone(coords)) {
 						event.player.addChatComponentMessage(new ChatComponentTranslation("faction.chunk.safeZone", new Object[0]));

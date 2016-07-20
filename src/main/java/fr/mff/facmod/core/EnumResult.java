@@ -63,6 +63,11 @@ public enum EnumResult {
 	FOUND_PERMISSIONS("result.foundPermissions", true),
 	PLAYER_REMOVED_FROM_GROUP("result.playerRemovedFromGroup", true),
 	PLAYER_NOT_IN_A_GROUP("result.playerNotInAGroup", false),
+	SPECIAL_PERMISSION_ADDED("result.specialPermissionAdded", true),
+	SPECIAL_RESTRICTION_ADDED("result.specialRestrictionAdded", true),
+	SPECIALS_CLEARED("result.specialsCleared", true),
+	COLOR_CHANGED("result.colorChanged", true),
+	PREFIX_CHANGED("result.prefixChanged", true),
 	
 	ERROR("result.error", false);
 	

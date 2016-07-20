@@ -21,6 +21,7 @@ public class Group {
 	public Group(String name, String prefix, EnumChatFormatting prefixColor) {
 		this.name = name;
 		this.prefix = prefix;
+		if(prefixColor == null) prefixColor = EnumChatFormatting.RESET;
 		this.color = prefixColor;
 	}
 
@@ -31,9 +32,22 @@ public class Group {
 	public String getPrefix() {
 		return this.prefix;
 	}
+	
+	public void setPrefix(String prefix) {
+		this.prefix = prefix;
+	}
 
 	public String getDisplay() {
-		return "[" + this.color + this.getPrefix() + EnumChatFormatting.RESET + "]";
+		return this.color + this.getPrefix();
+	}
+	
+	public EnumChatFormatting getColor() {
+		return this.color;
+	}
+	
+	public void setColor(EnumChatFormatting color) {
+		if(color == null) color = EnumChatFormatting.RESET;
+		this.color = color;
 	}
 	
 	public boolean hasPermission(String permission) {
