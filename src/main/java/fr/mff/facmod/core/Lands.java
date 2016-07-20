@@ -32,6 +32,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 import fr.mff.facmod.network.PacketHelper;
+import fr.mff.facmod.perm.PermissionManager;
 
 public class Lands {
 
@@ -42,6 +43,11 @@ public class Lands {
 	private static final Set<Case> useCases = Sets.newHashSet();
 	private static final Set<Case> breakCases = Sets.newHashSet();
 	private static final Set<Case> placeCases = Sets.newHashSet();
+
+	static {
+		PermissionManager.registerPermission("faction.zones.edit");
+		PermissionManager.registerPermission("faction.claims.edit");
+	}
 
 	public static void clear() {
 		chunks.clear();
@@ -348,21 +354,28 @@ public class Lands {
 	 */
 	public static void onPlayerBreakBlock(BreakEvent event) {
 		if(!event.world.isRemote && event.world.equals(MinecraftServer.getServer().getEntityWorld())) {
-			
+
 			for(Case c : breakCases) {
 				if(c.isBreakAvalaible(event.world, event.pos, event.state, event.getPlayer())) {
 					return;
 				}
 			}
-			
+
 			ChunkCoordIntPair coords = event.world.getChunkFromBlockCoords(event.pos).getChunkCoordIntPair();
 			if(Lands.isSafeZone(coords)) {
-				event.getPlayer().addChatComponentMessage(new ChatComponentTranslation(EnumResult.IN_A_SAFE_ZONE.getLanguageKey(), new Object[0]));
-				event.setCanceled(true);
+				if(!PermissionManager.hasEntityPermission(event.getPlayer(), "faction.zones.edit")) {
+					event.getPlayer().addChatComponentMessage(new ChatComponentTranslation(EnumResult.IN_A_SAFE_ZONE.getLanguageKey(), new Object[0]));
+					event.setCanceled(true);
+				}
 			} else if(Lands.isWarZone(coords)) {
-				event.getPlayer().addChatComponentMessage(new ChatComponentTranslation(EnumResult.IN_A_WAR_ZONE.getLanguageKey(), new Object[0]));
-				event.setCanceled(true);
+				if(!PermissionManager.hasEntityPermission(event.getPlayer(), "faction.zones.edit")) {
+					event.getPlayer().addChatComponentMessage(new ChatComponentTranslation(EnumResult.IN_A_WAR_ZONE.getLanguageKey(), new Object[0]));
+					event.setCanceled(true);
+				}
 			} else {
+				if(PermissionManager.hasEntityPermission(event.getPlayer(), "faction.claims.edit")) {
+					return;
+				}
 				String ownerName = Lands.getLandFaction().get(coords);
 				if(ownerName != null) {
 					Faction faction = Faction.Registry.getPlayerFaction(event.getPlayer().getUniqueID());
@@ -387,25 +400,33 @@ public class Lands {
 
 	public static void onPlayerInteract(PlayerInteractEvent event) {
 		if(!event.world.isRemote && event.world.equals(MinecraftServer.getServer().getEntityWorld())) {
-			
+
 			for(Case c : useCases) {
 				if(c.isInteractAvalaible(event.world, event.pos, event.action, event.face, event.localPos)) {
 					return;
 				}
 			}
-			
+
 			if(event.action == PlayerInteractEvent.Action.LEFT_CLICK_BLOCK) {
 				return;
 			}
-			
+
 			ChunkCoordIntPair coords = event.world.getChunkFromBlockCoords(event.pos).getChunkCoordIntPair();
 			if(Lands.isSafeZone(coords)) {
-				event.entityPlayer.addChatComponentMessage(new ChatComponentTranslation(EnumResult.IN_A_SAFE_ZONE.getLanguageKey(), new Object[0]));
-				event.setCanceled(true);
+				if(!PermissionManager.hasEntityPermission(event.entityPlayer, "faction.zones.edit")) {
+					event.entityPlayer.addChatComponentMessage(new ChatComponentTranslation(EnumResult.IN_A_SAFE_ZONE.getLanguageKey(), new Object[0]));
+					event.setCanceled(true);
+				}
 			} else if(Lands.isWarZone(coords)) {
-				event.entityPlayer.addChatComponentMessage(new ChatComponentTranslation(EnumResult.IN_A_WAR_ZONE.getLanguageKey(), new Object[0]));
-				event.setCanceled(true);
+				if(!PermissionManager.hasEntityPermission(event.entityPlayer, "faction.zones.edit")) {
+					event.entityPlayer.addChatComponentMessage(new ChatComponentTranslation(EnumResult.IN_A_WAR_ZONE.getLanguageKey(), new Object[0]));
+					event.setCanceled(true);
+				}
 			} else {
+				if(PermissionManager.hasEntityPermission(event.entityPlayer, "faction.claims.edit")) {
+					return;
+				}
+
 				String ownerName = Lands.getLandFaction().get(coords);
 				if(ownerName != null) {
 					Faction faction = Faction.Registry.getPlayerFaction(event.entityPlayer.getUniqueID());
@@ -430,21 +451,29 @@ public class Lands {
 
 	public static void onPlayerPlaceBlock(PlaceEvent event) {
 		if(!event.world.isRemote && event.world.equals(MinecraftServer.getServer().getEntityWorld())) {
-			
+
 			for(Case c : placeCases) {
 				if(c.isPlaceAvalaible(event.world, event.pos, event.state, event.player, event.itemInHand, event.placedAgainst)) {
 					return;
 				}
 			}
-			
+
 			ChunkCoordIntPair coords = event.world.getChunkFromBlockCoords(event.pos).getChunkCoordIntPair();
 			if(Lands.isSafeZone(coords)) {
-				event.player.addChatComponentMessage(new ChatComponentTranslation(EnumResult.IN_A_SAFE_ZONE.getLanguageKey(), new Object[0]));
-				event.setCanceled(true);
+				if(!PermissionManager.hasEntityPermission(event.player, "faction.zones.edit")) {
+					event.player.addChatComponentMessage(new ChatComponentTranslation(EnumResult.IN_A_SAFE_ZONE.getLanguageKey(), new Object[0]));
+					event.setCanceled(true);
+				}
 			} else if(Lands.isWarZone(coords)) {
-				event.player.addChatComponentMessage(new ChatComponentTranslation(EnumResult.IN_A_WAR_ZONE.getLanguageKey(), new Object[0]));
-				event.setCanceled(true);
+				if(!PermissionManager.hasEntityPermission(event.player, "faction.zones.edit")) {
+					event.player.addChatComponentMessage(new ChatComponentTranslation(EnumResult.IN_A_WAR_ZONE.getLanguageKey(), new Object[0]));
+					event.setCanceled(true);
+				}
 			} else {
+				if(PermissionManager.hasEntityPermission(event.player, "faction.claims.edit")) {
+					return;
+				}
+
 				String ownerName = Lands.getLandFaction().get(coords);
 				if(ownerName != null) {
 					Faction faction = Faction.Registry.getPlayerFaction(event.player.getUniqueID());
@@ -471,12 +500,19 @@ public class Lands {
 		if(!event.world.isRemote && event.world.equals(MinecraftServer.getServer().getEntityWorld())) {
 			ChunkCoordIntPair coords = event.world.getChunkFromBlockCoords(event.target.getBlockPos()).getChunkCoordIntPair();
 			if(Lands.isSafeZone(coords)) {
-				event.entityPlayer.addChatComponentMessage(new ChatComponentTranslation(EnumResult.IN_A_SAFE_ZONE.getLanguageKey(), new Object[0]));
-				event.setCanceled(true);
+				if(!PermissionManager.hasEntityPermission(event.entityPlayer, "faction.zones.edit")) {
+					event.entityPlayer.addChatComponentMessage(new ChatComponentTranslation(EnumResult.IN_A_SAFE_ZONE.getLanguageKey(), new Object[0]));
+					event.setCanceled(true);
+				}
 			} else if(Lands.isWarZone(coords)) {
-				event.entityPlayer.addChatComponentMessage(new ChatComponentTranslation(EnumResult.IN_A_WAR_ZONE.getLanguageKey(), new Object[0]));
-				event.setCanceled(true);
+				if(!PermissionManager.hasEntityPermission(event.entityPlayer, "faction.zones.edit")) {
+					event.entityPlayer.addChatComponentMessage(new ChatComponentTranslation(EnumResult.IN_A_WAR_ZONE.getLanguageKey(), new Object[0]));
+					event.setCanceled(true);
+				}
 			} else {
+				if(PermissionManager.hasEntityPermission(event.entityPlayer, "faction.claims.edit")) {
+					return;
+				}
 				String ownerName = Lands.getLandFaction().get(coords);
 				if(ownerName != null) {
 					Faction faction = Faction.Registry.getPlayerFaction(event.entityPlayer.getUniqueID());
