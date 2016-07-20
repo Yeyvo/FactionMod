@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.UUID;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -28,9 +29,8 @@ import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 
-import fr.mff.facmod.blocks.BlockRegistry;
-import fr.mff.facmod.items.ItemRegistry;
 import fr.mff.facmod.network.PacketHelper;
 
 public class Lands {
@@ -39,12 +39,28 @@ public class Lands {
 	private static final HashMap<UUID, String> playerCache = new HashMap<UUID, String>();
 	private static final List<ChunkCoordIntPair> safeZones = Lists.newArrayList();
 	private static final List<ChunkCoordIntPair> warZones = Lists.newArrayList();
+	private static final Set<Case> useCases = Sets.newHashSet();
+	private static final Set<Case> breakCases = Sets.newHashSet();
+	private static final Set<Case> placeCases = Sets.newHashSet();
 
 	public static void clear() {
 		chunks.clear();
 		playerCache.clear();
 		safeZones.clear();
 		warZones.clear();
+	}
+
+	public static void addCase(Case caze, Case.Type type) {
+		switch(type) {
+		case BREAK:
+			breakCases.add(caze);
+			break;
+		case PLACE:
+			placeCases.add(caze);
+			break;
+		case USE:
+			useCases.add(caze);
+		}
 	}
 
 	public static void writeToNBT(NBTTagCompound compound) {
@@ -332,36 +348,37 @@ public class Lands {
 	 */
 	public static void onPlayerBreakBlock(BreakEvent event) {
 		if(!event.world.isRemote && event.world.equals(MinecraftServer.getServer().getEntityWorld())) {
-			if(event.state.getBlock() == BlockRegistry.homeBase) {
-				String factionName = Lands.getLandFaction().get(event.world.getChunkFromBlockCoords(event.pos).getChunkCoordIntPair());
-				Homes.getHomes().remove(factionName);
-				FactionSaver.save();
+			
+			for(Case c : breakCases) {
+				if(c.isBreakAvalaible(event.world, event.pos, event.state, event.getPlayer())) {
+					return;
+				}
+			}
+			
+			ChunkCoordIntPair coords = event.world.getChunkFromBlockCoords(event.pos).getChunkCoordIntPair();
+			if(Lands.isSafeZone(coords)) {
+				event.getPlayer().addChatComponentMessage(new ChatComponentTranslation(EnumResult.IN_A_SAFE_ZONE.getLanguageKey(), new Object[0]));
+				event.setCanceled(true);
+			} else if(Lands.isWarZone(coords)) {
+				event.getPlayer().addChatComponentMessage(new ChatComponentTranslation(EnumResult.IN_A_WAR_ZONE.getLanguageKey(), new Object[0]));
+				event.setCanceled(true);
 			} else {
-				ChunkCoordIntPair coords = event.world.getChunkFromBlockCoords(event.pos).getChunkCoordIntPair();
-				if(Lands.isSafeZone(coords)) {
-					event.getPlayer().addChatComponentMessage(new ChatComponentTranslation(EnumResult.IN_A_SAFE_ZONE.getLanguageKey(), new Object[0]));
-					event.setCanceled(true);
-				} else if(Lands.isWarZone(coords)) {
-					event.getPlayer().addChatComponentMessage(new ChatComponentTranslation(EnumResult.IN_A_WAR_ZONE.getLanguageKey(), new Object[0]));
-					event.setCanceled(true);
-				} else {
-					String ownerName = Lands.getLandFaction().get(coords);
-					if(ownerName != null) {
-						Faction faction = Faction.Registry.getPlayerFaction(event.getPlayer().getUniqueID());
-						if(faction != null) {
-							if(faction.getName().equalsIgnoreCase(ownerName)) {
-								Member member = faction.getMember(event.getPlayer().getUniqueID());
-								if(member != null) {
-									if(!member.getRank().hasPermission(Permission.ALTER_BLOCK)) {
-										event.setCanceled(true);
-									}
+				String ownerName = Lands.getLandFaction().get(coords);
+				if(ownerName != null) {
+					Faction faction = Faction.Registry.getPlayerFaction(event.getPlayer().getUniqueID());
+					if(faction != null) {
+						if(faction.getName().equalsIgnoreCase(ownerName)) {
+							Member member = faction.getMember(event.getPlayer().getUniqueID());
+							if(member != null) {
+								if(!member.getRank().hasPermission(Permission.ALTER_BLOCK)) {
+									event.setCanceled(true);
 								}
-							} else {
-								event.setCanceled(true);
 							}
 						} else {
 							event.setCanceled(true);
 						}
+					} else {
+						event.setCanceled(true);
 					}
 				}
 			}
@@ -370,9 +387,17 @@ public class Lands {
 
 	public static void onPlayerInteract(PlayerInteractEvent event) {
 		if(!event.world.isRemote && event.world.equals(MinecraftServer.getServer().getEntityWorld())) {
+			
+			for(Case c : useCases) {
+				if(c.isInteractAvalaible(event.world, event.pos, event.action, event.face, event.localPos)) {
+					return;
+				}
+			}
+			
 			if(event.action == PlayerInteractEvent.Action.LEFT_CLICK_BLOCK) {
 				return;
 			}
+			
 			ChunkCoordIntPair coords = event.world.getChunkFromBlockCoords(event.pos).getChunkCoordIntPair();
 			if(Lands.isSafeZone(coords)) {
 				event.entityPlayer.addChatComponentMessage(new ChatComponentTranslation(EnumResult.IN_A_SAFE_ZONE.getLanguageKey(), new Object[0]));
@@ -381,9 +406,6 @@ public class Lands {
 				event.entityPlayer.addChatComponentMessage(new ChatComponentTranslation(EnumResult.IN_A_WAR_ZONE.getLanguageKey(), new Object[0]));
 				event.setCanceled(true);
 			} else {
-				if(event.entityPlayer.getHeldItem() != null && (event.entityLiving.getHeldItem().getItem() == ItemRegistry.chestWatcher || event.entityPlayer.getHeldItem().getItem() == ItemRegistry.briseObsi) && event.entityPlayer.isSneaking()) {
-					return;
-				}
 				String ownerName = Lands.getLandFaction().get(coords);
 				if(ownerName != null) {
 					Faction faction = Faction.Registry.getPlayerFaction(event.entityPlayer.getUniqueID());
@@ -408,6 +430,13 @@ public class Lands {
 
 	public static void onPlayerPlaceBlock(PlaceEvent event) {
 		if(!event.world.isRemote && event.world.equals(MinecraftServer.getServer().getEntityWorld())) {
+			
+			for(Case c : placeCases) {
+				if(c.isPlaceAvalaible(event.world, event.pos, event.state, event.player, event.itemInHand, event.placedAgainst)) {
+					return;
+				}
+			}
+			
 			ChunkCoordIntPair coords = event.world.getChunkFromBlockCoords(event.pos).getChunkCoordIntPair();
 			if(Lands.isSafeZone(coords)) {
 				event.player.addChatComponentMessage(new ChatComponentTranslation(EnumResult.IN_A_SAFE_ZONE.getLanguageKey(), new Object[0]));
