@@ -40,6 +40,7 @@ public class CommandPermission implements ICommand {
 	static {
 		groupArgs.add("create");
 		groupArgs.add("remove");
+		groupArgs.add("default");
 	}
 
 	public static final Set<String> groupGroup = Sets.newHashSet();
@@ -131,6 +132,13 @@ public class CommandPermission implements ICommand {
 					if(args.length < 3) throw new WrongUsageException("/permission group remove <group name>", new Object[0]);
 					
 					EnumResult result = PermissionManager.removeGroup(args[2]);
+					player.addChatComponentMessage(new ChatComponentTranslation(result.getLanguageKey(), result.getInformations()));
+				}
+				
+				//Group remove
+				else if(args[1].equalsIgnoreCase("default")) {
+					if(args.length < 3) throw new WrongUsageException("/permission group default <group name>", new Object[0]);
+					EnumResult result = PermissionManager.setDefaultGroup(args[2]);
 					player.addChatComponentMessage(new ChatComponentTranslation(result.getLanguageKey(), result.getInformations()));
 				}
 
@@ -279,7 +287,7 @@ public class CommandPermission implements ICommand {
 		} else if(args.length == 3) {
 			if(args[0].equalsIgnoreCase("group")) {
 				if(!args[1].equalsIgnoreCase("create")) {
-					if(args[1].equalsIgnoreCase("remove")) {
+					if(args[1].equalsIgnoreCase("remove") || args[1].equalsIgnoreCase("default")) {
 						tab.addAll(getStringStartingWith(args[2], PermissionManager.getGroupsNames()));
 					} else {
 						tab.addAll(getStringStartingWith(args[2], groupGroup));

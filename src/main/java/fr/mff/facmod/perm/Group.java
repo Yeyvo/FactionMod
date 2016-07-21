@@ -17,6 +17,7 @@ public class Group {
 	private EnumChatFormatting color;
 	private Set<String> permissions = Sets.newHashSet();
 	private Set<UUID> members = Sets.newHashSet();
+	private boolean defaultGroup = false;
 
 	public Group(String name, String prefix, EnumChatFormatting prefixColor) {
 		this.name = name;
@@ -27,6 +28,14 @@ public class Group {
 
 	public String getName() {
 		return this.name;
+	}
+	
+	public boolean isDefaultGroup() {
+		return this.defaultGroup;
+	}
+	
+	public void setDefaultGroup(boolean flag) {
+		this.defaultGroup = flag;
 	}
 
 	public String getPrefix() {
@@ -78,6 +87,7 @@ public class Group {
 		compound.setString("name", name);
 		compound.setString("prefix", prefix);
 		compound.setString("color", color.name());
+		compound.setBoolean("defaultGroup", defaultGroup);
 		
 		NBTTagList permissionsList = new NBTTagList();
 		for(String permission : permissions) {
@@ -94,6 +104,8 @@ public class Group {
 	
 	public static Group readFromNBT(NBTTagCompound compound) {
 		Group g = new Group(compound.getString("name"), compound.getString("prefix"), EnumChatFormatting.valueOf(compound.getString("color")));
+		
+		g.setDefaultGroup(compound.getBoolean("defaultGroup"));
 		
 		NBTTagList permissionsList = (NBTTagList)compound.getTag("permissions");
 		for(int i = 0; i < permissionsList.tagCount(); i++) {

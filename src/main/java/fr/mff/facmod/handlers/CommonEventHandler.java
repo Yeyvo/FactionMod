@@ -46,7 +46,7 @@ public class CommonEventHandler {
 	public void onPlayerJoin(PlayerEvent.PlayerLoggedInEvent event) {
 		PacketHelper.updateClientFaction(event.player.getUniqueID());
 		PacketHelper.updateClientRank(event.player.getUniqueID());
-		event.player.refreshDisplayName();
+		PermissionManager.onPlayerJoin(event);
 	}
 
 	@SubscribeEvent

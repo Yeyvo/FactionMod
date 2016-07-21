@@ -18,6 +18,7 @@ import net.minecraft.world.WorldSavedData;
 import net.minecraft.world.storage.MapStorage;
 import net.minecraftforge.fml.common.event.FMLServerStartedEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -30,6 +31,7 @@ import fr.mff.facmod.core.EnumResult;
 public class PermissionManager extends WorldSavedData {
 
 	public static Set<Group> groups = Sets.newHashSet();
+	public static Group defaultGroup = null;
 	public static HashMap<UUID, Group> players = Maps.newHashMap();
 	public static PermissionBase permissions = new PermissionBase("", null);
 	public static HashMap<UUID, Set<String>> playersSpecialPermissions = Maps.newHashMap();
@@ -144,7 +146,10 @@ public class PermissionManager extends WorldSavedData {
 	}
 
 	public static EnumResult createGroup(String name, String prefix, String color) {
-		if(!name.equalsIgnoreCase("create") && !name.equalsIgnoreCase("remove") && !name.equalsIgnoreCase("operator")) {
+		if(!name.equalsIgnoreCase("create") && 
+				!name.equalsIgnoreCase("remove") && 
+				!name.equalsIgnoreCase("operator") &&
+				!name.equalsIgnoreCase("default")) {
 			Group group = new Group(name, prefix, EnumChatFormatting.getValueByName(color));
 			if(groups.add(group)) {
 				save();
@@ -262,6 +267,20 @@ public class PermissionManager extends WorldSavedData {
 		}
 		return false;
 	}
+	
+	public static EnumResult setDefaultGroup(String groupName) {
+		Group g = getGroupFromName(groupName);
+		if(g != null) {
+			if(defaultGroup != null) {
+				defaultGroup.setDefaultGroup(false);
+			}
+			g.setDefaultGroup(true);
+			defaultGroup = g;
+			save();
+			return EnumResult.DEFAULT_GROUP_CHANGED.clear().addInformation(g.getName());
+		}
+		return EnumResult.NOT_EXISTING_GROUP.clear().addInformation(groupName);
+	}
 
 	@Override
 	public void readFromNBT(NBTTagCompound nbt) {
@@ -269,7 +288,11 @@ public class PermissionManager extends WorldSavedData {
 
 		NBTTagList groupsList = (NBTTagList)compound.getTag("groups");
 		for(int i = 0; i < groupsList.tagCount(); i++) {
-			groups.add(Group.readFromNBT(groupsList.getCompoundTagAt(i)));
+			Group g = Group.readFromNBT(groupsList.getCompoundTagAt(i));
+			groups.add(g);
+			if(g.isDefaultGroup()) {
+				defaultGroup = g;
+			}
 		}
 		
 		NBTTagList allowList = (NBTTagList)compound.getTag("allow");
@@ -426,6 +449,15 @@ public class PermissionManager extends WorldSavedData {
 				PermissionManager.registerPermission("command." + command.getKey());
 			}		
 		}
+	}
+	
+	public static void onPlayerJoin(PlayerEvent.PlayerLoggedInEvent event) {
+		if(defaultGroup != null) {
+			if(!isOperator(event.player.getName())) {
+				setGroup(event.player.getName(), defaultGroup.getName());
+			}
+		}
+		event.player.refreshDisplayName();
 	}
 
 	public static Set<String> getPaths(Set<PermissionBase> bases) {

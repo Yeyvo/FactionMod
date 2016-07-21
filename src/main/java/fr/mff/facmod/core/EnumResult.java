@@ -68,6 +68,7 @@ public enum EnumResult {
 	SPECIALS_CLEARED("result.specialsCleared", true),
 	COLOR_CHANGED("result.colorChanged", true),
 	PREFIX_CHANGED("result.prefixChanged", true),
+	DEFAULT_GROUP_CHANGED("result.defaultGroupChanged", true),
 	
 	ERROR("result.error", false);
 	

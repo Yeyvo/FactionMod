@@ -61,6 +61,7 @@ result.specialRestrictionAdded=§aThe special restriction %s§a has been added t
 result.specialsCleared=§aThe specials permissions or restrictions have been removed for the player %s
 result.colorChanged=§aThe color of the group %s§a has been changed to %s
 result.prefixChanged=§aThe prefix of the group %s§a has been changed to %s
+result.defaultGroupChanged=§aThe default group is now %s
 
 faction.chunk.free=§d** Free land **
 faction.chunk.safeZone=§e** Safe zone **
