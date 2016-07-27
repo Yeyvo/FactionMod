@@ -62,10 +62,12 @@ result.specialsCleared=§aLes permissions ou restrictions spéciales du joueur %
 result.colorChanged=§aLa couleur du groupe %s§a a été changé pour %s
 result.prefixChanged=§aLe préfix du groupe %s§a a été changé en %s
 result.defaultGroupChanged=§aLe groupe par défaut est maintenant %s
+result.notEnougthPower=§cVous n'avez pas assez de pouvoir pour vous approrier ce terrain, %s§c de pouvoir est requis
+result.maxClaimsReached=§cVous avez atteint le maximum de terrain possédés pour votre faction
 
 faction.chunk.free=§d** Terrain libre **
 faction.chunk.safeZone=§4** Zone de combat **
-faction.chunk.warZone=§e** Zone de sécurité **
+faction.chunk.warZone=§e** Zone sécurisée **
 
 msg.invitation.received=§1Vous avez reçu une invitation de la faction %s
 msg.homeRemoved=§cVotre maison a été supprimée
@@ -76,21 +78,32 @@ msg.tpTimer=§aTemps restant : %s
 msg.tpCanceled=§cVotre téléportation a été interrompue
 msg.promoted=§aVous avez été promu au rang de %s
 msg.faction.coordo.home=§bRecherche d'un f home aléatoire
+msg.power=Niveau de pouvoir : %s
 
 config.general=Général
+config.general.tooltip=Configuration du fonctionnement du mod
 config.general.tpDelay=Délai de téléportation
+config.general.powerPerPlayer=Pouvoir maximum par joueur
+config.general.powerNeededForClaim=Pouvoir requis pour s'approprier un terrain
+config.general.powerLostOnDeath=Pouvoir perdu lors de la mort
+config.general.powerGivenFrequently=Quantité de pouvoir donné
+config.general.powerGivingFrequency=Fréquence du gain de pouvoir
 config.client=Client
+config.client.tooltip=Configuration des affichages clients
 config.client.factionOverlay=Affichage du nom de votre faction
 config.client.rankOverlay=Affichage du rang
 config.client.landOwnerOverlay=Affichage du nom du propriétaire du terrain
+config.client.powerOverlay=Affichage du niveau de pouvoir
 config.addons.permission.enable=Activation des permissions
-config.addons=Contenue suppléme,taire
+config.addons=Contenue supplémentaire
+config.addons.tooltip=Configuration concernant le contenue supplémentaire
 
 overlay.faction=Faction
 overlay.rank=Rang
 overlay.landOwner=Propriétaire du terrain
 overlay.safeZone=Zone sécurisée
 overlay.warZone=Zone de combat
+overlay.power=Niveau de pouvoir
 
 rank.owner=Propriétaire de la faction
 rank.manager=Gérant

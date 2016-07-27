@@ -30,6 +30,7 @@ public class ClientProxy extends CommonProxy {
 	public String factionName = "";
 	public EnumRank rank = EnumRank.WITHOUT_FACTION;
 	public String landOwner = "";
+	public String powerLevel = "0/0";
 
 	@Override
 	public void preInit(FMLPreInitializationEvent event) {

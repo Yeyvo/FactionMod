@@ -47,6 +47,8 @@ public enum EnumResult {
 	NOT_WAR_OR_SAFE_ZONE("result.notWarOrSafeZone", false),
 	SAFE_ZONE_SET("result.safeZoneSet", true),
 	WAR_ZONE_SET("result.warZoneSet", true),
+	NOT_ENOUGTH_POWER("result.notEnougthPower", false),
+	MAX_CLAIMS_REACHED("result.maxClaimsReached", false),
 	
 	//Permission
 	GROUP_CREATED("result.groupCreated", true),

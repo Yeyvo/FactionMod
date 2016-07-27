@@ -106,18 +106,20 @@ public class Homes {
 		}
 		return EnumResult.NOT_IN_A_FACTION;
 	}
-	
+
 	public static void onLandUnclaimedPre(ChunkCoordIntPair pair) {
 		String factionName = Lands.getLandFaction().get(pair);
 		BlockPos pos = Homes.getHomes().get(factionName);
-		ChunkCoordIntPair homeChunk = MinecraftServer.getServer().getEntityWorld().getChunkFromBlockCoords(pos).getChunkCoordIntPair();
-		if(homeChunk.equals(pair)) {
-			MinecraftServer.getServer().getEntityWorld().setBlockToAir(pos.down());
-			Homes.getHomes().remove(factionName);
+		if(pos != null) {
+			ChunkCoordIntPair homeChunk = MinecraftServer.getServer().getEntityWorld().getChunkFromBlockCoords(pos).getChunkCoordIntPair();
+			if(homeChunk.equals(pair)) {
+				MinecraftServer.getServer().getEntityWorld().setBlockToAir(pos.down());
+				Homes.getHomes().remove(factionName);
+			}
 		}
 	}
 
-	public static void onPlayerTick(TickEvent.WorldTickEvent event) {
+	public static void onWorldTick(TickEvent.WorldTickEvent event) {
 		if(!event.world.isRemote && event.world.equals(MinecraftServer.getServer().getEntityWorld())) {
 			List<EntityPlayer> remove = new ArrayList<EntityPlayer>();
 

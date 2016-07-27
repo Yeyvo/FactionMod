@@ -5,6 +5,7 @@ import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.FillBucketEvent;
@@ -20,6 +21,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import fr.mff.facmod.core.EnumResult;
 import fr.mff.facmod.core.Homes;
 import fr.mff.facmod.core.Lands;
+import fr.mff.facmod.core.Powers;
 import fr.mff.facmod.network.PacketHelper;
 import fr.mff.facmod.perm.Group;
 import fr.mff.facmod.perm.PermissionManager;
@@ -27,13 +29,14 @@ import fr.mff.facmod.perm.PermissionManager;
 public class CommonEventHandler {
 
 	@SubscribeEvent
-	public void onEntityEnteringChunk(TickEvent.PlayerTickEvent event) {
+	public void onPlayerTick(TickEvent.PlayerTickEvent event) {
 		Lands.onPlayerTick(event);
+		Powers.onPlayerTick(event);
 	}
 
 	@SubscribeEvent
 	public void onWorldTick(TickEvent.WorldTickEvent event) {
-		Homes.onPlayerTick(event);
+		Homes.onWorldTick(event);
 	}
 
 	@SubscribeEvent
@@ -44,9 +47,11 @@ public class CommonEventHandler {
 
 	@SubscribeEvent
 	public void onPlayerJoin(PlayerEvent.PlayerLoggedInEvent event) {
+		PermissionManager.onPlayerJoin(event);
+		Powers.onPlayerJoined(event);
 		PacketHelper.updateClientFaction(event.player.getUniqueID());
 		PacketHelper.updateClientRank(event.player.getUniqueID());
-		PermissionManager.onPlayerJoin(event);
+		PacketHelper.updatePowerLevel(event.player.getUniqueID());
 	}
 
 	@SubscribeEvent
@@ -117,7 +122,7 @@ public class CommonEventHandler {
 			}
 		}
 	}
-	
+
 	@SubscribeEvent
 	public void onNameFormat(NameFormat event) {
 		Group g = PermissionManager.getPlayerGroup(event.entityPlayer.getUniqueID());
@@ -126,5 +131,10 @@ public class CommonEventHandler {
 		} else if(PermissionManager.isOperator(event.username)) {
 			event.displayname = EnumChatFormatting.RED + "Operator " + EnumChatFormatting.RESET + event.displayname;
 		}
+	}
+
+	@SubscribeEvent
+	public void onLivingDeath(LivingDeathEvent event) {
+		Powers.onLivingDeath(event);
 	}
 }

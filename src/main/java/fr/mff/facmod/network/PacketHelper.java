@@ -12,6 +12,7 @@ import fr.mff.facmod.core.EnumRank;
 import fr.mff.facmod.core.Faction;
 import fr.mff.facmod.core.Lands;
 import fr.mff.facmod.core.Member;
+import fr.mff.facmod.core.Powers;
 
 public class PacketHelper {
 
@@ -24,6 +25,14 @@ public class PacketHelper {
 		if(player instanceof EntityPlayerMP) {
 			String factionName = Faction.Registry.playersFactions.get(player.getUniqueID());
 			PacketFaction packet = new PacketFaction(factionName == null ? "" : factionName);
+			FactionMod.network.sendTo(packet, (EntityPlayerMP)player);
+		}
+	}
+	
+	public static void updatePowerLevel(UUID uuid) {
+		Entity player = MinecraftServer.getServer().getEntityFromUuid(uuid);
+		if(player instanceof EntityPlayerMP) {
+			PacketPower packet = new PacketPower(Powers.getPowerOf(uuid));
 			FactionMod.network.sendTo(packet, (EntityPlayerMP)player);
 		}
 	}

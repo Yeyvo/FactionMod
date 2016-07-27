@@ -19,6 +19,7 @@ import net.minecraft.util.EnumChatFormatting;
 
 import com.mojang.authlib.GameProfile;
 
+import fr.mff.facmod.config.ConfigFaction;
 import fr.mff.facmod.network.PacketHelper;
 
 public class Faction {
@@ -47,6 +48,18 @@ public class Faction {
 
 	public String getName() {
 		return this.name;
+	}
+	
+	public int getMaxPowerLevel() {
+		return members.size() * ConfigFaction.POWER_PER_PLAYER;
+	}
+	
+	public int getPowerLevel() {
+		int power = 0;
+		for(Member member : members) {
+			power += Powers.getPowerOf(member.getUUID());
+		}
+		return power;
 	}
 
 	public String getDescription() {
@@ -466,6 +479,7 @@ public class Faction {
 				}
 				player.addChatComponentMessage(new ChatComponentTranslation("msg.members", EnumChatFormatting.GREEN.toString() + faction.getMembers().size()));
 				player.addChatComponentMessage(new ChatComponentTranslation("msg.lands", EnumChatFormatting.YELLOW.toString() + Lands.getLandsForFaction(faction.getName()).size()));
+				player.addChatComponentMessage(new ChatComponentTranslation("msg.power", EnumChatFormatting.BLUE.toString() + faction.getPowerLevel() + "/" + faction.getMaxPowerLevel()));
 				return null;
 			}
 			if(args.length >= 2) {

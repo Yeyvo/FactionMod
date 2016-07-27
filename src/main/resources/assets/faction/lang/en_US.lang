@@ -62,6 +62,8 @@ result.specialsCleared=§aThe specials permissions or restrictions have been rem
 result.colorChanged=§aThe color of the group %s§a has been changed to %s
 result.prefixChanged=§aThe prefix of the group %s§a has been changed to %s
 result.defaultGroupChanged=§aThe default group is now %s
+result.notEnougthPower=§cYou haven't enougth power to claim this land, %s§c are required
+result.maxClaimsReached=§cYou reached the maximum of claims for your faction
 
 faction.chunk.free=§d** Free land **
 faction.chunk.safeZone=§e** Safe zone **
@@ -76,21 +78,32 @@ msg.tpTimer=§aRemaining time : %s
 msg.tpCanceled=§cYour teleportation has been canceled
 msg.promoted=§aYou have been promoted to the rank %s
 msg.faction.coordo.home=§bLooking for random f home
+msg.power=Power level : %s
 
 config.general=General
+config.general.tooltip=Configuration about server side stuff
 config.general.tpDelay=Teleportation delay
+config.general.powerPerPlayer=Max power per player
+config.general.powerNeededForClaim=Power needed for claim a land
+config.general.powerLostOnDeath=Power lost on death
+config.general.powerGivenFrequently=Power giving amount
+config.general.powerGivingFrequency=Power giving frequency
 config.client=Client
+config.client.tooltip=Configuration about client side displaying
 config.client.factionOverlay=Faction's name displaying
 config.client.rankOverlay=Rank's displaying
 config.client.landOwnerOverlay=Land's owner's name displaying
+config.client.powerOverlay=Power level displaying
 config.addons.permission.enable=Permission enabling
 config.addons=Addons
+config.addons.tooltip=Addons' configuration
 
 overlay.faction=Faction
 overlay.rank=Rank
 overlay.landOwner=Land owner
 overlay.safeZone=Safe zone
 overlay.warZone=War zone
+overlay.power=Power level
 
 rank.owner=Faction's owner
 rank.manager=Manager

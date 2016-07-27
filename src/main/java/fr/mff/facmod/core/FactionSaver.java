@@ -25,6 +25,7 @@ public class FactionSaver extends WorldSavedData {
 		Faction.Registry.readFromNBT(compound.getCompoundTag("factionRegistry"));
 		Lands.readfromNBT(compound.getCompoundTag("lands"));
 		Homes.readFromNBT(compound.getCompoundTag("homes"));
+		Powers.readFromNBT(compound.getCompoundTag("powers"));
 	}
 
 	@Override
@@ -43,6 +44,10 @@ public class FactionSaver extends WorldSavedData {
 		Homes.writeToNBT(homes);
 		compound.setTag("homes", homes);
 		
+		NBTTagCompound powers = new NBTTagCompound();
+		Powers.writeToNBT(powers);
+		compound.setTag("powers", powers);
+		
 		nbt.setTag("factionMod", compound);
 	}
 
@@ -51,6 +56,7 @@ public class FactionSaver extends WorldSavedData {
 			Faction.Registry.clear();
 			Lands.clear();
 			Homes.clear();
+			Powers.clear();
 			MapStorage storage = event.getServer().getEntityWorld().getMapStorage();
 			FactionSaver data = (FactionSaver)storage.loadData(FactionSaver.class, "factionMod");
 			if(data == null) {

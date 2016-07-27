@@ -31,6 +31,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
+import fr.mff.facmod.config.ConfigFaction;
 import fr.mff.facmod.network.PacketHelper;
 import fr.mff.facmod.perm.PermissionManager;
 
@@ -243,13 +244,22 @@ public class Lands {
 				Faction faction = Faction.Registry.getPlayerFaction(claimer);
 				if(faction != null) {
 					if(faction.getMember(claimer).getRank().hasPermission(Permission.LAND_HANDLING)) {
-						String name = chunks.get(pair);
-						if(name == null) {
-							chunks.put(pair, faction.getName());
-							FactionSaver.save();
-							return EnumResult.LAND_CLAIMED.clear().addInformation(EnumChatFormatting.GOLD + faction.getName());
+						if(faction.getPowerLevel() >= ConfigFaction.POWER_NEEDED_FOR_CLAIM) {
+							if(Lands.getLandsForFaction(faction.getName()).size() < faction.getMaxPowerLevel() / ConfigFaction.POWER_NEEDED_FOR_CLAIM) {
+								String name = chunks.get(pair);
+								Faction ownerFaction = Faction.Registry.getFactionFromName(name);
+								if(name == null || (ownerFaction.getPowerLevel() < Lands.getLandsForFaction(name).size() && !ownerFaction.getName().equalsIgnoreCase(faction.getName()))) {
+									chunks.put(pair, faction.getName());
+									Powers.setPlayerPower(claimer, Powers.getPowerOf(claimer) - ConfigFaction.POWER_NEEDED_FOR_CLAIM);
+									PacketHelper.updatePowerLevel(claimer);
+									FactionSaver.save();
+									return EnumResult.LAND_CLAIMED.clear().addInformation(EnumChatFormatting.GOLD + faction.getName());
+								}
+								return EnumResult.ALREADY_CLAIMED_LAND.clear().addInformation(EnumChatFormatting.GOLD + name);
+							}
+							return EnumResult.MAX_CLAIMS_REACHED;
 						}
-						return EnumResult.ALREADY_CLAIMED_LAND.clear().addInformation(EnumChatFormatting.GOLD + name);
+						return EnumResult.NOT_ENOUGTH_POWER.clear().addInformation("" + ConfigFaction.POWER_NEEDED_FOR_CLAIM);
 					}
 					return EnumResult.NO_PERMISSION;
 				}

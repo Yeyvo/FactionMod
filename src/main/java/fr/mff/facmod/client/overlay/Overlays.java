@@ -32,6 +32,12 @@ public class Overlays {
 				i++;
 			}
 		}
+		if(ConfigFaction.POWER_OVERLAY) {
+			String powerLevel = ((ClientProxy)FactionMod.proxy).powerLevel;
+			String str = EnumChatFormatting.UNDERLINE + I18n.format("overlay.power", new Object[0]) + "§r : " + powerLevel;
+			Minecraft.getMinecraft().fontRendererObj.drawString(str, 10, 10 + i * 15, 0xFFFFFF);
+			i++;
+		}
 		if(ConfigFaction.LAND_OWNER_OVERLAY) {
 			String factionName = ((ClientProxy)FactionMod.proxy).landOwner;
 			if(factionName.equalsIgnoreCase("safezone")) {
