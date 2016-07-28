@@ -25,7 +25,6 @@ public class PacketHelper {
 		if(player instanceof EntityPlayerMP) {
 			String factionName = Faction.Registry.playersFactions.get(player.getUniqueID());
 			PacketFaction packet = new PacketFaction(factionName == null ? "" : factionName);
-			System.out.println("Sended packet to " + player.getName());
 			FactionMod.network.sendTo(packet, (EntityPlayerMP)player);
 		}
 	}

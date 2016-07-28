@@ -121,7 +121,7 @@ public class ConfigFaction {
 		prop = cfg.get(Configuration.CATEGORY_CLIENT, "powerOverlay", true);
 		prop.comment = "Set to false to disable power level displaying";
 		prop.setLanguageKey("config.client.powerOverlay");
-		LAND_OWNER_OVERLAY = prop.getBoolean(true);
+		POWER_OVERLAY = prop.getBoolean(true);
 		propOrder.add(prop.getName());
 		
 		cfg.setCategoryPropertyOrder(Configuration.CATEGORY_CLIENT, propOrder);
