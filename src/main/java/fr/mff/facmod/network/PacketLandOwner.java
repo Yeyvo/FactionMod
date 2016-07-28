@@ -1,6 +1,7 @@
 package fr.mff.facmod.network;
 
 import fr.mff.facmod.FactionMod;
+import fr.mff.facmod.client.overlay.Overlays;
 import fr.mff.facmod.proxy.ClientProxy;
 import io.netty.buffer.ByteBuf;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
@@ -38,6 +39,7 @@ public class PacketLandOwner implements IMessage {
 		public IMessage onMessage(PacketLandOwner message, MessageContext ctx) {
 			if(FactionMod.proxy instanceof ClientProxy) {
 				((ClientProxy)FactionMod.proxy).landOwner = message.getFactionName();
+				Overlays.alpha = 1.0f;
 			}
 			return null;
 		}

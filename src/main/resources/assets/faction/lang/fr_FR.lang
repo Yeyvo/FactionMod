@@ -65,7 +65,7 @@ result.defaultGroupChanged=§aLe groupe par défaut est maintenant %s
 result.notEnougthPower=§cVous n'avez pas assez de pouvoir pour vous approrier ce terrain, %s§c de pouvoir est requis
 result.maxClaimsReached=§cVous avez atteint le maximum de terrain possédés pour votre faction
 
-faction.chunk.free=§d** Terrain libre **
+faction.chunk.free=§d** Terre sauvage **
 faction.chunk.safeZone=§4** Zone de combat **
 faction.chunk.warZone=§e** Zone sécurisée **
 
@@ -103,6 +103,7 @@ overlay.rank=Rang
 overlay.landOwner=Propriétaire du terrain
 overlay.safeZone=Zone sécurisée
 overlay.warZone=Zone de combat
+overlay.freeLand=Terre sauvage
 overlay.power=Niveau de pouvoir
 
 rank.owner=Propriétaire de la faction

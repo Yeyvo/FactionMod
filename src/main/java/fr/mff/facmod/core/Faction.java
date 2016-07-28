@@ -149,6 +149,7 @@ public class Faction {
 		Faction.Registry.factions.remove(this);
 		for(Member member : this.members) {
 			Faction.Registry.factions.remove(member.getUUID());
+			Faction.Registry.playersFactions.remove(member.getUUID());
 			PacketHelper.updateClientFaction(member.getUUID());
 			PacketHelper.updateClientRank(member.getUUID());
 		}
@@ -284,7 +285,7 @@ public class Faction {
 			if(faction == null) {
 				faction = Faction.Registry.getFactionFromName(name);
 				if(faction == null) {
-					if(!name.equalsIgnoreCase("safezone") && !name.equalsIgnoreCase("warzone")) {
+					if(!name.equalsIgnoreCase("safezone") && !name.equalsIgnoreCase("warzone") && !name.equalsIgnoreCase("wilderness")) {
 						if(name.length() >= MINIMUM_NAME_LENGTH && name.length() <= MAXIMUM_NAME_LENGTH) {
 							if(description.length() <= MAXIMUM_DESCRIPTION_LENGTH) {
 								Faction newFaction = new Faction(name, description);

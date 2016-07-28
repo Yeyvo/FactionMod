@@ -65,7 +65,7 @@ result.defaultGroupChanged=§aThe default group is now %s
 result.notEnougthPower=§cYou haven't enougth power to claim this land, %s§c are required
 result.maxClaimsReached=§cYou reached the maximum of claims for your faction
 
-faction.chunk.free=§d** Free land **
+faction.chunk.free=§d** Wilderness **
 faction.chunk.safeZone=§e** Safe zone **
 faction.chunk.warZone=§4** War zone **
 
@@ -103,6 +103,7 @@ overlay.rank=Rank
 overlay.landOwner=Land owner
 overlay.safeZone=Safe zone
 overlay.warZone=War zone
+overlay.freeLand=Wilderness
 overlay.power=Power level
 
 rank.owner=Faction's owner

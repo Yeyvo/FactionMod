@@ -83,6 +83,14 @@ public class GuiLandMap extends GuiScreen {
 				y = 0;
 			}
 		}
+		
+		GL11.glPushMatrix();
+		GL11.glTranslatef(centerX + 205 / 2, centerY + 205 / 2, 0);
+		GL11.glRotatef(this.mc.thePlayer.rotationYaw, 0.0f, 0.0f, 1.0f);
+		GL11.glTranslatef(-4.0f, -4.0f, 0.0f);
+		Gui.drawScaledCustomSizeModalRect(0, 0, colorsX, 1, 6, 6, 8, 8, 256, 256);
+		GL11.glPopMatrix();
+		
 		y = 0;
 		x = 0;
 		did.clear();
