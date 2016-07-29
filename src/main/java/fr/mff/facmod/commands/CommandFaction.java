@@ -186,8 +186,8 @@ public class CommandFaction extends CommandBase {
 
 			// Claim
 			else if(args[0].equalsIgnoreCase("claim")) {
-				ChunkCoordIntPair pair = player.getEntityWorld().getChunkFromBlockCoords(player.getPosition()).getChunkCoordIntPair();
-				EnumResult result = Lands.claimChunk(player, pair);
+				String claimerName = args.length > 1 ? args[1] : player.getName();
+				EnumResult result = Lands.claimChunk(player.getUniqueID(), claimerName);
 				player.addChatComponentMessage(new ChatComponentTranslation(result.getLanguageKey(), result.getInformations()));
 			}
 

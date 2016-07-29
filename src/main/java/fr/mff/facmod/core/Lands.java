@@ -233,40 +233,48 @@ public class Lands {
 		return EnumResult.WRONG_WORLD;
 	}
 
-	public static EnumResult claimChunk(EntityPlayer player, ChunkCoordIntPair pair) {
-		if(player.getEntityWorld().equals(MinecraftServer.getServer().getEntityWorld())) {
-			UUID claimer = player.getUniqueID();
-			if(Lands.isSafeZone(pair)) {
-				return EnumResult.IN_A_SAFE_ZONE;
-			} else if(Lands.isWarZone(pair)) {
-				return EnumResult.IN_A_WAR_ZONE;
-			} else {
-				Faction faction = Faction.Registry.getPlayerFaction(claimer);
-				if(faction != null) {
-					if(faction.getMember(claimer).getRank().hasPermission(Permission.LAND_HANDLING)) {
-						if(faction.getPowerLevel() >= ConfigFaction.POWER_NEEDED_FOR_CLAIM) {
-							if(Lands.getLandsForFaction(faction.getName()).size() < faction.getMaxPowerLevel() / ConfigFaction.POWER_NEEDED_FOR_CLAIM) {
-								String name = chunks.get(pair);
-								Faction ownerFaction = Faction.Registry.getFactionFromName(name);
-								if(name == null || (ownerFaction.getPowerLevel() < Lands.getLandsForFaction(name).size() && !ownerFaction.getName().equalsIgnoreCase(faction.getName()))) {
-									chunks.put(pair, faction.getName());
-									Powers.setPlayerPower(claimer, Powers.getPowerOf(claimer) - ConfigFaction.POWER_NEEDED_FOR_CLAIM);
-									PacketHelper.updatePowerLevel(claimer);
-									FactionSaver.save();
-									return EnumResult.LAND_CLAIMED.clear().addInformation(EnumChatFormatting.GOLD + faction.getName());
+	public static EnumResult claimChunk(UUID sender, String claimerName) {
+		EntityPlayer claimer = MinecraftServer.getServer().getConfigurationManager().getPlayerByUsername(claimerName);
+		if(claimer != null) {
+			if(claimer.getEntityWorld().equals(MinecraftServer.getServer().getEntityWorld())) {
+				ChunkCoordIntPair pair = claimer.getEntityWorld().getChunkFromBlockCoords(claimer.getPosition()).getChunkCoordIntPair();
+				if(Lands.isSafeZone(pair)) {
+					return EnumResult.IN_A_SAFE_ZONE;
+				} else if(Lands.isWarZone(pair)) {
+					return EnumResult.IN_A_WAR_ZONE;
+				} else {
+					Faction factionSender = Faction.Registry.getPlayerFaction(sender);
+					if(factionSender != null) {
+						Faction factionClaimer = Faction.Registry.getPlayerFaction(claimer.getUniqueID());
+						if(factionSender.equals(factionClaimer)) {
+							if(factionSender.getMember(sender).getRank().hasPermission(Permission.LAND_HANDLING)) {
+								if(Powers.getPowerOf(claimer.getUniqueID()) >= ConfigFaction.POWER_NEEDED_FOR_CLAIM) {
+									if(Lands.getLandsForFaction(factionSender.getName()).size() < factionSender.getMaxPowerLevel() / ConfigFaction.POWER_NEEDED_FOR_CLAIM) {
+										String name = chunks.get(pair);
+										Faction ownerFaction = Faction.Registry.getFactionFromName(name);
+										if(name == null || (ownerFaction.getPowerLevel() < Lands.getLandsForFaction(name).size() && !ownerFaction.getName().equalsIgnoreCase(factionSender.getName()))) {
+											chunks.put(pair, factionSender.getName());
+											Powers.setPlayerPower(claimer.getUniqueID(), Powers.getPowerOf(claimer.getUniqueID()) - ConfigFaction.POWER_NEEDED_FOR_CLAIM);
+											PacketHelper.updatePowerLevel(claimer.getUniqueID());
+											FactionSaver.save();
+											return EnumResult.LAND_CLAIMED.clear().addInformation(EnumChatFormatting.GOLD + factionSender.getName());
+										}
+										return EnumResult.ALREADY_CLAIMED_LAND.clear().addInformation(EnumChatFormatting.GOLD + name);
+									}
+									return EnumResult.MAX_CLAIMS_REACHED;
 								}
-								return EnumResult.ALREADY_CLAIMED_LAND.clear().addInformation(EnumChatFormatting.GOLD + name);
+								return EnumResult.NOT_ENOUGTH_POWER.clear().addInformation("" + ConfigFaction.POWER_NEEDED_FOR_CLAIM);
 							}
-							return EnumResult.MAX_CLAIMS_REACHED;
+							return EnumResult.NO_PERMISSION;
 						}
-						return EnumResult.NOT_ENOUGTH_POWER.clear().addInformation("" + ConfigFaction.POWER_NEEDED_FOR_CLAIM);
+						return EnumResult.PLAYER_NOT_IN_THE_FACTION.clear().addInformation(factionSender.getName());
 					}
-					return EnumResult.NO_PERMISSION;
+					return EnumResult.NOT_IN_A_FACTION;
 				}
-				return EnumResult.NOT_IN_A_FACTION;
 			}
+			return EnumResult.WRONG_WORLD;
 		}
-		return EnumResult.WRONG_WORLD;
+		return EnumResult.NOT_CONNECTED_PLAYER.clear().addInformation(claimerName);
 	}
 
 	public static EnumResult unClaimChunk(EntityPlayer player, ChunkCoordIntPair pair) {
