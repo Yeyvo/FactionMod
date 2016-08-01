@@ -38,10 +38,10 @@ public class Overlays {
 		if(!factionName.isEmpty() || ConfigFaction.POWER_OVERLAY) {
 			
 			List<String> toPrint = Lists.newArrayList();
-			if(ConfigFaction.FACTION_OVERLAY) {
+			if(ConfigFaction.FACTION_OVERLAY && !factionName.isEmpty()) {
 				toPrint.add(EnumChatFormatting.GOLD + factionName);
 			}
-			if(ConfigFaction.RANK_OVERLAY) {
+			if(ConfigFaction.RANK_OVERLAY  && !factionName.isEmpty()) {
 				EnumRank rank = ((ClientProxy)FactionMod.proxy).rank;
 				toPrint.add(rank.getColor() + rank.getDisplay());
 			}
