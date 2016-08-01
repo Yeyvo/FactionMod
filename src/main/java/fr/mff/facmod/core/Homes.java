@@ -137,7 +137,7 @@ public class Homes {
 							if(faction != null) {
 								BlockPos pos = homes.get(faction.getName());
 								if(pos != null) {
-									entry.getKey().setPositionAndUpdate(pos.getX(), pos.getY(), pos.getZ());
+									entry.getKey().setPositionAndUpdate(pos.getX() + 0.5d, pos.getY(), pos.getZ() + 0.5d);
 									remove.add(entry.getKey());
 								} else {
 									remove.add(entry.getKey());
