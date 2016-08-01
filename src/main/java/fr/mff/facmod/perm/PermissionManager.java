@@ -233,18 +233,6 @@ public class PermissionManager extends WorldSavedData {
 	}
 
 	public static boolean canEntityExecuteCommand(Entity entity, ICommand command) {
-
-		/*Group g = players.get(entity.getUniqueID());
-		if(g != null) {
-			if(g.hasPermission("command." + command.getCommandName())) {
-				return true;
-			}
-			return false;
-		} else {
-			if(isOperator(entity.getName())) {
-				return true;
-			}
-		}*/
 		return hasEntityPermission(entity, "command." + command.getCommandName());
 	}
 

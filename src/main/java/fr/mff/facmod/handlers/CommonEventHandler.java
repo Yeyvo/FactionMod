@@ -61,31 +61,37 @@ public class CommonEventHandler {
 
 	@SubscribeEvent
 	public void onPlayerBreakBlock(BlockEvent.BreakEvent event) {
-		if(!PermissionManager.hasEntityPermission(event.getPlayer(), "world.block.break")) {
-			event.setCanceled(true);
+		if(!event.world.isRemote) {
+			if(!PermissionManager.hasEntityPermission(event.getPlayer(), "world.block.break")) {
+				event.setCanceled(true);
+			}
 		}
 		Lands.onPlayerBreakBlock(event);
 	}
 
 	@SubscribeEvent
 	public void onPlayerInteract(PlayerInteractEvent event) {
-		if(!PermissionManager.hasEntityPermission(event.entityPlayer, "world.block.interact")) {
-			event.setCanceled(true);
+		if(!event.world.isRemote) {
+			if(!PermissionManager.hasEntityPermission(event.entityPlayer, "world.block.interact")) {
+				event.setCanceled(true);
+			}
 		}
 		Lands.onPlayerInteract(event);
 	}
 
 	@SubscribeEvent
 	public void onPlayerPlaceBlock(PlaceEvent event) {
-		if(!PermissionManager.hasEntityPermission(event.player, "world.block.place")) {
-			event.setCanceled(true);
+		if(!event.world.isRemote) {
+			if(!PermissionManager.hasEntityPermission(event.player, "world.block.place")) {
+				event.setCanceled(true);
+			}
 		}
 		Lands.onPlayerPlaceBlock(event);
 	}
 
 	@SubscribeEvent
 	public void onBucketFill(FillBucketEvent event) {
-		if(event.current.getItem().equals(Items.bucket)) {
+		if(!event.world.isRemote && event.current.getItem().equals(Items.bucket)) {
 			if(!PermissionManager.hasEntityPermission(event.entityPlayer, "world.block.break")) {
 				event.setCanceled(true);
 			}
