@@ -152,6 +152,7 @@ public class Lands {
 	public static void clearChunksFaction(String name) {
 		List<ChunkCoordIntPair> toRemove = Lands.getLandsForFaction(name);
 		for(ChunkCoordIntPair chunk : toRemove) {
+			Homes.onLandUnclaimedPre(chunk);
 			Lands.chunks.remove(chunk);
 		}
 		FactionSaver.save();
@@ -252,7 +253,7 @@ public class Lands {
 									if(Lands.getLandsForFaction(factionSender.getName()).size() < factionSender.getMaxPowerLevel() / ConfigFaction.POWER_NEEDED_FOR_CLAIM) {
 										String name = chunks.get(pair);
 										Faction ownerFaction = Faction.Registry.getFactionFromName(name);
-										if(name == null || (ownerFaction.getPowerLevel() < Lands.getLandsForFaction(name).size() && !ownerFaction.getName().equalsIgnoreCase(factionSender.getName()))) {
+										if(name == null || (ownerFaction.getPowerLevel() < Lands.getLandsForFaction(name).size() * ConfigFaction.POWER_NEEDED_FOR_CLAIM && !ownerFaction.getName().equalsIgnoreCase(factionSender.getName()))) {
 											chunks.put(pair, factionSender.getName());
 											Powers.setPlayerPower(claimer.getUniqueID(), Powers.getPowerOf(claimer.getUniqueID()) - ConfigFaction.POWER_NEEDED_FOR_CLAIM);
 											PacketHelper.updatePowerLevel(claimer.getUniqueID());
