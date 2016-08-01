@@ -131,11 +131,13 @@ public class CommonEventHandler {
 
 	@SubscribeEvent
 	public void onNameFormat(NameFormat event) {
-		Group g = PermissionManager.getPlayerGroup(event.entityPlayer.getUniqueID());
-		if(g != null) {
-			event.displayname = g.getDisplay() + EnumChatFormatting.RESET + " " + event.displayname;
-		} else if(PermissionManager.isOperator(event.username)) {
-			event.displayname = EnumChatFormatting.RED + "Operator " + EnumChatFormatting.RESET + event.displayname;
+		if(!event.entity.worldObj.isRemote) {
+			Group g = PermissionManager.getPlayerGroup(event.entityPlayer.getUniqueID());
+			if(g != null) {
+				event.displayname = g.getDisplay() + EnumChatFormatting.RESET + " " + event.displayname;
+			} else if(PermissionManager.isOperator(event.username)) {
+				event.displayname = EnumChatFormatting.RED + "Operator " + EnumChatFormatting.RESET + event.displayname;
+			}
 		}
 	}
 
