@@ -66,6 +66,7 @@ result.notEnougthPower=§cYou haven't enougth power to claim this land, %s§c ar
 result.maxClaimsReached=§cYou reached the maximum of claims for your faction
 result.playerUnbanned=§aThe player %s§a has been unbanned
 result.playerNotBanned=§cThe player %s§c isn't banned
+result.zonesCleared=%s§a has been removed
 
 faction.chunk.free=§d** Wilderness **
 faction.chunk.safeZone=§e** Safe zone **

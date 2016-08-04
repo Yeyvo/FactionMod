@@ -22,6 +22,7 @@ public class CommandZone implements ICommand {
 		zoneArgs.add("safe");
 		zoneArgs.add("war");
 		zoneArgs.add("remove");
+		zoneArgs.add("clearAll");
 	}
 
 	@Override
@@ -31,7 +32,7 @@ public class CommandZone implements ICommand {
 
 	@Override
 	public String getCommandUsage(ICommandSender sender) {
-		return "/zone <safe | war | remove>";
+		return "/zone <safe | war | remove | clearAll>";
 	}
 
 	@Override
@@ -53,6 +54,11 @@ public class CommandZone implements ICommand {
 
 			else if(args[0].equalsIgnoreCase("remove")) {
 				EnumResult result = Lands.removeZone(player);
+				player.addChatComponentMessage(new ChatComponentTranslation(result.getLanguageKey(), result.getInformations()));
+			}
+			
+			else if(args[0].equalsIgnoreCase("clearAll")) {
+				EnumResult result = Lands.clearZones();
 				player.addChatComponentMessage(new ChatComponentTranslation(result.getLanguageKey(), result.getInformations()));
 			}
 

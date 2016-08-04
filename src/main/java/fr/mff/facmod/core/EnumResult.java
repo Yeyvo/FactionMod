@@ -51,6 +51,7 @@ public enum EnumResult {
 	MAX_CLAIMS_REACHED("result.maxClaimsReached", false),
 	PLAYER_UNBANNED("result.playerUnbanned", true),
 	PLAYER_NOT_BANNED("result.playerNotBanned", false),
+	ZONES_CLEARED("result.zonesCleared", true),
 	
 	//Permission
 	GROUP_CREATED("result.groupCreated", true),

@@ -233,6 +233,13 @@ public class Lands {
 		}
 		return EnumResult.WRONG_WORLD;
 	}
+	
+	public static EnumResult clearZones() {
+		int count = safeZones.size() + warZones.size();
+		safeZones.clear();
+		warZones.clear();
+		return EnumResult.ZONES_CLEARED.clear().addInformation("" + count);
+	}
 
 	public static EnumResult claimChunk(UUID sender, String claimerName) {
 		EntityPlayer claimer = MinecraftServer.getServer().getConfigurationManager().getPlayerByUsername(claimerName);
