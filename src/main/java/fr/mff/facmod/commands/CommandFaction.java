@@ -8,7 +8,7 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.world.ChunkCoordIntPair;
@@ -17,6 +17,7 @@ import fr.mff.facmod.core.EnumResult;
 import fr.mff.facmod.core.Faction;
 import fr.mff.facmod.core.Homes;
 import fr.mff.facmod.core.Lands;
+import fr.mff.facmod.network.PacketHelper;
 
 public class CommandFaction extends CommandBase {
 
@@ -39,6 +40,7 @@ public class CommandFaction extends CommandBase {
 		fArgs.add("unclaim");
 		fArgs.add("description");
 		fArgs.add("info");
+		fArgs.add("map");
 	}
 
 	private static final List<String> commandAliases = new ArrayList<String>();
@@ -80,7 +82,7 @@ public class CommandFaction extends CommandBase {
 		if(args.length < 1) {
 			throw new WrongUsageException(this.getCommandUsage(sender), new Object[0]);
 		} else {
-			EntityPlayer player = getCommandSenderAsPlayer(sender);
+			EntityPlayerMP player = getCommandSenderAsPlayer(sender);
 
 			// Create
 			if(args[0].equalsIgnoreCase("create")) {
@@ -233,6 +235,11 @@ public class CommandFaction extends CommandBase {
 				if(result != null) {
 					player.addChatComponentMessage(new ChatComponentTranslation(result.getLanguageKey(), result.getInformations()));
 				}
+			}
+			
+			// Map
+			else if(args[0].equalsIgnoreCase("map")) {
+				PacketHelper.sendMap(player);
 			}
 
 			else {
