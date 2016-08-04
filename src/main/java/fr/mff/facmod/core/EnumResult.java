@@ -49,6 +49,8 @@ public enum EnumResult {
 	WAR_ZONE_SET("result.warZoneSet", true),
 	NOT_ENOUGTH_POWER("result.notEnougthPower", false),
 	MAX_CLAIMS_REACHED("result.maxClaimsReached", false),
+	PLAYER_UNBANNED("result.playerUnbanned", true),
+	PLAYER_NOT_BANNED("result.playerNotBanned", false),
 	
 	//Permission
 	GROUP_CREATED("result.groupCreated", true),

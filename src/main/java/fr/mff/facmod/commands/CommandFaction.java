@@ -32,6 +32,7 @@ public class CommandFaction extends CommandBase {
 		fArgs.add("home");
 		fArgs.add("kick");
 		fArgs.add("ban");
+		fArgs.add("unban");
 		fArgs.add("open");
 		fArgs.add("close");
 		fArgs.add("claim");
@@ -159,6 +160,14 @@ public class CommandFaction extends CommandBase {
 					player.addChatComponentMessage(new ChatComponentTranslation(result.getLanguageKey(), result.getInformations()));
 				} else {
 					throw new WrongUsageException("/faction ban <player>", new Object[0]);
+				}
+			}
+			
+			// Unban
+			else if(args[0].equalsIgnoreCase("unban")) {
+				if(args.length >= 2) {
+					EnumResult result = Faction.Registry.unbanPlayer(player.getUniqueID(), args[1]);
+					player.addChatComponentMessage(new ChatComponentTranslation(result.getLanguageKey(), result.getInformations()));
 				}
 			}
 

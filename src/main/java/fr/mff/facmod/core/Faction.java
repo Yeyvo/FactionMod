@@ -49,11 +49,11 @@ public class Faction {
 	public String getName() {
 		return this.name;
 	}
-	
+
 	public int getMaxPowerLevel() {
 		return members.size() * ConfigFaction.POWER_PER_PLAYER;
 	}
-	
+
 	public int getPowerLevel() {
 		int power = 0;
 		for(Member member : members) {
@@ -550,6 +550,28 @@ public class Faction {
 					return EnumResult.PLAYER_NOT_IN_THE_FACTION.clear().addInformation(EnumChatFormatting.WHITE + args[1]).addInformation(EnumChatFormatting.GOLD + faction.getName());
 				}
 				return EnumResult.NOT_EXISTING_PLAYER.clear().addInformation(EnumChatFormatting.WHITE + args[1]);
+			}
+			return EnumResult.NOT_IN_A_FACTION;
+		}
+
+		public static EnumResult unbanPlayer(UUID executor, String slaveName) {
+			Faction faction = Faction.Registry.getPlayerFaction(executor);
+			if(faction != null) {
+				if(faction.getMember(executor).getRank().hasPermission(Permission.COMMUNITY_HANDLING)) {
+					GameProfile profile = MinecraftServer.getServer().getPlayerProfileCache().getGameProfileForUsername(slaveName);
+					if(profile != null) {
+						UUID slave = profile.getId();
+						for(UUID uuid : faction.getBannedPlayers()) {
+							if(uuid.equals(slave)) {
+								faction.getBannedPlayers().remove(slave);
+								return EnumResult.PLAYER_UNBANNED.clear().addInformation(EnumChatFormatting.WHITE + slaveName);
+							}
+						}
+						return EnumResult.PLAYER_NOT_BANNED.clear().addInformation(EnumChatFormatting.WHITE + slaveName).addInformation(EnumChatFormatting.GOLD + faction.getName());
+					}
+					return EnumResult.NOT_EXISTING_PLAYER.clear().addInformation(EnumChatFormatting.WHITE + slaveName);
+				}
+				return EnumResult.NO_PERMISSION;
 			}
 			return EnumResult.NOT_IN_A_FACTION;
 		}

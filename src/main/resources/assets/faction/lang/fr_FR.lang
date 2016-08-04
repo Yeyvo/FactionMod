@@ -64,6 +64,8 @@ result.prefixChanged=§aLe préfix du groupe %s§a a été changé en %s
 result.defaultGroupChanged=§aLe groupe par défaut est maintenant %s
 result.notEnougthPower=§cVous n'avez pas assez de pouvoir pour vous approrier ce terrain, %s§c de pouvoir est requis
 result.maxClaimsReached=§cVous avez atteint le maximum de terrain possédés pour votre faction
+result.playerUnbanned=§aLe joueur %s§a a été débannit
+result.playerNotBanned=§cLe joueur §s§c n'est pas bannit
 
 faction.chunk.free=§d** Terre sauvage **
 faction.chunk.safeZone=§4** Zone de combat **
