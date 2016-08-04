@@ -197,8 +197,23 @@ public class CommandFaction extends CommandBase {
 
 			// Claim
 			else if(args[0].equalsIgnoreCase("claim")) {
-				String claimerName = args.length > 1 ? args[1] : player.getName();
-				EnumResult result = Lands.claimChunk(player.getUniqueID(), claimerName);
+				String claimerName;
+				String powerGiver;
+				if(args.length == 1) {
+					claimerName = player.getName();
+					powerGiver = player.getName();
+				} else {
+					if(args[1].equalsIgnoreCase("here") && args.length >= 3) {
+						claimerName = player.getName();
+						powerGiver = args[2];
+					} else if(args[1].equalsIgnoreCase("player")  && args.length >= 3) {
+						claimerName = args[2];
+						powerGiver = args[2];
+					} else {
+						throw new WrongUsageException("/faction claim <here | player> <player loosing power>", new Object[0]);
+					}
+				}
+				EnumResult result = Lands.claimChunk(player.getUniqueID(), claimerName, powerGiver);
 				player.addChatComponentMessage(new ChatComponentTranslation(result.getLanguageKey(), result.getInformations()));
 			}
 

@@ -30,6 +30,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import com.mojang.authlib.GameProfile;
 
 import fr.mff.facmod.config.ConfigFaction;
 import fr.mff.facmod.network.PacketHelper;
@@ -233,7 +234,7 @@ public class Lands {
 		}
 		return EnumResult.WRONG_WORLD;
 	}
-	
+
 	public static EnumResult clearZones() {
 		int count = safeZones.size() + warZones.size();
 		safeZones.clear();
@@ -241,7 +242,7 @@ public class Lands {
 		return EnumResult.ZONES_CLEARED.clear().addInformation("" + count);
 	}
 
-	public static EnumResult claimChunk(UUID sender, String claimerName) {
+	public static EnumResult claimChunk(UUID sender, String claimerName, String powerGiver) {
 		EntityPlayer claimer = MinecraftServer.getServer().getConfigurationManager().getPlayerByUsername(claimerName);
 		if(claimer != null) {
 			if(claimer.getEntityWorld().equals(MinecraftServer.getServer().getEntityWorld())) {
@@ -255,25 +256,30 @@ public class Lands {
 					if(factionSender != null) {
 						Faction factionClaimer = Faction.Registry.getPlayerFaction(claimer.getUniqueID());
 						if(factionSender.equals(factionClaimer)) {
-							if(factionSender.getMember(sender).getRank().hasPermission(Permission.LAND_HANDLING)) {
-								if(Powers.getPowerOf(claimer.getUniqueID()) >= ConfigFaction.POWER_NEEDED_FOR_CLAIM) {
-									if(Lands.getLandsForFaction(factionSender.getName()).size() < factionSender.getMaxPowerLevel() / ConfigFaction.POWER_NEEDED_FOR_CLAIM) {
-										String name = chunks.get(pair);
-										Faction ownerFaction = Faction.Registry.getFactionFromName(name);
-										if(name == null || (ownerFaction.getPowerLevel() < Lands.getLandsForFaction(name).size() * ConfigFaction.POWER_NEEDED_FOR_CLAIM && !ownerFaction.getName().equalsIgnoreCase(factionSender.getName()))) {
-											chunks.put(pair, factionSender.getName());
-											Powers.setPlayerPower(claimer.getUniqueID(), Powers.getPowerOf(claimer.getUniqueID()) - ConfigFaction.POWER_NEEDED_FOR_CLAIM);
-											PacketHelper.updatePowerLevel(claimer.getUniqueID());
-											FactionSaver.save();
-											return EnumResult.LAND_CLAIMED.clear().addInformation(EnumChatFormatting.GOLD + factionSender.getName());
+							Faction factionPowerGiver = Faction.Registry.getPlayerFaction(claimer.getUniqueID());
+							if(factionSender.equals(factionPowerGiver)) {
+								if(factionSender.getMember(sender).getRank().hasPermission(Permission.LAND_HANDLING)) {
+									GameProfile profilePowerGiver = MinecraftServer.getServer().getPlayerProfileCache().getGameProfileForUsername(powerGiver);
+									if(Powers.getPowerOf(profilePowerGiver.getId()) >= ConfigFaction.POWER_NEEDED_FOR_CLAIM) {
+										if(Lands.getLandsForFaction(factionSender.getName()).size() < factionSender.getMaxPowerLevel() / ConfigFaction.POWER_NEEDED_FOR_CLAIM) {
+											String name = chunks.get(pair);
+											Faction ownerFaction = Faction.Registry.getFactionFromName(name);
+											if(name == null || (ownerFaction.getPowerLevel() < Lands.getLandsForFaction(name).size() * ConfigFaction.POWER_NEEDED_FOR_CLAIM && !ownerFaction.getName().equalsIgnoreCase(factionSender.getName()))) {
+												chunks.put(pair, factionSender.getName());
+												Powers.setPlayerPower(profilePowerGiver.getId(), Powers.getPowerOf(profilePowerGiver.getId()) - ConfigFaction.POWER_NEEDED_FOR_CLAIM);
+												PacketHelper.updatePowerLevel(profilePowerGiver.getId());
+												FactionSaver.save();
+												return EnumResult.LAND_CLAIMED.clear().addInformation(EnumChatFormatting.GOLD + factionSender.getName());
+											}
+											return EnumResult.ALREADY_CLAIMED_LAND.clear().addInformation(EnumChatFormatting.GOLD + name);
 										}
-										return EnumResult.ALREADY_CLAIMED_LAND.clear().addInformation(EnumChatFormatting.GOLD + name);
+										return EnumResult.MAX_CLAIMS_REACHED;
 									}
-									return EnumResult.MAX_CLAIMS_REACHED;
+									return EnumResult.NOT_ENOUGTH_POWER.clear().addInformation("" + ConfigFaction.POWER_NEEDED_FOR_CLAIM);
 								}
-								return EnumResult.NOT_ENOUGTH_POWER.clear().addInformation("" + ConfigFaction.POWER_NEEDED_FOR_CLAIM);
+								return EnumResult.NO_PERMISSION;
 							}
-							return EnumResult.NO_PERMISSION;
+							return EnumResult.PLAYER_NOT_IN_THE_FACTION.clear().addInformation(powerGiver);
 						}
 						return EnumResult.PLAYER_NOT_IN_THE_FACTION.clear().addInformation(factionSender.getName());
 					}
