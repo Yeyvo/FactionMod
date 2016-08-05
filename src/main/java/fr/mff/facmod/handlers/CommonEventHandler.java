@@ -19,6 +19,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import fr.mff.facmod.core.EnumResult;
+import fr.mff.facmod.core.Faction;
 import fr.mff.facmod.core.Homes;
 import fr.mff.facmod.core.Lands;
 import fr.mff.facmod.core.Powers;
@@ -132,12 +133,18 @@ public class CommonEventHandler {
 	@SubscribeEvent
 	public void onNameFormat(NameFormat event) {
 		if(!event.entity.worldObj.isRemote) {
+			String prefix = "";
 			Group g = PermissionManager.getPlayerGroup(event.entityPlayer.getUniqueID());
 			if(g != null) {
-				event.displayname = g.getDisplay() + EnumChatFormatting.RESET + " " + event.displayname;
+				prefix += g.getDisplay();
 			} else if(PermissionManager.isOperator(event.username)) {
-				event.displayname = EnumChatFormatting.RED + "Operator " + EnumChatFormatting.RESET + event.displayname;
+				prefix += EnumChatFormatting.RED + "Operator ";
 			}
+			Faction f = Faction.Registry.getFactionFromName(event.username);
+			if(f != null) {
+				prefix += EnumChatFormatting.GOLD + f.getName() + " ";
+			}
+			event.displayname = prefix + EnumChatFormatting.RESET + event.displayname;
 		}
 	}
 
