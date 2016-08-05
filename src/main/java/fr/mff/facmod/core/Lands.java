@@ -574,7 +574,6 @@ public class Lands {
 				ChunkCoordIntPair pair = MinecraftServer.getServer().getEntityWorld().getChunkFromBlockCoords(event.entityLiving.getPosition()).getChunkCoordIntPair();
 				if(Lands.isSafeZone(pair)) {
 					event.setCanceled(true);
-					event.entityLiving.addChatMessage(new ChatComponentTranslation(EnumResult.IN_A_SAFE_ZONE.getLanguageKey(), new Object[0]));
 				}
 			}
 		}
