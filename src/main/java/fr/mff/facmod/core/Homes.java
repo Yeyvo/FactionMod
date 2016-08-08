@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.UUID;
 
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
@@ -45,17 +46,22 @@ public class Homes {
 
 					if(factionName != null) {
 						if(faction.getName().equalsIgnoreCase(factionName)) {
-							BlockPos lastPos = homes.remove(factionName);
-							if(lastPos != null) {
-								MinecraftServer.getServer().getEntityWorld().setBlockState(lastPos.down(), Blocks.air.getDefaultState());
-							}
-							homes.put(factionName, position);
-							MinecraftServer.getServer().getEntityWorld().setBlockState(position.down(), BlockRegistry.homeBase.getDefaultState());
+							IBlockState state = MinecraftServer.getServer().getEntityWorld().getBlockState(position.down());
+							if(state.getBlock() != Blocks.bedrock) {
+								BlockPos lastPos = homes.remove(factionName);
+								if(lastPos != null) {
+									MinecraftServer.getServer().getEntityWorld().setBlockState(lastPos.down(), Blocks.air.getDefaultState());
+								}
+								homes.put(factionName, position);
+								state.getBlock().onBlockDestroyedByPlayer(MinecraftServer.getServer().getEntityWorld(), position.down(), state);
+								MinecraftServer.getServer().getEntityWorld().setBlockState(position.down(), BlockRegistry.homeBase.getDefaultState());
 
-							FactionSaver.save();
-							return EnumResult.HOME_SET.clear().addInformation(EnumChatFormatting.WHITE.toString() + position.getX())
-									.addInformation(EnumChatFormatting.WHITE.toString() + position.getY())
-									.addInformation(EnumChatFormatting.WHITE.toString() + position.getZ());
+								FactionSaver.save();
+								return EnumResult.HOME_SET.clear().addInformation(EnumChatFormatting.WHITE.toString() + position.getX())
+										.addInformation(EnumChatFormatting.WHITE.toString() + position.getY())
+										.addInformation(EnumChatFormatting.WHITE.toString() + position.getZ());
+							}
+							return EnumResult.NO_PERMISSION;
 						}
 						return EnumResult.LAND_OF_THE_FACTION.clear().addInformation(EnumChatFormatting.GOLD + factionName);
 					}
