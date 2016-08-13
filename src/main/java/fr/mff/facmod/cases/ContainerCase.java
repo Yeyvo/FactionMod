@@ -22,7 +22,6 @@ public class ContainerCase extends Case {
 	@Override
 	public boolean isInteractAvalaible(World world, BlockPos pos, Action action, EnumFacing facing, Vec3 lookPos) {
 		Block block = world.getBlockState(pos).getBlock();
-		System.out.println("Parsing for " + block);
 		if(block == Blocks.enchanting_table || block == Blocks.ender_chest || block == Blocks.crafting_table) {
 			return true;
 		}
