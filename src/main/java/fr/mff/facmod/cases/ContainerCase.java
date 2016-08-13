@@ -11,14 +11,9 @@ import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
 import fr.mff.facmod.core.Case;
-import fr.mff.facmod.core.Lands;
 
 public class ContainerCase extends Case {
-
-	static {
-		Lands.addCase(new ContainerCase(), Case.Type.USE);
-	}
-
+	
 	@Override
 	public boolean isBreakAvalaible(World world, BlockPos pos, IBlockState state, EntityPlayer player) {
 		return false;
@@ -27,6 +22,7 @@ public class ContainerCase extends Case {
 	@Override
 	public boolean isInteractAvalaible(World world, BlockPos pos, Action action, EnumFacing facing, Vec3 lookPos) {
 		Block block = world.getBlockState(pos).getBlock();
+		System.out.println("Parsing for " + block);
 		if(block == Blocks.enchanting_table || block == Blocks.ender_chest || block == Blocks.crafting_table) {
 			return true;
 		}

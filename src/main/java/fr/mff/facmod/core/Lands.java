@@ -25,6 +25,7 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 import net.minecraftforge.event.world.BlockEvent.PlaceEvent;
 import net.minecraftforge.event.world.ExplosionEvent;
+import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
@@ -32,6 +33,8 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.mojang.authlib.GameProfile;
 
+import fr.mff.facmod.cases.ContainerCase;
+import fr.mff.facmod.cases.HomeCase;
 import fr.mff.facmod.config.ConfigFaction;
 import fr.mff.facmod.network.PacketHelper;
 import fr.mff.facmod.perm.PermissionManager;
@@ -616,5 +619,10 @@ public class Lands {
 				event.getAffectedBlocks().remove(pos);
 			}
 		}
+	}
+
+	public static void onServerStarting(FMLServerStartingEvent event) {
+		addCase(new HomeCase(), Case.Type.BREAK);
+		addCase(new ContainerCase(), Case.Type.USE);
 	}
 }

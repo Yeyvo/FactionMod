@@ -10,13 +10,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
 import fr.mff.facmod.blocks.BlockRegistry;
 import fr.mff.facmod.core.Case;
-import fr.mff.facmod.core.Lands;
 
 public class HomeCase extends Case {
-	
-	static {
-		Lands.addCase(new HomeCase(), Case.Type.BREAK);
-	}
 
 	@Override
 	public boolean isBreakAvalaible(World world, BlockPos pos, IBlockState state, EntityPlayer player) {

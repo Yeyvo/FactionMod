@@ -21,6 +21,7 @@ import fr.mff.facmod.blocks.BlockRegistry;
 import fr.mff.facmod.commands.CommandRegistry;
 import fr.mff.facmod.config.ConfigFaction;
 import fr.mff.facmod.core.FactionSaver;
+import fr.mff.facmod.core.Lands;
 import fr.mff.facmod.entity.EntityDynamite;
 import fr.mff.facmod.handlers.GuiHandler;
 import fr.mff.facmod.items.ItemRegistry;
@@ -84,6 +85,7 @@ public class FactionMod {
 		FactionSaver.onServerStarting(event);
 		PermissionManager.onServerStarting(event);
 		CommandRegistry.onServerStarting(event);
+		Lands.onServerStarting(event);
 	}
 	
 	public void Render(Class<? extends Entity> par1, String par2, int par3, Object par4, int par5, int par6, boolean par7)
