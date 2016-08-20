@@ -52,6 +52,7 @@ public enum EnumResult {
 	PLAYER_UNBANNED("result.playerUnbanned", true),
 	PLAYER_NOT_BANNED("result.playerNotBanned", false),
 	ZONES_CLEARED("result.zonesCleared", true),
+	NOT_EXISTING_LAND("result.notExistingLand", false),
 	
 	//Permission
 	GROUP_CREATED("result.groupCreated", true),

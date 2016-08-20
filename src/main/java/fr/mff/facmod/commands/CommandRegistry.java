@@ -11,6 +11,7 @@ public class CommandRegistry {
 		if(ConfigFaction.ENABLE_PERMISSION) {
 			event.registerServerCommand(new CommandPermission());
 		}
+		event.registerServerCommand(new CommandFactionAdmin());
 	}
 
 }

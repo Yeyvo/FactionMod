@@ -67,6 +67,7 @@ result.maxClaimsReached=§cYou reached the maximum of claims for your faction
 result.playerUnbanned=§aThe player %s§a has been unbanned
 result.playerNotBanned=§cThe player %s§c isn't banned
 result.zonesCleared=%s§a zones has been removed
+result.notExistingLand=§cThe land number %s§c is not existing for the faction %s
 
 faction.chunk.free=§d** Wilderness **
 faction.chunk.safeZone=§e** Safe zone **

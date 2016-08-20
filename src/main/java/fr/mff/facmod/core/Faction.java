@@ -7,15 +7,18 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.UUID;
 
+import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.world.ChunkCoordIntPair;
 
 import com.mojang.authlib.GameProfile;
 
@@ -574,6 +577,71 @@ public class Faction {
 				return EnumResult.NO_PERMISSION;
 			}
 			return EnumResult.NOT_IN_A_FACTION;
+		}
+
+		public static EnumResult getUserInfo(ICommandSender sender, String user) {
+			GameProfile profile = MinecraftServer.getServer().getPlayerProfileCache().getGameProfileForUsername(user);
+			if(profile != null) {
+				sender.addChatMessage(new ChatComponentText(EnumChatFormatting.AQUA + "-- " + EnumChatFormatting.RESET + profile.getName() + EnumChatFormatting.AQUA + " --"));
+				Faction fac = getPlayerFaction(profile.getId());
+				if(fac != null) {
+					sender.addChatMessage(new ChatComponentTranslation("overlay.faction", new Object[0]).appendText(" : " + fac.getName()));
+				}
+				sender.addChatMessage(new ChatComponentTranslation("overlay.power", new Object[0]).appendText(" : " + Powers.getPowerOf(profile.getId())));
+				return null;
+			}
+			return EnumResult.NOT_EXISTING_PLAYER.clear().addInformation(user);
+		}
+
+		public static EnumResult findFaction(ICommandSender sender, String factionName) {
+			Faction f = getFactionFromName(factionName);
+			if(f != null) {
+				sender.addChatMessage(new ChatComponentText(EnumChatFormatting.WHITE + "-- " + EnumChatFormatting.GOLD + f.getName() + EnumChatFormatting.WHITE + " --"));
+				List<ChunkCoordIntPair> lands = Lands.getLandsForFaction(f.getName());
+				sender.addChatMessage(new ChatComponentTranslation("msg.lands", lands.size()));
+				for(ChunkCoordIntPair pair : lands) {
+					sender.addChatMessage(new ChatComponentText("- " + pair));
+				}
+				return null;
+			}
+			return EnumResult.NOT_EXISTING_FACTION.clear().addInformation(factionName);
+		}
+
+		public static EnumResult tpToFaction(ICommandSender sender, String factionName, int index) {
+			Faction f = getFactionFromName(factionName);
+			if(f != null) {
+				List<ChunkCoordIntPair> lands = Lands.getLandsForFaction(f.getName());
+				if(index == -1) {
+					BlockPos pos = Homes.getHomes().get(f.getName());
+					if(pos != null) {
+						if(sender.getCommandSenderEntity() != null) {
+							sender.getCommandSenderEntity().setPositionAndUpdate(pos.getX() + 0.5f, pos.getY() + 0.5f, pos.getZ() + 0.5f);
+						}
+						return null;
+					}
+					index = 0;
+				}
+				if(lands.size() > index) {
+					ChunkCoordIntPair pair = lands.get(index);
+					if(sender.getCommandSenderEntity() != null) {
+						BlockPos pos = sender.getEntityWorld().getHeight(pair.getCenterBlock(0));
+						sender.getCommandSenderEntity().setPositionAndUpdate(pos.getX() + 0.5f, pos.getY(), pos.getZ() + 0.5f);
+						sender.addChatMessage(new ChatComponentText((index + 1) + "/" + lands.size() + " : " + pos.getX() + "/" + pos.getY() + "/" + pos.getZ()));
+					}
+					return null;
+				}
+				return EnumResult.NOT_EXISTING_LAND.clear().addInformation("" + index).addInformation(EnumChatFormatting.GOLD + f.getName());
+			}
+			return EnumResult.NOT_EXISTING_FACTION.clear().addInformation(factionName);
+		}
+
+		public static EnumResult destroyFaction(String name) {
+			Faction faction = Faction.Registry.getFactionFromName(name);
+			if(faction != null) {
+				faction.remove();
+				return EnumResult.FACTION_REMOVED.clear().addInformation(EnumChatFormatting.GOLD + faction.getName());
+			}
+			return EnumResult.NOT_EXISTING_FACTION.clear().addInformation(name);
 		}
 
 	}

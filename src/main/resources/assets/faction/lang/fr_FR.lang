@@ -67,6 +67,7 @@ result.maxClaimsReached=§cVous avez atteint le maximum de terrain possédés po
 result.playerUnbanned=§aLe joueur %s§a a été débannit
 result.playerNotBanned=§cLe joueur §s§c n'est pas bannit
 result.zonesCleared=%a§a zones ont été supprimées
+result.notExistingLand=§cLe terrain numéro %s§c n'existe pas pour la faction %s
 
 faction.chunk.free=§d** Terre sauvage **
 faction.chunk.safeZone=§4** Zone de combat **
