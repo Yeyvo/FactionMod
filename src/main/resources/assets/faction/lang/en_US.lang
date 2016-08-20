@@ -83,6 +83,7 @@ msg.tpCanceled=§cYour teleportation has been canceled
 msg.promoted=§aYou have been promoted to the rank %s
 msg.faction.coordo.home=§bLooking for random f home
 msg.power=Power level : %s
+msg.level=Level : %s
 
 config.general=General
 config.general.tooltip=Configuration about server side stuff

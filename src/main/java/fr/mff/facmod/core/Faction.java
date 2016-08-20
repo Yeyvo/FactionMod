@@ -26,27 +26,40 @@ import fr.mff.facmod.config.ConfigFaction;
 import fr.mff.facmod.network.PacketHelper;
 
 public class Faction {
+	
+	private static final int XP_PER_LEVEL = 1000;
+	private static final int MAX_LEVEL = 60;
 
 	protected final String name;
 	protected String description;
 	protected boolean opened;
+	protected int exp;
 
 	protected final List<UUID> bannedPlayers;
 	protected final List<Member> members;
 	protected final List<UUID> invitations;
 
 	public Faction(String name, String description) {
-		this(name, description, new ArrayList<UUID>(), new ArrayList<Member>(), new ArrayList<UUID>(), false);
+		this(name, description, new ArrayList<UUID>(), new ArrayList<Member>(), new ArrayList<UUID>(), false, 0);
 	}
 
-	public Faction(String name, String description, List<UUID> bannedPlayers, List<Member> members, List<UUID> invitations, boolean opened) {
+	public Faction(String name, String description, List<UUID> bannedPlayers, List<Member> members, List<UUID> invitations, boolean opened, int exp) {
 		this.name = name;
 		this.description = description;
 		this.bannedPlayers = bannedPlayers;
 		this.members = members;
 		this.invitations = invitations;
+		this.exp = exp;
 		Faction.Registry.factions.add(this);
 		FactionSaver.save();
+	}
+	
+	public int getExp() {
+		return this.exp;
+	}
+	
+	public int getLevel() {
+		return this.exp / XP_PER_LEVEL;
 	}
 
 	public String getName() {
@@ -79,6 +92,19 @@ public class Faction {
 
 	public List<UUID> getInvitations() {
 		return this.invitations;
+	}
+	
+	public void setExp(int exp) {
+		this.exp = exp;
+		if(this.exp > XP_PER_LEVEL * MAX_LEVEL) this.exp = XP_PER_LEVEL * MAX_LEVEL;
+	}
+	
+	public void setLevel(int level) {
+		this.setExp(level * XP_PER_LEVEL);
+	}
+	
+	public void addExp(int exp) {
+		this.setExp(this.exp + exp);
 	}
 
 	public void setDescription(String description) {
@@ -164,6 +190,7 @@ public class Faction {
 		compound.setString("name", this.name);
 		compound.setString("description", this.description);
 		compound.setBoolean("opened", this.opened);
+		compound.setInteger("exp", this.exp);
 
 		NBTTagList bannedList = new NBTTagList();
 		for(UUID banned : this.bannedPlayers) {
@@ -184,6 +211,7 @@ public class Faction {
 		String name = compound.getString("name");
 		String description = compound.getString("description");
 		boolean opened = compound.getBoolean("opened");
+		int exp = compound.getInteger("exp");
 
 		List<UUID> bannedPlayers = new ArrayList<UUID>();
 		NBTTagList bannedList = (NBTTagList)compound.getTag("bannedPlayers");
@@ -197,7 +225,7 @@ public class Faction {
 			members.add(Member.readFromNBT(membersList.getCompoundTagAt(i)));
 		}
 
-		return new Faction(name, description, bannedPlayers, members, new ArrayList<UUID>(), opened);
+		return new Faction(name, description, bannedPlayers, members, new ArrayList<UUID>(), opened, exp);
 	}
 
 	public Member getMember(UUID uuid) {
@@ -484,6 +512,7 @@ public class Faction {
 				player.addChatComponentMessage(new ChatComponentTranslation("msg.members", EnumChatFormatting.GREEN.toString() + faction.getMembers().size()));
 				player.addChatComponentMessage(new ChatComponentTranslation("msg.lands", EnumChatFormatting.YELLOW.toString() + Lands.getLandsForFaction(faction.getName()).size()));
 				player.addChatComponentMessage(new ChatComponentTranslation("msg.power", EnumChatFormatting.BLUE.toString() + faction.getPowerLevel() + "/" + faction.getMaxPowerLevel()));
+				player.addChatComponentMessage(new ChatComponentTranslation("msg.level", EnumChatFormatting.LIGHT_PURPLE.toString() + faction.getLevel() + "/" + MAX_LEVEL));
 				return null;
 			}
 			if(args.length >= 2) {

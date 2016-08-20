@@ -83,6 +83,7 @@ msg.tpCanceled=§cVotre téléportation a été interrompue
 msg.promoted=§aVous avez été promu au rang de %s
 msg.faction.coordo.home=§bRecherche d'un f home aléatoire
 msg.power=Niveau de pouvoir : %s
+msg.level=Niveau : %s
 
 config.general=Général
 config.general.tooltip=Configuration du fonctionnement du mod
