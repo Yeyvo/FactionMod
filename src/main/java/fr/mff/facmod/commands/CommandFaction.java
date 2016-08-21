@@ -96,7 +96,7 @@ public class CommandFaction extends CommandBase {
 							desc += args[i] + " ";
 						}
 					}
-					EnumResult result = Faction.Registry.createFaction(player.getUniqueID(), facName, desc);
+					EnumResult result = Faction.Registry.createFaction(player, facName, desc);
 					player.addChatComponentMessage(new ChatComponentTranslation(result.getLanguageKey(), result.getInformations()));
 				}
 			}
@@ -135,7 +135,7 @@ public class CommandFaction extends CommandBase {
 
 			// SetHome
 			else if(args[0].equalsIgnoreCase("sethome")) {
-				EnumResult result = Homes.setHome(player.getUniqueID(), player.getPosition());
+				EnumResult result = Homes.setHome(player, player.getPosition());
 				player.addChatComponentMessage(new ChatComponentTranslation(result.getLanguageKey(), result.getInformations()));
 			}
 

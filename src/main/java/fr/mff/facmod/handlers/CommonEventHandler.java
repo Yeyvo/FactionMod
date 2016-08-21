@@ -150,5 +150,6 @@ public class CommonEventHandler {
 	@SubscribeEvent
 	public void onLivingDeath(LivingDeathEvent event) {
 		Powers.onLivingDeath(event);
+		Faction.Registry.onLivingDeath(event);
 	}
 }

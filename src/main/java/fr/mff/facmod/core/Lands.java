@@ -19,7 +19,6 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.ChunkCoordIntPair;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
-import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.FillBucketEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -269,7 +268,10 @@ public class Lands {
 										if(Lands.getLandsForFaction(factionSender.getName()).size() < factionSender.getMaxPowerLevel() / ConfigFaction.POWER_NEEDED_FOR_CLAIM) {
 											String name = chunks.get(pair);
 											Faction ownerFaction = Faction.Registry.getFactionFromName(name);
-											if(name == null || (ownerFaction.getPowerLevel() < Lands.getLandsForFaction(name).size() * ConfigFaction.POWER_NEEDED_FOR_CLAIM && !ownerFaction.getName().equalsIgnoreCase(factionSender.getName()))) {
+											if(name == null || overClaim) {
+												if(overClaim) {
+													factionSender.addExp(50);
+												}
 												chunks.put(pair, factionSender.getName());
 												Powers.setPlayerPower(profilePowerGiver.getId(), Powers.getPowerOf(profilePowerGiver.getId()) - ConfigFaction.POWER_NEEDED_FOR_CLAIM);
 												PacketHelper.updatePowerLevel(profilePowerGiver.getId());

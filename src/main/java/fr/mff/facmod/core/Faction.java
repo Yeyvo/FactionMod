@@ -10,6 +10,7 @@ import java.util.UUID;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
@@ -19,9 +20,11 @@ import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.ChunkCoordIntPair;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
 
 import com.mojang.authlib.GameProfile;
 
+import fr.mff.facmod.achievements.AchievementRegistry;
 import fr.mff.facmod.config.ConfigFaction;
 import fr.mff.facmod.network.PacketHelper;
 
@@ -97,6 +100,14 @@ public class Faction {
 	public void setExp(int exp) {
 		this.exp = exp;
 		if(this.exp > XP_PER_LEVEL * MAX_LEVEL) this.exp = XP_PER_LEVEL * MAX_LEVEL;
+		if(this.getLevel() == 60) {
+			for(Member m : members) {
+				Entity entity = MinecraftServer.getServer().getEntityFromUuid(m.getUUID());
+				if(entity instanceof EntityPlayerMP) {
+					((EntityPlayerMP)entity).triggerAchievement(AchievementRegistry.lvl60reached);
+				}
+			}
+		}
 	}
 	
 	public void setLevel(int level) {
@@ -311,7 +322,8 @@ public class Faction {
 		private static final int MAXIMUM_NAME_LENGTH = 15;
 		private static final int MAXIMUM_DESCRIPTION_LENGTH = 100;
 
-		public static EnumResult createFaction(UUID uuid, String name, String description) {
+		public static EnumResult createFaction(EntityPlayer player, String name, String description) {
+			UUID uuid = player.getUniqueID();
 			Faction faction = Faction.Registry.getPlayerFaction(uuid);
 			if(faction == null) {
 				faction = Faction.Registry.getFactionFromName(name);
@@ -321,6 +333,7 @@ public class Faction {
 							if(description.length() <= MAXIMUM_DESCRIPTION_LENGTH) {
 								Faction newFaction = new Faction(name, description);
 								newFaction.addPlayer(uuid, EnumRank.OWNER);
+								player.triggerAchievement(AchievementRegistry.factionCreated);
 								return EnumResult.FACTION_CREATED.clear().addInformation(EnumChatFormatting.GOLD + newFaction.getName());
 							}
 							return EnumResult.INVALID_DESCRIPTION_LENGTH.clear().addInformation(EnumChatFormatting.WHITE + String.valueOf(MAXIMUM_DESCRIPTION_LENGTH));
@@ -671,6 +684,20 @@ public class Faction {
 				return EnumResult.FACTION_REMOVED.clear().addInformation(EnumChatFormatting.GOLD + faction.getName());
 			}
 			return EnumResult.NOT_EXISTING_FACTION.clear().addInformation(name);
+		}
+
+		public static void onLivingDeath(LivingDeathEvent event) {
+			if(event.entity instanceof EntityPlayer && event.source.getEntity() instanceof EntityPlayer) {
+				EntityPlayer deadPlayer = (EntityPlayer)event.entity;
+				EntityPlayer killer = (EntityPlayer)event.source.getEntity();
+				Faction facKiller = getPlayerFaction(killer.getUniqueID());
+				if(facKiller != null) {
+					Faction facDead = getPlayerFaction(deadPlayer.getUniqueID());
+					int exp = facDead == null ? 5 : 10;
+					facKiller.addExp(exp);
+					FactionSaver.save();
+				}
+			}
 		}
 
 	}

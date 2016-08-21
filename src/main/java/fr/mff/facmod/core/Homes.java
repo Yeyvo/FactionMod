@@ -19,6 +19,7 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.ChunkCoordIntPair;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import fr.mff.facmod.achievements.AchievementRegistry;
 import fr.mff.facmod.blocks.BlockRegistry;
 import fr.mff.facmod.config.ConfigFaction;
 
@@ -35,7 +36,8 @@ public class Homes {
 		return homes;
 	}
 
-	public static EnumResult setHome(UUID uuid, BlockPos position) {
+	public static EnumResult setHome(EntityPlayer player, BlockPos position) {
+		UUID uuid = player.getUniqueID();
 		Faction faction = Faction.Registry.getPlayerFaction(uuid);
 		if(faction != null) {
 			Member member = faction.getMember(uuid);
@@ -55,8 +57,8 @@ public class Homes {
 								homes.put(factionName, position);
 								state.getBlock().onBlockDestroyedByPlayer(MinecraftServer.getServer().getEntityWorld(), position.down(), state);
 								MinecraftServer.getServer().getEntityWorld().setBlockState(position.down(), BlockRegistry.homeBase.getDefaultState());
-
 								FactionSaver.save();
+								player.triggerAchievement(AchievementRegistry.homeSet);
 								return EnumResult.HOME_SET.clear().addInformation(EnumChatFormatting.WHITE.toString() + position.getX())
 										.addInformation(EnumChatFormatting.WHITE.toString() + position.getY())
 										.addInformation(EnumChatFormatting.WHITE.toString() + position.getZ());
@@ -168,7 +170,8 @@ public class Homes {
 			}
 		}
 	}
-	//commit de debug
+	
+	
 	public static void onLivingHurt(LivingHurtEvent event) {
 		if(!event.entity.worldObj.isRemote) {
 			if(event.entity instanceof EntityPlayer) {

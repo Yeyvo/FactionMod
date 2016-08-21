@@ -17,6 +17,7 @@ import net.minecraftforge.fml.common.registry.EntityRegistry;
 
 import org.apache.logging.log4j.Logger;
 
+import fr.mff.facmod.achievements.AchievementRegistry;
 import fr.mff.facmod.blocks.BlockRegistry;
 import fr.mff.facmod.commands.CommandRegistry;
 import fr.mff.facmod.config.ConfigFaction;
@@ -64,6 +65,7 @@ public class FactionMod {
 		ConfigFaction.preInit(event);
 		BlockRegistry.preInit(event);
 		ItemRegistry.preInit(event);
+		AchievementRegistry.preInit(event);
 		proxy.preInit(event);
 	}
 
