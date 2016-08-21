@@ -43,7 +43,6 @@ public class CommonEventHandler {
 	@SubscribeEvent
 	public void onLivingHurt(LivingHurtEvent event) {
 		Homes.onLivingHurt(event);
-		Lands.onLivingHurt(event);
 	}
 
 	@SubscribeEvent

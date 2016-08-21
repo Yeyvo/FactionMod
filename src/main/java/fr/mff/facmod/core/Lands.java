@@ -15,6 +15,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.ChunkCoordIntPair;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
@@ -52,6 +53,7 @@ public class Lands {
 	static {
 		PermissionManager.registerPermission("faction.zones.edit");
 		PermissionManager.registerPermission("faction.claims.edit");
+		PermissionManager.registerPermission("faction.zones.attack");
 	}
 
 	public static void clear() {
@@ -575,7 +577,7 @@ public class Lands {
 		if(!event.entityLiving.getEntityWorld().isRemote) {
 			if(event.entityLiving.worldObj.equals(MinecraftServer.getServer().getEntityWorld())) {
 				ChunkCoordIntPair pair = MinecraftServer.getServer().getEntityWorld().getChunkFromBlockCoords(event.entityLiving.getPosition()).getChunkCoordIntPair();
-				if(Lands.isSafeZone(pair)) {
+				if(Lands.isSafeZone(pair) && event.source != DamageSource.outOfWorld && !event.source.getDamageType().equals("player")) {
 					event.setCanceled(true);
 				}
 			}
@@ -587,20 +589,9 @@ public class Lands {
 			if(event.entityLiving.worldObj.equals(MinecraftServer.getServer().getEntityWorld())) {
 				ChunkCoordIntPair pair = MinecraftServer.getServer().getEntityWorld().getChunkFromBlockCoords(event.entityLiving.getPosition()).getChunkCoordIntPair();
 				ChunkCoordIntPair pairTwo = MinecraftServer.getServer().getEntityWorld().getChunkFromBlockCoords(event.target.getPosition()).getChunkCoordIntPair();
-				if(Lands.isSafeZone(pair) || Lands.isSafeZone(pairTwo)) {
+				if((Lands.isSafeZone(pair) || Lands.isSafeZone(pairTwo)) && !PermissionManager.hasEntityPermission(event.entity, "faction.zones.attack")) {
 					event.setCanceled(true);
 					event.entityPlayer.addChatComponentMessage(new ChatComponentTranslation(EnumResult.IN_A_SAFE_ZONE.getLanguageKey(), new Object[0]));
-				}
-			}
-		}
-	}
-
-	public static void onLivingHurt(LivingHurtEvent event) {
-		if(!event.entityLiving.getEntityWorld().isRemote) {
-			if(event.entityLiving.worldObj.equals(MinecraftServer.getServer().getEntityWorld())) {
-				ChunkCoordIntPair pair = MinecraftServer.getServer().getEntityWorld().getChunkFromBlockCoords(event.entityLiving.getPosition()).getChunkCoordIntPair();
-				if(Lands.isSafeZone(pair)) {
-					event.setCanceled(true);
 				}
 			}
 		}
