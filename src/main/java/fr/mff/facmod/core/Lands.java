@@ -268,6 +268,7 @@ public class Lands {
 										if(Lands.getLandsForFaction(factionSender.getName()).size() < factionSender.getMaxPowerLevel() / ConfigFaction.POWER_NEEDED_FOR_CLAIM) {
 											String name = chunks.get(pair);
 											Faction ownerFaction = Faction.Registry.getFactionFromName(name);
+											boolean overClaim = name == null ? false : ownerFaction.getPowerLevel() < Lands.getLandsForFaction(name).size() * ConfigFaction.POWER_NEEDED_FOR_CLAIM && !ownerFaction.getName().equalsIgnoreCase(factionSender.getName());
 											if(name == null || overClaim) {
 												if(overClaim) {
 													factionSender.addExp(50);
