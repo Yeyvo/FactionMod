@@ -127,9 +127,11 @@ item.homeFinder.name=Home Finder
 item.dynamite.name=Dynamite
 item.briseObsi.name=Obsidian Brocker
 
-item.builderWand.name=Builder Wand
-mode.horizontal=Horizontal
-bloc.maxblocks=9 Blocks Max
-chat.mode.horizontal=Horizontal
-chat.mode.vertical=Vertical
-mode.vertical=Vertical
+container.homeBase=Home block
+
+achievement.factionCreated=Faction created !
+achievement.factionCreated.desc=Use /faction create command
+achievement.homeSet=Home set !
+achievement.homeSet.desc=Use /faction sethome command
+achievement.lvl60reached=Level 60 reached
+achievement.lvl60reached.desc=Reach the level 60 with your faction

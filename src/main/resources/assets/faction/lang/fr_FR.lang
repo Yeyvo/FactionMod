@@ -119,7 +119,7 @@ rank.basicMember=Membre
 
 itemGroup.FactionTab=§5-Faction-
 
-tile.homeBase.name=Home Bloc
+tile.homeBase.name=Bloc maison
 tile.xrayBlock.name=Xray Bloc
 item.landMap.name=Carte des terrains
 item.chestWatcher.name=Observateur de coffre
@@ -127,9 +127,12 @@ item.homeFinder.name=Chercheur de home
 item.dynamite.name=Dynamite
 item.briseObsi.name=Casseur d'obsidien
 
-item.builderWand.name=Baguette du constructeur
-mode.horizontal=Horizontal
-bloc.maxblocks=9 Blocs Max
-chat.mode.horizontal=Horizontal
-chat.mode.vertical=Vertical
-mode.vertical=Vertical
+container.homeBase=Bloc maison
+
+achievement.factionCreated=Faction crée !
+achievement.factionCreated.desc=Utilisez la commande /faction create
+achievement.homeSet=Maison définie !
+achievement.homeSet.desc=Utilisez la commande /faction sethome
+achievement.lvl60reached=Niveau 60 atteint
+achievement.lvl60reached.desc=Atteignez le niveau 60 avec votre faction
+
