@@ -1,9 +1,14 @@
 package fr.mff.facmod.handlers;
 
+import net.minecraft.entity.monster.EntityMob;
+import net.minecraft.entity.monster.EntitySlime;
+import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.init.Items;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.event.CommandEvent;
+import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
@@ -151,5 +156,16 @@ public class CommonEventHandler {
 	public void onLivingDeath(LivingDeathEvent event) {
 		Powers.onLivingDeath(event);
 		Faction.Registry.onLivingDeath(event);
+	}
+
+	@SubscribeEvent
+	public void onEntityJoining(EntityJoinWorldEvent event) {
+		if(!event.world.isRemote && event.world.equals(MinecraftServer.getServer().getEntityWorld())) {
+			if(Lands.isSafeZone(event.world.getChunkFromBlockCoords(event.entity.getPosition()).getChunkCoordIntPair())) {
+				if(event.entity instanceof EntityMob || event.entity instanceof EntityAnimal || event.entity instanceof EntitySlime) {
+					event.setCanceled(true);
+				}
+			}
+		}
 	}
 }
