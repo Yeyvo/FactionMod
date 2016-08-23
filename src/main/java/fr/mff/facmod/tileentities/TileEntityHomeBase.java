@@ -1,6 +1,13 @@
 package fr.mff.facmod.tileentities;
 
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+
+import fr.mff.facmod.core.Faction;
+import fr.mff.facmod.core.TimesHome;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -10,7 +17,7 @@ import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.IChatComponent;
 
 public class TileEntityHomeBase extends TileEntity implements IInventory {
-	
+	private boolean test = false;
 	private ItemStack[] chestContents = new ItemStack[27];
 
     /**
@@ -163,7 +170,30 @@ public class TileEntityHomeBase extends TileEntity implements IInventory {
         return this.worldObj.getTileEntity(this.pos) != this ? false : player.getDistanceSq((double)this.pos.getX() + 0.5D, (double)this.pos.getY() + 0.5D, (double)this.pos.getZ() + 0.5D) <= 64.0D;
     }
 
-    public void openInventory(EntityPlayer player){}
+    @Override
+	public void openInventory(EntityPlayer player){
+		/*Faction f = Faction.Registry.getPlayerFaction(player.getUniqueID());
+		if(f != null) {
+            GregorianCalendar last = new GregorianCalendar();
+            if(test = true){
+            last.setTime(new Date(TimesHome.getLastOpening(f.getName())));
+            test = false;
+            }
+            System.out.println("1   "+last.getTime());
+            GregorianCalendar current = new GregorianCalendar();
+            System.out.println("2   "+current.getTime());
+            Date lastD = last.getTime();
+            Date currentD = current.getTime();
+            System.out.println("3   "+currentD.getTime());
+            System.out.println("4   "+currentD.getTime());
+            if(lastD.before(currentD)) {
+                System.out.println("dt");
+                this.setInventorySlotContents(3, new ItemStack(Blocks.dirt,4));
+                TimesHome.setLastOpening("", current.getTime().getTime());
+            }
+
+        }*/
+	}
 
     public void closeInventory(EntityPlayer player){}
 
