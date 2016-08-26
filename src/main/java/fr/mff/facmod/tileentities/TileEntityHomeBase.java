@@ -1,23 +1,22 @@
 package fr.mff.facmod.tileentities;
 
 import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
 
-import fr.mff.facmod.core.Faction;
-import fr.mff.facmod.core.TimesHome;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.IChatComponent;
+import fr.mff.facmod.core.Faction;
+import fr.mff.facmod.core.Rewards;
 
 public class TileEntityHomeBase extends TileEntity implements IInventory {
-	private boolean test = false;
+	
 	private ItemStack[] chestContents = new ItemStack[27];
 
     /**
@@ -172,27 +171,39 @@ public class TileEntityHomeBase extends TileEntity implements IInventory {
 
     @Override
 	public void openInventory(EntityPlayer player){
-		/*Faction f = Faction.Registry.getPlayerFaction(player.getUniqueID());
+		Faction f = Faction.Registry.getPlayerFaction(player.getUniqueID());
 		if(f != null) {
-            GregorianCalendar last = new GregorianCalendar();
-            if(test = true){
-            last.setTime(new Date(TimesHome.getLastOpening(f.getName())));
-            test = false;
-            }
-            System.out.println("1   "+last.getTime());
-            GregorianCalendar current = new GregorianCalendar();
-            System.out.println("2   "+current.getTime());
-            Date lastD = last.getTime();
-            Date currentD = current.getTime();
-            System.out.println("3   "+currentD.getTime());
-            System.out.println("4   "+currentD.getTime());
-            if(lastD.before(currentD)) {
-                System.out.println("dt");
-                this.setInventorySlotContents(3, new ItemStack(Blocks.dirt,4));
-                TimesHome.setLastOpening("", current.getTime().getTime());
-            }
-
-        }*/
+			int last = Rewards.getLastOpening(f.getName());
+			int current = Calendar.getInstance().get(Calendar.DAY_OF_YEAR);
+			
+			if(last < current) { //TODO Handle case to new year
+				int left = 7; //Count to add
+				Item item = Items.apple; //Item too add
+				for(int i = 0; i < this.getSizeInventory(); i++) {
+					ItemStack s = this.getStackInSlot(i);
+					if(s != null) {
+						if(s.getItem() == item) {
+							if(s.stackSize + left > this.getInventoryStackLimit()) {
+								int added = this.getInventoryStackLimit() - s.stackSize;
+								s.stackSize = this.getInventoryStackLimit();
+								left -= added;
+							} else {
+								s.stackSize += left;
+								break;
+							}
+							if(left <= 0) {
+								break;
+							}
+						}
+					} else {
+						this.setInventorySlotContents(i, new ItemStack(item, left));
+						break;
+					}
+					this.markDirty();
+				}
+			}
+			Rewards.setLastOpening(f.getName(), current);
+        }
 	}
 
     public void closeInventory(EntityPlayer player){}

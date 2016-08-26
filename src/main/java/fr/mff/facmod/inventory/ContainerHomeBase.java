@@ -10,11 +10,12 @@ import fr.mff.facmod.tileentities.TileEntityHomeBase;
 public class ContainerHomeBase extends Container {
 
 	private TileEntityHomeBase tile;
-	
+
 	public ContainerHomeBase(TileEntityHomeBase tileEntity, InventoryPlayer playerInventory) {
 		this.tile = tileEntity;
-        tile.openInventory(playerInventory.player);
-        this.detectAndSendChanges();
+		if(!tile.getWorld().isRemote) {
+			tile.openInventory(playerInventory.player);
+		}
 
 		for (int j = 0; j < 3; ++j)
 		{
@@ -36,11 +37,6 @@ public class ContainerHomeBase extends Container {
 		{
 			this.addSlotToContainer(new Slot(playerInventory, i1, 8 + i1 * 18, 161 - 18));
 		}
-	}
-
-	@Override
-	public void detectAndSendChanges() {
-		super.detectAndSendChanges();
 	}
 
 	@Override
