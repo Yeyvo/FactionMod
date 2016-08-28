@@ -595,6 +595,18 @@ public class Lands {
 				if((Lands.isSafeZone(pair) || Lands.isSafeZone(pairTwo)) && !PermissionManager.hasEntityPermission(event.entity, "faction.zones.attack")) {
 					event.setCanceled(true);
 					event.entityPlayer.addChatComponentMessage(new ChatComponentTranslation(EnumResult.IN_A_SAFE_ZONE.getLanguageKey(), new Object[0]));
+				} else {
+					if(!(Lands.isWarZone(pair) || Lands.isWarZone(pairTwo))) {
+						Faction attacker = Faction.Registry.getPlayerFaction(event.entityPlayer.getUniqueID());
+						if(attacker != null) {
+							Faction attacked = Faction.Registry.getPlayerFaction(event.target.getUniqueID());
+							if(attacked != null) {
+								if(attacker.getName().equalsIgnoreCase(attacked.getName())) {
+									event.setCanceled(true);
+								}
+							}
+						}
+					}
 				}
 			}
 		}

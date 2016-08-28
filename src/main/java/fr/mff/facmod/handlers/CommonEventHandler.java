@@ -34,6 +34,8 @@ import fr.mff.facmod.perm.PermissionManager;
 
 public class CommonEventHandler {
 
+	private int tickCountForClear = 0;
+
 	@SubscribeEvent
 	public void onPlayerTick(TickEvent.PlayerTickEvent event) {
 		Lands.onPlayerTick(event);
@@ -43,6 +45,16 @@ public class CommonEventHandler {
 	@SubscribeEvent
 	public void onWorldTick(TickEvent.WorldTickEvent event) {
 		Homes.onWorldTick(event);
+		if(!event.world.isRemote && event.world.equals(MinecraftServer.getServer().getEntityWorld())) {
+			tickCountForClear++;
+			if(tickCountForClear == 2100  || (tickCountForClear % 20 == 0 && tickCountForClear >= 2300 && tickCountForClear < 2400)) {
+				MinecraftServer.getServer().getCommandManager().executeCommand(MinecraftServer.getServer(), "say " + "Items will be removed in " + (2400 - tickCountForClear) / 20 + " seconds");
+			} else if(tickCountForClear >= 2400) {
+				tickCountForClear = 0;
+				MinecraftServer.getServer().getCommandManager().executeCommand(MinecraftServer.getServer(), "clearitems");
+				MinecraftServer.getServer().getCommandManager().executeCommand(MinecraftServer.getServer(), "say Items cleared (every 2 minutes)");
+			}
+		}
 	}
 
 	@SubscribeEvent

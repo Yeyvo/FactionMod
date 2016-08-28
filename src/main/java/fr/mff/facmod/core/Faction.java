@@ -554,7 +554,7 @@ public class Faction {
 			if(args.length >= 2) {
 				return EnumResult.NOT_EXISTING_FACTION.clear().addInformation(EnumChatFormatting.GOLD + args[1]);
 			} else {
-				return  EnumResult.NOT_IN_A_FACTION;
+				return EnumResult.NOT_IN_A_FACTION;
 			}
 		}
 
@@ -693,7 +693,7 @@ public class Faction {
 				Faction facKiller = getPlayerFaction(killer.getUniqueID());
 				if(facKiller != null) {
 					Faction facDead = getPlayerFaction(deadPlayer.getUniqueID());
-					int exp = facDead == null ? 5 : 10;
+					int exp = facDead != null && !facDead.getName().equalsIgnoreCase(facKiller.getName()) ? 10 : 5;
 					facKiller.addExp(exp);
 					FactionSaver.save();
 				}
