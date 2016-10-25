@@ -33,7 +33,6 @@ public class EntityAIGuardian
   {
     this(p_i1663_1_, p_i1663_2_, p_i1663_3_, p_i1663_4_, false);
     this.golem = p_i1663_1_;
-	  System.out.println("test");
 
   }
   
@@ -41,28 +40,23 @@ public class EntityAIGuardian
   {
     this(p_i1664_1_, p_i1664_2_, p_i1664_3_, p_i1664_4_, p_i1664_5_, (Predicate<Entity>)null);
     this.golem = p_i1664_1_;
-	  System.out.println("test");
 
   }
   
   public EntityAIGuardian(EntityCreature p_i1665_1_, Class p_i1665_2_, int p_i1665_3_, boolean p_i1665_4_, boolean p_i1665_5_, Predicate<Entity> p_i1665_6_)
   {
     super(p_i1665_1_, p_i1665_4_, p_i1665_5_);
-	  System.out.println("test");
     this.targetClass = p_i1665_2_;
     this.targetChance = p_i1665_3_;
     this.theNearestAttackableTargetSorter = new EntityAINearestAttackableTarget.Sorter(p_i1665_1_);
     setMutexBits(1);
     this.targetEntitySelector = this.selectInventories;
-    System.out.println(this.targetEntitySelector);
-    System.out.println(this.selectInventories.apply(p_i1665_1_));
   }
   
   public Predicate<Entity> selectInventories = new Predicate<Entity>()
   {
       public boolean apply(Entity entity)
       {
-    	  System.out.println("rrr");
          if ((entity instanceof EntityPlayer)) {
     		         EntityPlayer player = (EntityPlayer)entity;
     		         if ((!EntityAIGuardian.this.golem.checkWhitelist((EntityPlayer)entity)) && (!player.capabilities.isCreativeMode))

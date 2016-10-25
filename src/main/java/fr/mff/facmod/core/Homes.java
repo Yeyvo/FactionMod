@@ -35,15 +35,15 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 public class Homes {
 
 	private static final HashMap<String, BlockPos> homes = new HashMap<String, BlockPos>();
-	private static final HashMap<String, EntityFactionGuardian> mob = new HashMap<String, EntityFactionGuardian>();
+	private static final HashMap<String, EntityFactionGuardian> mobMap = new HashMap<String, EntityFactionGuardian>();
 
 	private static final HashMap<EntityPlayer, Object[]> tpTimers = new HashMap<EntityPlayer, Object[]>();
 
-	public static void clear() {
+	public static void clearHomes() {
 		homes.clear();
 		}
-	public static void clean(){
-		mob.clear();
+	public static void clearMob(){
+		mobMap.clear();
 	}
 
 	public static HashMap<String, BlockPos> getHomes() {
@@ -65,14 +65,14 @@ public class Homes {
 							IBlockState state = MinecraftServer.getServer().getEntityWorld().getBlockState(position.down());
 							if (state.getBlock() != Blocks.bedrock && state.getBlock() != BlockRegistry.homeBase) {
 								BlockPos lastPos = homes.remove(factionName);
-								EntityFactionGuardian lastmob = mob.get(factionName);
+								EntityFactionGuardian lastmob = mobMap.get(factionName);
 								if (lastPos != null) {
 									MinecraftServer.getServer().getEntityWorld().setBlockState(lastPos.down(), Blocks.air.getDefaultState());
 									lastmob.sync();
 									lastmob.setDead();
 								}
 								homes.put(factionName, position);
-								mob.put(factionName, gardian);
+								mobMap.put(factionName, gardian);
 								state.getBlock().onBlockDestroyedByPlayer(MinecraftServer.getServer().getEntityWorld(), position.down(), state);
 								MinecraftServer.getServer().getEntityWorld().setBlockState(position.down(), BlockRegistry.homeBase.getDefaultState());
 								FactionSaver.save();
@@ -98,6 +98,7 @@ public class Homes {
 
 	public static void writeToNBT(NBTTagCompound compound) {
 		NBTTagList homesList = new NBTTagList();
+		NBTTagList mobList = new NBTTagList();
 
 		Iterator<Entry<String, BlockPos>> iterator = homes.entrySet().iterator();
 		while (iterator.hasNext()) {
@@ -112,24 +113,24 @@ public class Homes {
 
 		compound.setTag("homes", homesList);
 
-	}
-
-	public static void writeToNBT2(NBTTagCompound compound) {
-		NBTTagList mobList = new NBTTagList();
-
-		Iterator<Entry<String, EntityFactionGuardian>> iterator2 = mob.entrySet().iterator();
+		Iterator<Entry<String, EntityFactionGuardian>> iterator2 = mobMap.entrySet().iterator();
 		while (iterator2.hasNext()) {
 			NBTTagCompound mobTag = new NBTTagCompound();
 			Entry<String, EntityFactionGuardian> entry2 = iterator2.next();
 			mobTag.setString("faction", entry2.getKey());
-			mobTag.setInteger("world", entry2.getValue().worldObj.provider.getDimensionId());
+			mobTag.setString("id", entry2.getValue().getUniqueID().toString()
 			mobList.appendTag(mobTag);
+			System.out.println(mobTag);
+
+
 		}
 		compound.setTag("mobs", mobList);
 	}
 
 	public static void readFromNBT(NBTTagCompound compound) {
-		Homes.clear();
+		Homes.clearHomes();
+		Homes.clearMob();
+
 		NBTTagList homesList = (NBTTagList) compound.getTag("homes");
 		NBTTagList mobList = (NBTTagList) compound.getTag("mobs");
 
@@ -139,19 +140,17 @@ public class Homes {
 			homes.put(homeTag.getString("faction"), pos);
 			FactionSaver.save();
 		}
-	}
-
-	public static void readFromNBT2(NBTTagCompound compound) {
-		Homes.clean();
-		NBTTagList mobList = (NBTTagList) compound.getTag("mobs");
 		for (int i = 0; i < mobList.tagCount(); i++) {
 			NBTTagCompound mobTag = mobList.getCompoundTagAt(i);
-			World world = DimensionManager.getWorld(mobTag.getInteger("world"));
+			World world = DimensionManager.getWorld(0);
 			EntityFactionGuardian entity = new EntityFactionGuardian(world);
-			mob.put(mobTag.getString("faction"), entity);
+			
+			mobMap.put(mobTag.getString("faction"), entity);
 			FactionSaver.save();
+			System.out.println(mobMap.get(entity.getName()));
 		}
 	}
+
 
 	public static EnumResult goToHome(EntityPlayer player) {
 		Faction faction = Faction.Registry.getPlayerFaction(player.getUniqueID());
@@ -169,7 +168,7 @@ public class Homes {
 	public static void onLandUnclaimedPre(ChunkCoordIntPair pair) {
 		String factionName = Lands.getLandFaction().get(pair);
 		BlockPos pos = Homes.getHomes().get(factionName);
-		EntityFactionGuardian lastmob = mob.get(factionName);
+		EntityFactionGuardian lastmob = mobMap.get(factionName);
 		if (pos != null) {
 			ChunkCoordIntPair homeChunk = MinecraftServer.getServer().getEntityWorld().getChunkFromBlockCoords(pos).getChunkCoordIntPair();
 			if (homeChunk.equals(pair)) {
