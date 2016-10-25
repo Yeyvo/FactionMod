@@ -15,6 +15,8 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 
+import java.awt.Color;
+
 import org.apache.logging.log4j.Logger;
 
 import fr.mff.facmod.achievements.AchievementRegistry;
@@ -24,6 +26,7 @@ import fr.mff.facmod.config.ConfigFaction;
 import fr.mff.facmod.core.FactionSaver;
 import fr.mff.facmod.core.Lands;
 import fr.mff.facmod.entity.EntityDynamite;
+import fr.mff.facmod.entity.EntityFactionGuardian;
 import fr.mff.facmod.handlers.GuiHandler;
 import fr.mff.facmod.items.ItemRegistry;
 import fr.mff.facmod.network.PacketRegistry;
@@ -80,6 +83,8 @@ public class FactionMod {
 		NetworkRegistry.INSTANCE.registerGuiHandler(FactionMod.INSTANCE, new GuiHandler());
 		PacketRegistry.init(event);
 		Render(EntityDynamite.class, "entitydynamite", 65, this, 512, 1, true);
+		EntityRegistry.registerGlobalEntityID(EntityFactionGuardian.class, "EntityFactionGuardian", EntityRegistry.findGlobalUniqueEntityId(), new Color(0, 255, 0).getRGB(), new Color(255, 0, 0).getRGB());
+		Render(EntityFactionGuardian.class, "EntityFactionGuardian", 66, this, 512, 1, true);
 	}
 
 	@EventHandler

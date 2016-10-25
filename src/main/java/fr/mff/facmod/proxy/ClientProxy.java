@@ -4,6 +4,7 @@ import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemModelMesher;
 import net.minecraft.client.renderer.entity.Render;
+import net.minecraft.client.renderer.entity.RenderIronGolem;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.resources.model.ModelResourceLocation;
@@ -15,11 +16,14 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import fr.mff.facmod.FactionMod;
 import fr.mff.facmod.blocks.BlockRegistry;
+import fr.mff.facmod.client.overlay.OverlayGuardian;
 import fr.mff.facmod.core.EnumRank;
 import fr.mff.facmod.entity.EntityDynamite;
+import fr.mff.facmod.entity.EntityFactionGuardian;
 import fr.mff.facmod.handlers.ClientEventHandler;
 import fr.mff.facmod.items.ItemRegistry;
 import fr.mff.facmod.renderer.RenderDynamite;
+import fr.mff.facmod.renderer.RenderZygarde;
 
 public class ClientProxy extends CommonProxy {
 
@@ -41,6 +45,8 @@ public class ClientProxy extends CommonProxy {
 	public void init(FMLInitializationEvent event) {
 		super.init(event);
 		MinecraftForge.EVENT_BUS.register(new ClientEventHandler());
+		MinecraftForge.EVENT_BUS.register(new OverlayGuardian());
+
 		registerRenders();
 	}
 
@@ -63,6 +69,8 @@ public class ClientProxy extends CommonProxy {
 
 
 		Render(EntityDynamite.class, new RenderDynamite(renderManager, renderItem));
+		Render(EntityFactionGuardian.class, new RenderZygarde(renderManager));
+
 
 	}
 	public void Render(Class<? extends Entity> par1, Render par2)

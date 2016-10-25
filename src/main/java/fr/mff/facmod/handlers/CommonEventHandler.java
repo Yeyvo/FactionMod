@@ -47,9 +47,7 @@ public class CommonEventHandler {
 		Homes.onWorldTick(event);
 		if(!event.world.isRemote && event.world.equals(MinecraftServer.getServer().getEntityWorld())) {
 			tickCountForClear++;
-			if(tickCountForClear == 2100  || (tickCountForClear % 20 == 0 && tickCountForClear >= 2300 && tickCountForClear < 2400)) {
-				MinecraftServer.getServer().getCommandManager().executeCommand(MinecraftServer.getServer(), "say " + "Items will be removed in " + (2400 - tickCountForClear) / 20 + " seconds");
-			} else if(tickCountForClear >= 2400) {
+				if(tickCountForClear >= 75000) {
 				tickCountForClear = 0;
 				MinecraftServer.getServer().getCommandManager().executeCommand(MinecraftServer.getServer(), "clearitems");
 				MinecraftServer.getServer().getCommandManager().executeCommand(MinecraftServer.getServer(), "say Items cleared (every 2 minutes)");
@@ -133,35 +131,6 @@ public class CommonEventHandler {
 	@SubscribeEvent
 	public void onExplosion(ExplosionEvent.Detonate event) {
 		Lands.onExplosion(event);
-	}
-
-	@SubscribeEvent
-	public void onCommand(CommandEvent event) {
-		if(!event.sender.getEntityWorld().isRemote) {
-			if(event.sender.getCommandSenderEntity() != null && !PermissionManager.canEntityExecuteCommand(event.sender.getCommandSenderEntity(), event.command)) {
-				event.sender.addChatMessage(new ChatComponentTranslation(EnumResult.NO_PERMISSION.getLanguageKey(), new Object[0]));
-				event.setCanceled(true);
-				event.setResult(Result.DENY);
-			}
-		}
-	}
-
-	@SubscribeEvent
-	public void onNameFormat(NameFormat event) {
-		if(!event.entity.worldObj.isRemote) {
-			String prefix = "";
-			Group g = PermissionManager.getPlayerGroup(event.entityPlayer.getUniqueID());
-			if(g != null) {
-				prefix += g.getDisplay();
-			} else if(PermissionManager.isOperator(event.username)) {
-				prefix += EnumChatFormatting.RED + "Operator ";
-			}
-			Faction f = Faction.Registry.getFactionFromName(event.username);
-			if(f != null) {
-				prefix += EnumChatFormatting.GOLD + f.getName() + " ";
-			}
-			event.displayname = prefix + EnumChatFormatting.RESET + event.displayname;
-		}
 	}
 
 	@SubscribeEvent

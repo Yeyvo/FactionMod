@@ -34,7 +34,7 @@ public class RenderDynamite
     GlStateManager.rotate(-this.renderManager.playerViewY, 0.0F, 1.0F, 0.0F);
     GlStateManager.rotate(this.renderManager.playerViewX, 1.0F, 0.0F, 0.0F);
     bindTexture(TextureMap.locationBlocksTexture);
-    this.field_177083_e.renderItem(func_177082_d(entity), ItemCameraTransforms.TransformType.GROUND);
+    this.field_177083_e.renderItem(func_177082_d(entity), ItemCameraTransforms.TransformType.HEAD);
     GlStateManager.disableRescaleNormal();
     GlStateManager.popMatrix();
     super.doRender(entity, x, y, z, p_76986_8_, partialTicks);
