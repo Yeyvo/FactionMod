@@ -2,6 +2,7 @@ package fr.mff.facmod.cases;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
@@ -15,7 +16,7 @@ public class HomeCase extends Case {
 
 	@Override
 	public boolean isBreakAvalaible(World world, BlockPos pos, IBlockState state, EntityPlayer player) {
-		if(state.getBlock() == BlockRegistry.homeBase) {
+		if(state.getBlock() == BlockRegistry.homeBase || state.getBlock() == Blocks.mob_spawner) {
 			return true;
 		}
 		return false;

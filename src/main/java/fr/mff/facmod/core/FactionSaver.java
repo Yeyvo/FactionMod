@@ -25,8 +25,6 @@ public class FactionSaver extends WorldSavedData {
 		Faction.Registry.readFromNBT(compound.getCompoundTag("factionRegistry"));
 		Lands.readfromNBT(compound.getCompoundTag("lands"));
 		Homes.readFromNBT(compound.getCompoundTag("homes"));
-		Homes.readFromNBT(compound.getCompoundTag("mobs"));
-
 		Powers.readFromNBT(compound.getCompoundTag("powers"));
 		
 	}
@@ -47,10 +45,6 @@ public class FactionSaver extends WorldSavedData {
 		Homes.writeToNBT(homes);
 		compound.setTag("homes", homes);
 		
-		NBTTagCompound mobs = new NBTTagCompound();
-		Homes.writeToNBT(mobs);
-		compound.setTag("mobs", mobs);
-		
 		NBTTagCompound powers = new NBTTagCompound();
 		Powers.writeToNBT(powers);
 		compound.setTag("powers", powers);
@@ -64,7 +58,6 @@ public class FactionSaver extends WorldSavedData {
 			Lands.clear();
 			Homes.clearHomes();
 			Powers.clear();
-			Homes.clearMob();
 			MapStorage storage = event.getServer().getEntityWorld().getMapStorage();
 			FactionSaver data = (FactionSaver)storage.loadData(FactionSaver.class, "factionMod");
 			if(data == null) {

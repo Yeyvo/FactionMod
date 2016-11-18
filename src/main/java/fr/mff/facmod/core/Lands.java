@@ -452,17 +452,7 @@ public class Lands {
 			}
 
 			ChunkCoordIntPair coords = event.world.getChunkFromBlockCoords(event.pos).getChunkCoordIntPair();
-			if(Lands.isSafeZone(coords)) {
-				if(!PermissionManager.hasEntityPermission(event.entityPlayer, "faction.zones.edit")) {
-					event.entityPlayer.addChatComponentMessage(new ChatComponentTranslation(EnumResult.IN_A_SAFE_ZONE.getLanguageKey(), new Object[0]));
-					event.setCanceled(true);
-				}
-			} else if(Lands.isWarZone(coords)) {
-				if(!PermissionManager.hasEntityPermission(event.entityPlayer, "faction.zones.edit")) {
-					event.entityPlayer.addChatComponentMessage(new ChatComponentTranslation(EnumResult.IN_A_WAR_ZONE.getLanguageKey(), new Object[0]));
-					event.setCanceled(true);
-				}
-			} else {
+
 				if(PermissionManager.hasEntityPermission(event.entityPlayer, "faction.claims.edit")) {
 					return;
 				}
@@ -486,7 +476,7 @@ public class Lands {
 					}
 				}
 			}
-		}
+		
 	}
 
 	public static void onPlayerPlaceBlock(PlaceEvent event) {

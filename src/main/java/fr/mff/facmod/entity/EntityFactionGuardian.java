@@ -10,18 +10,21 @@ import fr.mff.facmod.core.GuardianHelper;
 import fr.mff.facmod.entity.AI.EntityAIGuardian;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityAgeable;
+import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAIAttackOnCollide;
 import net.minecraft.entity.ai.EntityAILookIdle;
 import net.minecraft.entity.ai.EntityAIMoveTowardsRestriction;
 import net.minecraft.entity.ai.EntityAIMoveTowardsTarget;
+import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
 import net.minecraft.entity.ai.EntityAIWander;
 import net.minecraft.entity.ai.EntityAIWatchClosest;
 import net.minecraft.entity.boss.BossStatus;
 import net.minecraft.entity.boss.IBossDisplayData;
 import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.passive.EntityTameable;
+import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.passive.IAnimals;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -35,53 +38,55 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class EntityFactionGuardian
-  extends EntityTameable
-  implements IAnimals,IInventory, IBossDisplayData
+extends EntityCreature
+implements IAnimals,IInventory, IBossDisplayData
 {
-  public ItemStack[] content;
-  private String name;
-  private String namesave;
-  private int attackCooldown;
-  private int attackTimer;
-  private boolean isUseable;
-  private int level;
-  private int subLevel;
-  private int requiredXP;
-  public String ownerUUID;
-  private double life;
-  private double speed;
-  private double damages;
-  private int textureid;
-  private int xpmodifier;
-  public final double HEALTH_UP = 100.0D;
-  public final double SPEED_UP = 0.02D;
-  public final double DAMAGE_UP = 1.0D;
-  public final double HEALTH_BASE = 100.0D;
-  public final double SPEED_BASE = 0.25D;
-  public final double DAMAGE_BASE = 1.0D;
-  public final int TEXTURE_DEFAULT = 0;
-  
-  public EntityFactionGuardian(World world)
-  {
-    super(world);
-    setSize(1.4F, 3F);
-    this.tasks.addTask(1, new EntityAIAttackOnCollide(this, 1.0D, true));
-    this.tasks.addTask(2, new EntityAIMoveTowardsTarget(this, 0.9D, 32.0F));
-    this.tasks.addTask(4, new EntityAIMoveTowardsRestriction(this, 1.0D));
-    this.tasks.addTask(6, new EntityAIWander(this, 0.6D));
-    this.targetTasks.addTask(8, new EntityAIGuardian(this, EntityPlayer.class, 0, true));
-    this.tasks.addTask(7, new EntityAIWatchClosest(this, EntityFactionGuardian.class, 15.0F));
-    this.tasks.addTask(9, new EntityAILookIdle(this));
-    
-    this.name = "Faction Guardian";
-    this.requiredXP = 10;
-    this.content = new ItemStack[7];
-    this.isUseable = true;
-    this.textureid = 0;
-    this.xpmodifier = 1;
-    this.ignoreFrustumCheck = true;
-    this.damages = 1.0D;
-  }
+public ItemStack[] content;
+private String name;
+private String namesave;
+private int attackCooldown;
+private int attackTimer;
+private boolean isUseable;
+private int level;
+private int subLevel;
+private int requiredXP;
+public String ownerUUID;
+private double life;
+private double speed;
+private double damages;
+private int textureid;
+private int xpmodifier;
+private int entityid;
+public final double HEALTH_UP = 100.0D;
+public final double SPEED_UP = 0.02D;
+public final double DAMAGE_UP = 1.0D;
+public final double HEALTH_BASE = 100.0D;
+public final double SPEED_BASE = 0.25D;
+public final double DAMAGE_BASE = 1.0D;
+public final int TEXTURE_DEFAULT = 0;
+
+public EntityFactionGuardian(World world)
+{
+  super(world);
+  setSize(1.4F, 3F);
+  this.tasks.addTask(1, new EntityAIAttackOnCollide(this, EntityPlayer.class, 1.0D, true));
+  this.tasks.addTask(2, new EntityAIMoveTowardsTarget(this, 0.9D, 32.0F));
+  this.tasks.addTask(4, new EntityAIMoveTowardsRestriction(this, 1.0D));
+  this.tasks.addTask(6, new EntityAIWander(this, 0.6D));
+  this.tasks.addTask(7, new EntityAIWatchClosest(this, EntityFactionGuardian.class, 15.0F));
+  this.tasks.addTask(9, new EntityAILookIdle(this));
+  this.targetTasks.addTask(8, new EntityAIGuardian(this, EntityPlayer.class, true));
+
+ 
+  this.name = "Faction Guardian";
+  this.requiredXP = 10;
+  this.content = new ItemStack[7];
+  this.isUseable = true;
+  this.textureid = 0;
+  this.xpmodifier = 1;
+  this.ignoreFrustumCheck = true;
+  this.damages = 1.0D;
+}
   
   public void addInformations(ItemStack[] content, int level, int subLevel, String player, Faction fac)
   {
@@ -115,7 +120,6 @@ public class EntityFactionGuardian
   public void onLivingUpdate()
   {
     super.onLivingUpdate();
-   
     if (this.attackTimer > 0) {
       this.attackTimer -= 1;
     }
@@ -126,18 +130,16 @@ public class EntityFactionGuardian
   
   public void onDeath(DamageSource damage)
   {
+	   System.out.println(this.getEntityId()+"desa");
     this.isUseable = false;
 
   }
   
-  public boolean attackEntityAsMob(Entity entity)
+  public boolean attackEntityAsMob(EntityPlayer entity)
   {
-    if (((entity instanceof EntityPlayer)) && (checkWhitelist((EntityPlayer)entity))) {
+   /* if (((entity instanceof EntityPlayer)) && (checkWhitelist((EntityPlayer)entity))) {
       return false;
-    }
-    if (this.attackTimer == 0) {
-      this.attackTimer = this.attackCooldown;
-    }
+    }*/
     this.worldObj.setEntityState(this, (byte)4);
     boolean flag = entity.attackEntityFrom(DamageSource.causeMobDamage(this), 
       (float)(this.damages + this.rand.nextInt(5)));
@@ -145,9 +147,8 @@ public class EntityFactionGuardian
       entity.motionY += 0.4000000059604645D;
     }
     playSound("mob.irongolem.throw", 1.0F, 1.0F);
-    return flag;
+    return true;
   }
-  
   public boolean checkWhitelist(EntityPlayer entity)
   {
 	  Faction faction = Faction.Registry.getPlayerFaction(entity.getUniqueID());
@@ -171,6 +172,7 @@ public class EntityFactionGuardian
   
   public boolean interact(EntityPlayer player)
   {
+
     sync();
     if ((player.getHeldItem() != null) && (GuardianHelper.checkXPStuff(player.getHeldItem().getItem())))
     {
@@ -188,12 +190,11 @@ public class EntityFactionGuardian
     return super.interact(player);
   }
   
-  protected void collideWithEntity(Entity entity)
+  protected void collideWithEntity(EntityPlayer entity)
   {
-    if (((entity instanceof IMob)) && (getRNG().nextInt(20) == 0)) {
-      setAttackTarget((EntityLivingBase)entity);
-    }
-    super.collideWithEntity(entity);
+    //if (((entity instanceof IMob)) && (getRNG().nextInt(20) == 0)) {
+      setAttackTarget(entity);
+    //}
   }
   
   protected void applyEntityAttributes()
@@ -223,7 +224,7 @@ public class EntityFactionGuardian
   {
     return this.content[slot];
   }
-  
+
   public ItemStack decrStackSize(int slotIndex, int amount)
   {
     if (this.content[slotIndex] != null)
@@ -306,7 +307,7 @@ public class EntityFactionGuardian
   
   public boolean isTamed()
   {
-    return true;
+    return false;
   }
   
   public void writeToNBT(NBTTagCompound compound)
@@ -327,6 +328,8 @@ public class EntityFactionGuardian
     compound.setInteger("SubLevels", this.subLevel);
     compound.setString("player", this.ownerUUID);
     compound.setBoolean("isUseable", this.isUseable);
+    compound.setString("Faction", this.namesave);
+    compound.setInteger("id", this.getEntityId());
   }
   
   public void readFromNBT(NBTTagCompound compound)
@@ -346,6 +349,8 @@ public class EntityFactionGuardian
     this.level = compound.getInteger("Levels");
     this.subLevel = compound.getInteger("SubLevels");
     this.ownerUUID = compound.getString("player");
+    this.namesave =  compound.getString("Faction");
+    this.entityid =  compound.getInteger("id");
     setRequiredXP(this.level);
   }
   
@@ -461,6 +466,7 @@ public class EntityFactionGuardian
   {
     getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(this.life);
     getEntityAttribute(SharedMonsterAttributes.movementSpeed).setBaseValue(this.speed);
+
   }
   
   private void consumeXP(EntityPlayer player)
@@ -514,5 +520,11 @@ public void clear() {
 	// TODO Auto-generated method stub
 	
 }
+public int getEntityIds() {
+	return this.entityid;
+}
 
+public void setEntityIds(int entityId2) {
+	this.entityid = entityId2;
+}
 }
