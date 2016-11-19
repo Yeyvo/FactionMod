@@ -177,8 +177,8 @@ public class TileEntityHomeBase extends TileEntity implements IInventory {
 			int current = Calendar.getInstance().get(Calendar.DAY_OF_YEAR);
 			
 			if(last < current) { //TODO Handle case to new year
-				int left = 7; //Count to add
-				Item item = Items.apple; //Item too add
+				int left = 1; //Count to add
+				Item item = Items.rotten_flesh; //Item too add
 				for(int i = 0; i < this.getSizeInventory(); i++) {
 					ItemStack s = this.getStackInSlot(i);
 					if(s != null) {

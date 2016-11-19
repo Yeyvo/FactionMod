@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import net.minecraft.client.resources.I18n;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.StatCollector;
 
 /**
  * 	Contains all faction's grades
@@ -45,8 +45,7 @@ public enum EnumRank {
 	}
 	
 	public String getDisplay() {
-		return I18n.format("rank." + translationKey, new Object[0]);
-	}
+		return StatCollector.translateToLocalFormatted("rank." + translationKey, new Object[0]);	}
 	
 	public EnumChatFormatting getColor() {
 		return this.formatting;

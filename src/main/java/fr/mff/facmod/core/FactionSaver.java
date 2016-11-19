@@ -26,6 +26,8 @@ public class FactionSaver extends WorldSavedData {
 		Lands.readfromNBT(compound.getCompoundTag("lands"));
 		Homes.readFromNBT(compound.getCompoundTag("homes"));
 		Powers.readFromNBT(compound.getCompoundTag("powers"));
+		Rewards.readFromNBT(compound.getCompoundTag("reward"));
+
 		
 	}
 
@@ -48,6 +50,10 @@ public class FactionSaver extends WorldSavedData {
 		NBTTagCompound powers = new NBTTagCompound();
 		Powers.writeToNBT(powers);
 		compound.setTag("powers", powers);
+		
+		NBTTagCompound reward = new NBTTagCompound();
+		Rewards.writeToNBT(reward);
+		compound.setTag("rewards", reward);
 		
 		nbt.setTag("factionMod", compound);
 	}
