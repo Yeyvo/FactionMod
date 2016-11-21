@@ -11,6 +11,7 @@ import net.minecraft.util.StatCollector;
  * 	Contains all faction's grades
  */
 public enum EnumRank {
+	
 
 	/** The owner of the faction, has all permissions */
 	OWNER(4, "owner", EnumChatFormatting.RED, new Permission[]{Permission.ALTER_BLOCK, Permission.USE_BLOCK, Permission.COMMUNITY_HANDLING, Permission.FACTION_HANDLING, Permission.LAND_HANDLING}),

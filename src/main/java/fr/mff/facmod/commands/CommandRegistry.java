@@ -13,6 +13,7 @@ public class CommandRegistry {
 		}
 		event.registerServerCommand(new CommandFactionAdmin());
 		event.registerServerCommand(new CommandClearItems());
+		event.registerServerCommand(new CommandEnderAdmin());
 	}
 
 }
